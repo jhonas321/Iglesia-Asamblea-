@@ -9,12 +9,14 @@ function Inicio() {
           <div className="hero-content">
             <span className="hero-tag">Bienvenidos a nuestra congregación</span>
 
-            <h1>Bienvenidos a Iglesia Asamblea Apostolica de la fe en Cristo Jesus</h1>
+            <h1>
+              Bienvenidos a Iglesia Asamblea Apostolica de la fe en Cristo Jesus
+            </h1>
 
             <p>
-              Un lugar para adorar, crecer en la fe y compartir el amor de Cristo.
-              Te invitamos a ser parte de nuestra comunidad y vivir una experiencia
-              espiritual transformadora.
+              Un lugar para adorar, crecer en la fe y compartir el amor de
+              Cristo. Te invitamos a ser parte de nuestra comunidad y vivir una
+              experiencia espiritual transformadora.
             </p>
 
             <div className="btn-group">
@@ -47,49 +49,19 @@ function Inicio() {
 
             <p>
               En la iglesia creemos en el poder de la oración, en la enseñanza
-              de la Biblia y en la importancia de vivir una vida guiada por el amor,
-              la gracia y la verdad de Jesucristo.
+              de la Biblia y en la importancia de vivir una vida guiada por el
+              amor, la gracia y la verdad de Jesucristo.
             </p>
 
             <p>
-              Nuestro propósito es acompañar a cada persona en su crecimiento espiritual,
-              brindando espacios de adoración, enseñanza, servicio y comunión.
+              Nuestro propósito es acompañar a cada persona en su crecimiento
+              espiritual, brindando espacios de adoración, enseñanza, servicio y
+              comunión.
             </p>
 
             <p>
-              Aquí encontrarás una iglesia abierta para todos, con un ambiente cálido,
-              espiritual y lleno de propósito.
-            </p>
-          </div>
-        </div>
-      </section>
-
-      {/* VALORES */}
-      <section className="values">
-        <div className="section-title">
-          <h2>Nuestros Valores</h2>
-          <p>Los principios que guían nuestra misión y nuestra vida como iglesia.</p>
-        </div>
-
-        <div className="cards">
-          <div className="card">
-            <h3>Fe</h3>
-            <p>
-              Creemos en Dios como el centro de nuestra vida, nuestro refugio y nuestra esperanza.
-            </p>
-          </div>
-
-          <div className="card">
-            <h3>Amor</h3>
-            <p>
-              Promovemos el amor al prójimo, la unidad y la compasión en cada acción.
-            </p>
-          </div>
-
-          <div className="card">
-            <h3>Servicio</h3>
-            <p>
-              Vivimos para servir a Dios y a nuestra comunidad con humildad y compromiso.
+              Aquí encontrarás una iglesia abierta para todos, con un ambiente
+              cálido, espiritual y lleno de propósito.
             </p>
           </div>
         </div>
@@ -105,9 +77,9 @@ function Inicio() {
           <div className="mission-card">
             <h3>Misión</h3>
             <p>
-              Predicar el evangelio de Jesucristo, fortalecer la fe de los creyentes
-              y servir a nuestra comunidad con amor, guiando a las personas a una
-              relación viva con Dios.
+              Predicar el evangelio de Jesucristo, fortalecer la fe de los
+              creyentes y servir a nuestra comunidad con amor, guiando a las
+              personas a una relación viva con Dios.
             </p>
           </div>
 
@@ -115,7 +87,8 @@ function Inicio() {
             <h3>Visión</h3>
             <p>
               Ser una iglesia que impacte vidas, forme discípulos comprometidos
-              y lleve esperanza a nuestra ciudad a través del amor y la palabra de Dios.
+              y lleve esperanza a nuestra ciudad a través del amor y la palabra
+              de Dios.
             </p>
           </div>
         </div>
@@ -125,49 +98,58 @@ function Inicio() {
       <section className="services" id="ministerios">
         <div className="section-title">
           <h2>Ministerios</h2>
-          <p>Espacios diseñados para cada etapa de la vida y el crecimiento espiritual.</p>
+          <p>
+            Espacios diseñados para cada etapa de la vida y el crecimiento
+            espiritual.
+          </p>
         </div>
 
         <div className="services-grid">
           <div className="service-box">
             <h3>Ministerio de Niños</h3>
             <p>
-              Formación bíblica y actividades para los más pequeños en un ambiente seguro y alegre.
+              Formación bíblica y actividades para los más pequeños en un
+              ambiente seguro y alegre.
             </p>
           </div>
 
           <div className="service-box">
             <h3>Ministerio de Jóvenes</h3>
             <p>
-              Encuentros y enseñanzas para fortalecer la identidad, la fe y el propósito en Cristo.
+              Encuentros y enseñanzas para fortalecer la identidad, la fe y el
+              propósito en Cristo.
             </p>
           </div>
 
           <div className="service-box">
             <h3>Ministerio de Alabanza</h3>
             <p>
-              Adoramos a Dios con excelencia, pasión y reverencia a través de la música.
+              Adoramos a Dios con excelencia, pasión y reverencia a través de la
+              música.
             </p>
           </div>
 
           <div className="service-box">
             <h3>Escuela Bíblica</h3>
             <p>
-              Estudios y enseñanza profunda de la Palabra de Dios para toda la congregación.
+              Estudios y enseñanza profunda de la Palabra de Dios para toda la
+              congregación.
             </p>
           </div>
 
           <div className="service-box">
             <h3>Oración</h3>
             <p>
-              Espacios especiales para interceder, buscar a Dios y fortalecer la vida espiritual.
+              Espacios especiales para interceder, buscar a Dios y fortalecer la
+              vida espiritual.
             </p>
           </div>
 
           <div className="service-box">
             <h3>Servicio Social</h3>
             <p>
-              Apoyo a familias y acciones solidarias para impactar positivamente a la comunidad.
+              Apoyo a familias y acciones solidarias para impactar positivamente
+              a la comunidad.
             </p>
           </div>
         </div>
@@ -178,7 +160,8 @@ function Inicio() {
         <div className="section-title">
           <h2>Horarios de Reunión</h2>
           <p>
-            Te esperamos en nuestras reuniones semanales para compartir juntos la presencia de Dios.
+            Te esperamos en nuestras reuniones semanales para compartir juntos
+            la presencia de Dios.
           </p>
         </div>
 
@@ -215,36 +198,19 @@ function Inicio() {
         </div>
       </section>
 
-      {/* INVITACION */}
-      <section className="visit">
-        <div className="visit-content">
-          <h2>Te esperamos con los brazos abiertos</h2>
-
-          <p>
-            Ven y comparte con nosotros un tiempo de adoración,
-            enseñanza y comunión en la presencia de Dios.
-            Todos son bienvenidos.
-          </p>
-
-          <a href="#horarios" className="visit-btn">
-            Ver Horarios
-          </a>
-        </div>
-      </section>
-
       {/* UBICACION */}
       <section className="location">
         <div className="section-title">
           <h2>Ubicación</h2>
           <p>
-            Visítanos y comparte con nosotros un tiempo especial
-            en la presencia de Dios.
+            Visítanos y comparte con nosotros un tiempo especial en la presencia
+            de Dios.
           </p>
         </div>
 
         <div className="map-container">
           <iframe
-            src="https://www.google.com/maps?q=Cochabamba&output=embed"
+            src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d565.9212292574731!2d-66.03366457115301!3d-17.409432894819446!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x93e37b53a494b22d%3A0xca10c01eae063aa0!2sIglesia%20Asamblea%20Apostolica%20De%20La%20Fe%20En%20Cristo%20Jesus-Sacaba!5e0!3m2!1ses-419!2sbo!4v1773023623560!5m2!1ses-419!2sbo"
             loading="lazy"
             title="Ubicación Iglesia"
           ></iframe>
@@ -256,7 +222,8 @@ function Inicio() {
         <div className="section-title">
           <h2>Contáctanos</h2>
           <p>
-            Estamos para ayudarte, orar contigo y darte la bienvenida a nuestra congregación.
+            Estamos para ayudarte, orar contigo y darte la bienvenida a nuestra
+            congregación.
           </p>
         </div>
 
@@ -264,10 +231,19 @@ function Inicio() {
           <div className="contact-info">
             <h3>Información de la Iglesia</h3>
 
-            <p><strong>Nombre:</strong> Asamblea Apostolica de la fe en Cristo Jesús</p>
-            <p><strong>Dirección:</strong> Calle Santa Cruz entre Calama</p>
-            <p><strong>Teléfono:</strong> +591 70000000</p>
-            <p><strong>Email:</strong> contacto@asamblea.com</p>
+            <p>
+              <strong>Nombre:</strong> Asamblea Apostolica de la fe en Cristo
+              Jesús
+            </p>
+            <p>
+              <strong>Dirección:</strong> Calle Santa Cruz entre Calama
+            </p>
+            <p>
+              <strong>Teléfono:</strong> +591 70000000
+            </p>
+            <p>
+              <strong>Email:</strong> contacto@asamblea.com
+            </p>
           </div>
 
           <div className="contact-form">
@@ -275,8 +251,15 @@ function Inicio() {
 
             <form>
               <input type="text" placeholder="Tu nombre" required />
-              <input type="email" placeholder="Tu correo electrónico" required />
-              <textarea placeholder="Escribe tu mensaje aquí..." required></textarea>
+              <input
+                type="email"
+                placeholder="Tu correo electrónico"
+                required
+              />
+              <textarea
+                placeholder="Escribe tu mensaje aquí..."
+                required
+              ></textarea>
               <button type="submit">Enviar mensaje</button>
             </form>
           </div>

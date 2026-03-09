@@ -399,7 +399,7 @@ table th {
 
 .contact-form textarea {
   min-height: 130px;
-  resize: vertical;
+  resize: none;
 }
 
 .contact-form button {
