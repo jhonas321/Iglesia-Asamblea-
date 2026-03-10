@@ -1,4 +1,5 @@
 import "../styles/inicio.css";
+import Ministries from "../components/Ministries";
 
 function Inicio() {
   return (
@@ -9,9 +10,11 @@ function Inicio() {
           <div className="hero-content">
             <span className="hero-tag">Bienvenidos a nuestra congregación</span>
 
-            <h1>
-              Bienvenidos a Iglesia Asamblea Apostolica de la fe en Cristo Jesus
-            </h1>
+            <h1>Bienvenidos a nuestra iglesia</h1>
+
+            <h2 className="hero-church-name">
+              Asamblea Apostolica de la fe en Cristo Jesús
+            </h2>
 
             <p>
               Un lugar para adorar, crecer en la fe y compartir el amor de
@@ -23,6 +26,7 @@ function Inicio() {
               <a href="#contacto" className="btn btn-primary">
                 Contáctanos
               </a>
+
               <a href="#horarios" className="btn btn-secondary">
                 Ver Horarios
               </a>
@@ -76,89 +80,32 @@ function Inicio() {
         <div className="mission-container">
           <div className="mission-card">
             <h3>Misión</h3>
+
             <p>
               Predicar el evangelio de Jesucristo, fortalecer la fe de los
-              creyentes y servir a nuestra comunidad con amor, guiando a las
-              personas a una relación viva con Dios.
+              creyentes y servir a nuestra comunidad con amor.
             </p>
           </div>
 
           <div className="mission-card">
             <h3>Visión</h3>
+
             <p>
               Ser una iglesia que impacte vidas, forme discípulos comprometidos
-              y lleve esperanza a nuestra ciudad a través del amor y la palabra
-              de Dios.
+              y lleve esperanza a nuestra ciudad.
             </p>
           </div>
         </div>
       </section>
 
       {/* MINISTERIOS */}
-      <section className="services" id="ministerios">
-        <div className="section-title">
-          <h2>Ministerios</h2>
-          <p>
-            Espacios diseñados para cada etapa de la vida y el crecimiento
-            espiritual.
-          </p>
-        </div>
-
-        <div className="services-grid">
-          <div className="service-box">
-            <h3>Ministerio de Niños</h3>
-            <p>
-              Formación bíblica y actividades para los más pequeños en un
-              ambiente seguro y alegre.
-            </p>
-          </div>
-
-          <div className="service-box">
-            <h3>Ministerio de Jóvenes</h3>
-            <p>
-              Encuentros y enseñanzas para fortalecer la identidad, la fe y el
-              propósito en Cristo.
-            </p>
-          </div>
-
-          <div className="service-box">
-            <h3>Ministerio de Alabanza</h3>
-            <p>
-              Adoramos a Dios con excelencia, pasión y reverencia a través de la
-              música.
-            </p>
-          </div>
-
-          <div className="service-box">
-            <h3>Escuela Bíblica</h3>
-            <p>
-              Estudios y enseñanza profunda de la Palabra de Dios para toda la
-              congregación.
-            </p>
-          </div>
-
-          <div className="service-box">
-            <h3>Oración</h3>
-            <p>
-              Espacios especiales para interceder, buscar a Dios y fortalecer la
-              vida espiritual.
-            </p>
-          </div>
-
-          <div className="service-box">
-            <h3>Servicio Social</h3>
-            <p>
-              Apoyo a familias y acciones solidarias para impactar positivamente
-              a la comunidad.
-            </p>
-          </div>
-        </div>
-      </section>
+      <Ministries />
 
       {/* HORARIOS */}
       <section className="schedule" id="horarios">
         <div className="section-title">
           <h2>Horarios de Reunión</h2>
+
           <p>
             Te esperamos en nuestras reuniones semanales para compartir juntos
             la presencia de Dios.
@@ -202,6 +149,7 @@ function Inicio() {
       <section className="location">
         <div className="section-title">
           <h2>Ubicación</h2>
+
           <p>
             Visítanos y comparte con nosotros un tiempo especial en la presencia
             de Dios.
@@ -221,6 +169,7 @@ function Inicio() {
       <section className="contact" id="contacto">
         <div className="section-title">
           <h2>Contáctanos</h2>
+
           <p>
             Estamos para ayudarte, orar contigo y darte la bienvenida a nuestra
             congregación.
@@ -235,12 +184,15 @@ function Inicio() {
               <strong>Nombre:</strong> Asamblea Apostolica de la fe en Cristo
               Jesús
             </p>
+
             <p>
               <strong>Dirección:</strong> Calle Santa Cruz entre Calama
             </p>
+
             <p>
               <strong>Teléfono:</strong> +591 70000000
             </p>
+
             <p>
               <strong>Email:</strong> contacto@asamblea.com
             </p>
@@ -251,15 +203,18 @@ function Inicio() {
 
             <form>
               <input type="text" placeholder="Tu nombre" required />
+
               <input
                 type="email"
                 placeholder="Tu correo electrónico"
                 required
               />
+
               <textarea
                 placeholder="Escribe tu mensaje aquí..."
                 required
               ></textarea>
+
               <button type="submit">Enviar mensaje</button>
             </form>
           </div>

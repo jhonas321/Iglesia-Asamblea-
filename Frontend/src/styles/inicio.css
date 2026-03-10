@@ -1,3 +1,5 @@
+/* HERO */
+
 .hero-header {
   min-height: 100vh;
   background: linear-gradient(rgba(10, 25, 47, 0.82), rgba(10, 25, 47, 0.82)),
@@ -34,8 +36,17 @@
 .hero-content h1 {
   font-size: 4rem;
   line-height: 1.1;
-  margin-bottom: 22px;
+  margin-bottom: 12px;
   font-weight: 800;
+}
+
+.hero-church-name {
+  font-size: 2rem;
+  font-weight: 600;
+  margin: -6px 0 24px;
+  color: #d4af37;
+  letter-spacing: 0.5px;
+  line-height: 1.4;
 }
 
 .hero-content p {
@@ -82,6 +93,8 @@
   color: #0a192f;
   transform: translateY(-2px);
 }
+
+/* SECCIONES GENERALES */
 
 section {
   padding: 90px 8%;
@@ -135,42 +148,6 @@ section {
   font-size: 1.02rem;
 }
 
-/* VALORES */
-
-.values {
-  background: white;
-}
-
-.cards {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 26px;
-}
-
-.card {
-  background: #ffffff;
-  padding: 32px 28px;
-  border-radius: 20px;
-  box-shadow: 0 8px 22px rgba(0, 0, 0, 0.08);
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
-  text-align: center;
-}
-
-.card:hover {
-  transform: translateY(-8px);
-  box-shadow: 0 14px 30px rgba(0, 0, 0, 0.11);
-}
-
-.card h3 {
-  color: #0a192f;
-  margin-bottom: 14px;
-  font-size: 1.45rem;
-}
-
-.card p {
-  color: #555;
-}
-
 /* MISION Y VISION */
 
 .mission {
@@ -190,6 +167,7 @@ section {
   box-shadow: 0 10px 25px rgba(0, 0, 0, 0.08);
   text-align: center;
   transition: transform 0.3s ease, box-shadow 0.3s ease;
+  height: 100%;
 }
 
 .mission-card:hover {
@@ -206,42 +184,6 @@ section {
 .mission-card p {
   color: #555;
   line-height: 1.8;
-  font-size: 1rem;
-}
-
-/* MINISTERIOS */
-
-.services {
-  background: #eef3f8;
-}
-
-.services-grid {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 26px;
-}
-
-.service-box {
-  background: white;
-  border-left: 5px solid #d4af37;
-  padding: 26px;
-  border-radius: 16px;
-  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.07);
-  transition: transform 0.3s ease;
-}
-
-.service-box:hover {
-  transform: translateY(-6px);
-}
-
-.service-box h3 {
-  margin-bottom: 12px;
-  color: #0a192f;
-  font-size: 1.2rem;
-}
-
-.service-box p {
-  color: #555;
 }
 
 /* HORARIOS */
@@ -282,45 +224,8 @@ table th {
   color: #d4af37;
 }
 
-/* INVITACION */
-
-.visit {
-  background: #0a192f;
-  color: white;
-  text-align: center;
-}
-
-.visit-content {
-  max-width: 760px;
-  margin: 0 auto;
-}
-
-.visit h2 {
-  font-size: 2.6rem;
-  margin-bottom: 20px;
-}
-
-.visit p {
-  font-size: 1.1rem;
-  color: #d7d7d7;
-  line-height: 1.8;
-  margin-bottom: 30px;
-}
-
-.visit-btn {
-  display: inline-block;
-  background: #d4af37;
-  color: #111;
-  padding: 14px 30px;
-  border-radius: 999px;
-  text-decoration: none;
-  font-weight: 700;
-  transition: all 0.3s ease;
-}
-
-.visit-btn:hover {
-  background: #b89424;
-  transform: translateY(-2px);
+table tr:last-child td {
+  border-bottom: none;
 }
 
 /* UBICACION */
@@ -335,6 +240,7 @@ table th {
   border-radius: 20px;
   overflow: hidden;
   box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+  margin-top: 10px;
 }
 
 .map-container iframe {
@@ -391,15 +297,15 @@ table th {
   transition: border-color 0.3s ease, box-shadow 0.3s ease;
 }
 
+.contact-form textarea {
+  min-height: 130px;
+  resize: none;
+}
+
 .contact-form input:focus,
 .contact-form textarea:focus {
   border-color: #d4af37;
   box-shadow: 0 0 0 3px rgba(212, 175, 55, 0.12);
-}
-
-.contact-form textarea {
-  min-height: 130px;
-  resize: none;
 }
 
 .contact-form button {
@@ -423,9 +329,7 @@ table th {
 
 @media (max-width: 992px) {
   .about,
-  .cards,
   .mission-container,
-  .services-grid,
   .contact-container {
     grid-template-columns: 1fr;
   }
@@ -438,12 +342,12 @@ table th {
     font-size: 2.8rem;
   }
 
-  .about img {
-    min-height: 320px;
+  .hero-church-name {
+    font-size: 1.6rem;
   }
 
-  .visit h2 {
-    font-size: 2.2rem;
+  .about img {
+    min-height: 320px;
   }
 }
 
@@ -458,6 +362,11 @@ table th {
 
   .hero-content h1 {
     font-size: 2.2rem;
+  }
+
+  .hero-church-name {
+    font-size: 1.3rem;
+    margin-bottom: 20px;
   }
 
   .hero-content p {
@@ -480,14 +389,6 @@ table th {
 
   .about img {
     min-height: 260px;
-  }
-
-  .visit h2 {
-    font-size: 1.9rem;
-  }
-
-  .visit p {
-    font-size: 1rem;
   }
 
   .map-container {
