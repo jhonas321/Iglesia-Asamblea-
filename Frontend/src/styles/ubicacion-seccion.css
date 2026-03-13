@@ -1,0 +1,109 @@
+.location {
+    position: relative;
+    background: linear-gradient(
+      135deg,
+      #eef3ff,
+      #dbe4fb,
+      #c5d5f5,
+      #a7bce6
+    ) !important;
+    background-size: 220% 220%;
+    animation: bgPan 15s ease-in-out infinite;
+    overflow: hidden;
+  }
+  
+  .location::before {
+    content: "";
+    position: absolute;
+    top: -90px;
+    left: -90px;
+    width: 250px;
+    height: 250px;
+    border-radius: 50%;
+    background: rgba(70, 97, 169, 0.18);
+    filter: blur(50px);
+    animation: floatSlow 10s ease-in-out infinite;
+  }
+  
+  .location::after {
+    content: "";
+    position: absolute;
+    bottom: -90px;
+    right: -90px;
+    width: 250px;
+    height: 250px;
+    border-radius: 50%;
+    background: rgba(167, 188, 230, 0.22);
+    filter: blur(50px);
+    animation: floatSlow 12s ease-in-out infinite;
+  }
+  
+  .location .section-title h2 {
+    color: var(--text-dark);
+  }
+  
+  .location .section-title p {
+    color: #4b5b76;
+  }
+  
+  .map-container {
+    width: 100%;
+    height: 440px;
+    border-radius: 28px;
+    overflow: hidden;
+    background: rgba(255, 255, 255, 0.84) !important;
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.72);
+    box-shadow: 0 20px 40px rgba(21, 43, 87, 0.14);
+    margin-top: 10px;
+    transition: transform 0.4s ease, box-shadow 0.4s ease;
+    position: relative;
+    z-index: 2;
+  }
+  
+  .map-container::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    border-radius: 28px;
+    padding: 1px;
+    background: linear-gradient(
+      135deg,
+      rgba(70, 97, 169, 0.42),
+      rgba(255, 255, 255, 0.12),
+      rgba(167, 188, 230, 0.28)
+    );
+    -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+    -webkit-mask-composite: xor;
+    mask-composite: exclude;
+    pointer-events: none;
+  }
+  
+  .map-container:hover {
+    transform: translateY(-8px) scale(1.01);
+    box-shadow: 0 26px 52px rgba(21, 43, 87, 0.18);
+  }
+  
+  .map-container iframe {
+    width: 100%;
+    height: 100%;
+    border: none;
+  }
+  
+  @media (max-width: 992px) {
+    .map-container {
+      height: 360px;
+    }
+  }
+  
+  @media (max-width: 768px) {
+    .map-container {
+      height: 320px;
+    }
+  }
+  
+  @media (max-width: 480px) {
+    .map-container {
+      border-radius: 22px;
+    }
+  }
