@@ -1,6 +1,21 @@
 .ministries {
   padding: 100px 6%;
-  background: #111111;
+  background: linear-gradient(-45deg, #020617, #0f172a, #1e3a8a, #2563eb);
+  background-size: 400% 400%;
+  animation: gradientMove 12s ease infinite;
+}
+
+/* Animación del degradado */
+@keyframes gradientMove {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
 }
 
 .section-title {

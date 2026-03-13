@@ -115,6 +115,8 @@ function Inicio() {
         </div>
       </header>
 
+      <Ministries />
+
       {/* SOBRE NOSOTROS */}
       <section id="nosotros" className="light-section about-section">
         <div className="section-bg-decoration decoration-left"></div>
@@ -234,7 +236,7 @@ function Inicio() {
         </div>
       </section>
 
-      <Ministries />
+      
 
       {/* HORARIOS */}
       <section className="schedule" id="horarios">
