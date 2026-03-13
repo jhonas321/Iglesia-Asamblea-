@@ -1,5 +1,6 @@
 import "../styles/ministries.css";
 import { FaChild, FaUsers, FaMusic } from "react-icons/fa6";
+import { useNavigate } from "react-router-dom";
 
 const ministries = [
   {
@@ -8,6 +9,7 @@ const ministries = [
     text: "Formación bíblica y actividades para los más pequeños en un ambiente seguro y alegre.",
     image:
       "https://images.unsplash.com/photo-1503454537195-1dcabb73ffb9?auto=format&fit=crop&w=1200&q=80",
+    path: "/ministerio-ninos",
   },
   {
     icon: <FaUsers />,
@@ -15,6 +17,7 @@ const ministries = [
     text: "Encuentros y enseñanzas para fortalecer la identidad, la fe y el propósito en Cristo.",
     image:
       "https://images.unsplash.com/photo-1529156069898-49953e39b3ac?auto=format&fit=crop&w=1200&q=80",
+    path: "/ministerio-jovenes",
   },
   {
     icon: <FaMusic />,
@@ -22,10 +25,17 @@ const ministries = [
     text: "Adoramos a Dios con excelencia, pasión y reverencia a través de la música.",
     image:
       "https://images.unsplash.com/photo-1501612780327-45045538702b?auto=format&fit=crop&w=1200&q=80",
+    path: "/ministerio-alabanza",
   },
 ];
 
 function Ministries() {
+  const navigate = useNavigate();
+
+  const handleNavigate = (path) => {
+    navigate(path);
+  };
+
   return (
     <section className="ministries" id="ministerios">
       <div className="section-title">
@@ -38,7 +48,18 @@ function Ministries() {
 
       <div className="ministries-wrapper">
         {ministries.map((item, index) => (
-          <article className="ministry-card" key={index}>
+          <article
+            className="ministry-card"
+            key={index}
+            onClick={() => handleNavigate(item.path)}
+            role="button"
+            tabIndex={0}
+            onKeyDown={(e) => {
+              if (e.key === "Enter" || e.key === " ") {
+                handleNavigate(item.path);
+              }
+            }}
+          >
             <div className="ministry-image">
               <img src={item.image} alt={item.title} />
               <div className="overlay"></div>

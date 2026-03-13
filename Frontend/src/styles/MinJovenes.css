@@ -1,0 +1,1014 @@
+* {
+  box-sizing: border-box;
+}
+
+.yt-page {
+  min-height: 100vh;
+  color: #ffffff;
+  background: radial-gradient(
+      circle at top left,
+      rgba(255, 0, 128, 0.18),
+      transparent 24%
+    ),
+    radial-gradient(
+      circle at top right,
+      rgba(0, 229, 255, 0.16),
+      transparent 24%
+    ),
+    radial-gradient(
+      circle at bottom left,
+      rgba(123, 97, 255, 0.14),
+      transparent 25%
+    ),
+    linear-gradient(180deg, #0b1020 0%, #10172d 45%, #0d1325 100%);
+  overflow: hidden;
+}
+
+.yt-container {
+  width: min(1180px, 92%);
+  margin: 0 auto;
+}
+
+.yt-hero {
+  position: relative;
+  padding: 110px 0 60px;
+}
+
+.yt-glow {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(12px);
+  opacity: 0.55;
+  animation: ytFloat 6s ease-in-out infinite;
+}
+
+.yt-glow-1 {
+  width: 180px;
+  height: 180px;
+  background: rgba(255, 0, 128, 0.26);
+  top: 70px;
+  left: 30px;
+}
+
+.yt-glow-2 {
+  width: 140px;
+  height: 140px;
+  background: rgba(0, 229, 255, 0.24);
+  top: 120px;
+  right: 60px;
+  animation-delay: 1.7s;
+}
+
+@keyframes ytFloat {
+  0%,
+  100% {
+    transform: translateY(0px) translateX(0px);
+  }
+  50% {
+    transform: translateY(-16px) translateX(8px);
+  }
+}
+
+.yt-hero-grid {
+  position: relative;
+  z-index: 2;
+  display: grid;
+  grid-template-columns: 1.05fr 0.95fr;
+  gap: 42px;
+  align-items: center;
+}
+
+.yt-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(0, 229, 255, 0.22);
+  color: #86f7ff;
+  padding: 10px 18px;
+  border-radius: 999px;
+  font-weight: 800;
+  margin-bottom: 18px;
+  backdrop-filter: blur(10px);
+}
+
+.yt-hero-text h1 {
+  font-size: clamp(2.6rem, 5vw, 4.5rem);
+  line-height: 1.05;
+  margin-bottom: 18px;
+  font-weight: 900;
+  background: linear-gradient(135deg, #ffffff, #86f7ff, #ff8ad4);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.yt-hero-text p {
+  font-size: 1.06rem;
+  line-height: 1.8;
+  color: rgba(255, 255, 255, 0.8);
+  max-width: 630px;
+}
+
+.yt-hero-image img {
+  width: 100%;
+  height: 500px;
+  object-fit: cover;
+  border-radius: 32px;
+  box-shadow: 0 28px 60px rgba(0, 0, 0, 0.34);
+  border: 1px solid rgba(255, 255, 255, 0.14);
+}
+
+.yt-tabs-section {
+  padding: 20px 0 85px;
+}
+
+.yt-tabs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-bottom: 28px;
+}
+
+.yt-tab-btn {
+  border: none;
+  cursor: pointer;
+  padding: 13px 20px;
+  border-radius: 14px;
+  font-weight: 800;
+  color: #ffffff;
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  transition: all 0.3s ease;
+  backdrop-filter: blur(10px);
+}
+
+.yt-tab-btn:hover {
+  transform: translateY(-3px);
+  border-color: rgba(134, 247, 255, 0.32);
+}
+
+.yt-tab-btn.active {
+  background: linear-gradient(135deg, #ff2d95, #7b61ff);
+  border-color: transparent;
+  box-shadow: 0 18px 36px rgba(123, 97, 255, 0.24);
+}
+
+.yt-tab-content {
+  min-height: 420px;
+}
+
+.yt-panel {
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 30px;
+  padding: 34px;
+  backdrop-filter: blur(10px);
+  box-shadow: 0 18px 40px rgba(0, 0, 0, 0.16);
+  animation: ytFadeUp 0.35s ease;
+}
+
+@keyframes ytFadeUp {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.yt-panel-header {
+  margin-bottom: 28px;
+}
+
+.yt-chip {
+  display: inline-block;
+  padding: 8px 16px;
+  border-radius: 999px;
+  background: rgba(0, 229, 255, 0.12);
+  color: #86f7ff;
+  border: 1px solid rgba(134, 247, 255, 0.22);
+  font-size: 0.92rem;
+  font-weight: 800;
+  margin-bottom: 14px;
+}
+
+.yt-panel-header h2 {
+  font-size: clamp(1.9rem, 4vw, 2.8rem);
+  line-height: 1.15;
+}
+
+.yt-about-grid {
+  display: grid;
+  grid-template-columns: 1.1fr 0.9fr;
+  gap: 24px;
+}
+
+.yt-about-card,
+.yt-about-list-card {
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 24px;
+  padding: 24px;
+}
+
+.yt-about-card p,
+.yt-about-list-card li {
+  color: rgba(255, 255, 255, 0.78);
+  line-height: 1.8;
+}
+
+.yt-about-list-card h3 {
+  margin-bottom: 14px;
+}
+
+.yt-about-list-card ul {
+  margin: 0;
+  padding-left: 18px;
+}
+
+.yt-about-list-card li {
+  margin-bottom: 10px;
+}
+
+.yt-verse-box {
+  margin-top: 22px;
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 18px;
+  border-radius: 20px;
+  background: linear-gradient(
+    135deg,
+    rgba(255, 45, 149, 0.14),
+    rgba(123, 97, 255, 0.14)
+  );
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.yt-verse-icon {
+  color: #86f7ff;
+  margin-top: 4px;
+}
+
+.yt-activities-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 20px;
+}
+
+.yt-activity-card {
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 24px;
+  padding: 26px 22px;
+  transition: all 0.3s ease;
+}
+
+.yt-activity-card:hover {
+  transform: translateY(-8px) rotate(-1deg);
+  border-color: rgba(255, 45, 149, 0.3);
+  box-shadow: 0 20px 38px rgba(123, 97, 255, 0.18);
+}
+
+.yt-activity-icon {
+  width: 62px;
+  height: 62px;
+  display: grid;
+  place-items: center;
+  border-radius: 18px;
+  font-size: 1.35rem;
+  margin-bottom: 16px;
+  background: linear-gradient(135deg, #00e5ff, #7b61ff, #ff2d95);
+}
+
+.yt-activity-card h3 {
+  margin-bottom: 10px;
+}
+
+.yt-activity-card p {
+  color: rgba(255, 255, 255, 0.76);
+  line-height: 1.72;
+}
+
+.yt-gallery-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 18px;
+}
+
+.yt-gallery-item {
+  position: relative;
+  overflow: hidden;
+  border-radius: 24px;
+  height: 250px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.yt-gallery-item img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.45s ease, filter 0.45s ease;
+}
+
+.yt-gallery-item:hover img {
+  transform: scale(1.08);
+  filter: saturate(1.15);
+}
+
+.yt-gallery-overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    to top,
+    rgba(11, 16, 32, 0.72),
+    rgba(11, 16, 32, 0.1)
+  );
+  display: flex;
+  align-items: flex-end;
+  justify-content: flex-end;
+  padding: 18px;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  font-size: 1.2rem;
+  color: #ffffff;
+}
+
+.yt-gallery-item:hover .yt-gallery-overlay {
+  opacity: 1;
+}
+
+.yt-schedule-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 20px;
+}
+
+.yt-schedule-card {
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 24px;
+  padding: 24px 22px;
+  transition: transform 0.3s ease;
+}
+
+.yt-schedule-card:hover {
+  transform: translateY(-8px);
+}
+
+.yt-schedule-top {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  color: #86f7ff;
+  margin-bottom: 16px;
+}
+
+.yt-schedule-top h3 {
+  color: #ffffff;
+}
+
+.yt-schedule-info p {
+  color: rgba(255, 255, 255, 0.78);
+  line-height: 1.7;
+  margin-bottom: 10px;
+}
+
+.yt-schedule-info p:first-child {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: #ffffff;
+  font-weight: 700;
+}
+
+.yt-social-wrapper {
+  display: grid;
+  grid-template-columns: 0.9fr 1.1fr;
+  gap: 24px;
+  align-items: start;
+}
+
+.yt-social-text-card {
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 24px;
+  padding: 24px;
+}
+
+.yt-social-text-card p {
+  color: rgba(255, 255, 255, 0.78);
+  line-height: 1.8;
+}
+
+.yt-social-location {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-top: 18px;
+  color: #86f7ff;
+  font-weight: 700;
+}
+
+.yt-social-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 18px;
+}
+
+.yt-social-card {
+  text-decoration: none;
+  color: #ffffff;
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 22px;
+  padding: 24px;
+  transition: all 0.3s ease;
+}
+
+.yt-social-card:hover {
+  transform: translateY(-8px);
+  border-color: rgba(0, 229, 255, 0.28);
+  box-shadow: 0 20px 38px rgba(0, 0, 0, 0.18);
+}
+
+.yt-social-icon {
+  width: 58px;
+  height: 58px;
+  border-radius: 18px;
+  display: grid;
+  place-items: center;
+  font-size: 1.3rem;
+  margin-bottom: 14px;
+  background: linear-gradient(135deg, #ff2d95, #7b61ff, #00e5ff);
+}
+
+.yt-social-card h3 {
+  margin-bottom: 8px;
+}
+
+.yt-social-card p {
+  color: rgba(255, 255, 255, 0.76);
+  line-height: 1.6;
+}
+
+@media (max-width: 1100px) {
+  .yt-hero-grid,
+  .yt-about-grid,
+  .yt-social-wrapper {
+    grid-template-columns: 1fr;
+  }
+
+  .yt-activities-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .yt-schedule-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .yt-gallery-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .yt-hero-image img {
+    height: 420px;
+  }
+}
+
+@media (max-width: 768px) {
+  .yt-hero {
+    padding: 95px 0 50px;
+  }
+
+  .yt-panel {
+    padding: 24px 18px;
+  }
+
+  .yt-tabs {
+    gap: 10px;
+  }
+
+  .yt-tab-btn {
+    width: 100%;
+  }
+
+  .yt-activities-grid,
+  .yt-gallery-grid,
+  .yt-social-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .yt-hero-image img {
+    height: 320px;
+  }
+
+  .yt-gallery-item {
+    height: 220px;
+  }
+
+  .yt-tab-content {
+    min-height: auto;
+  }
+}
+.yt-activities-intro {
+  color: rgba(255, 255, 255, 0.76);
+  line-height: 1.7;
+  margin-top: 10px;
+}
+
+.yt-activity-subtabs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-bottom: 26px;
+}
+
+.yt-activity-subtab {
+  border: none;
+  cursor: pointer;
+  padding: 12px 18px;
+  border-radius: 14px;
+  font-weight: 800;
+  color: #ffffff;
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  transition: all 0.3s ease;
+}
+
+.yt-activity-subtab:hover {
+  transform: translateY(-2px);
+  border-color: rgba(134, 247, 255, 0.32);
+}
+
+.yt-activity-subtab.active {
+  background: linear-gradient(135deg, #00e5ff, #7b61ff);
+  border-color: transparent;
+  box-shadow: 0 16px 32px rgba(123, 97, 255, 0.24);
+}
+
+.yt-calendar-wrap {
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 28px;
+  padding: 24px;
+  margin-bottom: 28px;
+}
+
+.yt-calendar-header {
+  display: flex;
+  justify-content: space-between;
+  gap: 16px;
+  align-items: center;
+  flex-wrap: wrap;
+  margin-bottom: 18px;
+}
+
+.yt-calendar-header h3 {
+  font-size: 1.5rem;
+  margin: 0;
+}
+
+.yt-calendar-legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 14px;
+}
+
+.yt-legend-item {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  color: rgba(255, 255, 255, 0.84);
+  font-weight: 700;
+  font-size: 0.92rem;
+}
+
+.yt-legend-dot {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  display: inline-block;
+}
+
+.yt-dot-current {
+  background: #00e676;
+}
+
+.yt-dot-upcoming {
+  background: #00b0ff;
+}
+
+.yt-dot-finished {
+  background: #ff8a80;
+}
+
+.yt-calendar-weekdays {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 10px;
+  margin-bottom: 10px;
+}
+
+.yt-calendar-weekdays span {
+  text-align: center;
+  font-weight: 800;
+  color: #86f7ff;
+  padding: 10px 0;
+}
+
+.yt-calendar-grid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 10px;
+}
+
+.yt-calendar-day {
+  min-height: 150px;
+  border-radius: 18px;
+  padding: 12px;
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  transition: transform 0.25s ease, border-color 0.25s ease;
+  display: flex;
+  flex-direction: column;
+}
+
+.yt-calendar-day:hover {
+  transform: translateY(-3px);
+}
+
+.yt-calendar-day--empty {
+  background: transparent;
+  border: 1px dashed rgba(255, 255, 255, 0.04);
+}
+
+.yt-cal-day--current {
+  border-color: rgba(0, 230, 118, 0.55);
+  box-shadow: inset 0 0 0 1px rgba(0, 230, 118, 0.18);
+}
+
+.yt-cal-day--upcoming {
+  border-color: rgba(0, 176, 255, 0.5);
+  box-shadow: inset 0 0 0 1px rgba(0, 176, 255, 0.16);
+}
+
+.yt-cal-day--finished {
+  border-color: rgba(255, 138, 128, 0.42);
+  box-shadow: inset 0 0 0 1px rgba(255, 138, 128, 0.14);
+}
+
+.yt-calendar-day-number {
+  font-size: 1rem;
+  font-weight: 900;
+  margin-bottom: 10px;
+}
+
+.yt-calendar-events-mini {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.yt-calendar-event-card {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding: 7px 8px;
+  border-radius: 10px;
+  color: white;
+  line-height: 1.25;
+  box-shadow: 0 6px 14px rgba(0, 0, 0, 0.12);
+}
+
+.yt-calendar-event-title {
+  font-size: 0.72rem;
+  font-weight: 800;
+}
+
+.yt-calendar-event-time {
+  font-size: 0.66rem;
+  opacity: 0.95;
+}
+
+.yt-calendar-event-place {
+  font-size: 0.62rem;
+  opacity: 0.88;
+}
+
+.yt-calendar-no-event {
+  font-size: 0.68rem;
+  color: rgba(255, 255, 255, 0.38);
+}
+
+.yt-mini-en-curso {
+  background: linear-gradient(135deg, #00c853, #00e676);
+}
+
+.yt-mini-por-llegar {
+  background: linear-gradient(135deg, #0091ea, #00b0ff);
+}
+
+.yt-mini-terminado {
+  background: linear-gradient(135deg, #ff7043, #ff8a80);
+}
+
+.yt-calendar-mini-tag {
+  display: inline-block;
+  font-size: 0.72rem;
+  line-height: 1.3;
+  padding: 6px 8px;
+  border-radius: 10px;
+  font-weight: 700;
+  color: white;
+}
+
+.yt-mini-en-curso {
+  background: linear-gradient(135deg, #00c853, #00e676);
+}
+
+.yt-mini-por-llegar {
+  background: linear-gradient(135deg, #0091ea, #00b0ff);
+}
+
+.yt-mini-terminado {
+  background: linear-gradient(135deg, #ff7043, #ff8a80);
+}
+
+.yt-live-lists {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 22px;
+}
+
+.yt-live-box {
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 24px;
+  padding: 22px;
+}
+
+.yt-live-box-title {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 16px;
+}
+
+.yt-live-box-title h3 {
+  margin: 0;
+  font-size: 1.18rem;
+}
+
+.yt-live-box-title span {
+  min-width: 34px;
+  height: 34px;
+  border-radius: 999px;
+  display: grid;
+  place-items: center;
+  font-weight: 800;
+  background: rgba(255, 255, 255, 0.08);
+}
+
+.yt-live-list,
+.yt-finished-list {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.yt-live-item,
+.yt-finished-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 16px;
+  padding: 16px;
+  border-radius: 18px;
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.yt-live-item h4,
+.yt-finished-item h4 {
+  margin: 0 0 6px;
+  font-size: 1rem;
+}
+
+.yt-live-item p,
+.yt-finished-item p {
+  margin: 0 0 4px;
+  color: rgba(255, 255, 255, 0.82);
+  line-height: 1.6;
+}
+
+.yt-live-item small,
+.yt-finished-item small {
+  color: rgba(255, 255, 255, 0.62);
+}
+
+.yt-live-item-current {
+  border-color: rgba(0, 230, 118, 0.3);
+}
+
+.yt-live-item-upcoming {
+  border-color: rgba(0, 176, 255, 0.28);
+}
+
+.yt-status-badge {
+  white-space: nowrap;
+  padding: 8px 12px;
+  border-radius: 999px;
+  font-size: 0.8rem;
+  font-weight: 800;
+  color: #fff;
+}
+
+.yt-status-current {
+  background: linear-gradient(135deg, #00c853, #00e676);
+}
+
+.yt-status-upcoming {
+  background: linear-gradient(135deg, #0091ea, #00b0ff);
+}
+
+.yt-status-finished {
+  background: linear-gradient(135deg, #ff7043, #ff8a80);
+}
+
+.yt-finished-wrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+.yt-finished-header h3 {
+  margin-bottom: 8px;
+}
+
+.yt-finished-header p {
+  color: rgba(255, 255, 255, 0.72);
+}
+
+.yt-empty-text {
+  color: rgba(255, 255, 255, 0.65);
+  margin: 0;
+}
+
+@media (max-width: 1100px) {
+  .yt-calendar-grid {
+    grid-template-columns: repeat(7, minmax(0, 1fr));
+  }
+
+  .yt-live-lists {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 768px) {
+  .yt-calendar-wrap {
+    padding: 18px;
+  }
+
+  .yt-calendar-weekdays span {
+    font-size: 0.82rem;
+  }
+
+  .yt-calendar-event-title {
+    font-size: 0.66rem;
+  }
+
+  .yt-calendar-event-time,
+  .yt-calendar-event-place {
+    font-size: 0.58rem;
+  }
+
+  .yt-calendar-mini-tag {
+    font-size: 0.64rem;
+    padding: 5px 6px;
+  }
+
+  .yt-live-item,
+  .yt-finished-item {
+    flex-direction: column;
+  }
+  @media (max-width: 1100px) {
+    .yt-albums-grid {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+
+  @media (max-width: 768px) {
+    .yt-albums-grid {
+      grid-template-columns: 1fr;
+    }
+
+    .yt-album-image {
+      height: 200px;
+    }
+  }
+}
+.yt-albums-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 22px;
+}
+
+.yt-album-card {
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 26px;
+  overflow: hidden;
+  cursor: pointer;
+  transition: transform 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.yt-album-card:hover {
+  transform: translateY(-8px);
+  border-color: rgba(134, 247, 255, 0.28);
+  box-shadow: 0 20px 38px rgba(0, 0, 0, 0.18);
+}
+
+.yt-album-image {
+  height: 220px;
+  overflow: hidden;
+}
+
+.yt-album-image img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.45s ease;
+}
+
+.yt-album-card:hover .yt-album-image img {
+  transform: scale(1.08);
+}
+
+.yt-album-content {
+  padding: 20px;
+}
+
+.yt-album-content h3 {
+  margin-bottom: 10px;
+  font-size: 1.15rem;
+}
+
+.yt-album-content p {
+  color: rgba(255, 255, 255, 0.76);
+  line-height: 1.7;
+  margin-bottom: 14px;
+}
+
+.yt-album-content span {
+  display: inline-block;
+  padding: 8px 12px;
+  border-radius: 999px;
+  background: rgba(0, 229, 255, 0.12);
+  color: #86f7ff;
+  font-weight: 800;
+  font-size: 0.85rem;
+}
+
+.yt-selected-album {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.yt-selected-album-top {
+  display: flex;
+  justify-content: space-between;
+  gap: 20px;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.yt-selected-album-top h3 {
+  font-size: 1.5rem;
+  margin-bottom: 8px;
+}
+
+.yt-selected-album-top p {
+  color: rgba(255, 255, 255, 0.76);
+  line-height: 1.7;
+}
+
+.yt-back-albums-btn {
+  border: none;
+  cursor: pointer;
+  padding: 12px 18px;
+  border-radius: 14px;
+  font-weight: 800;
+  color: #fff;
+  background: linear-gradient(135deg, #ff2d95, #7b61ff);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.yt-back-albums-btn:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 14px 28px rgba(123, 97, 255, 0.25);
+}
