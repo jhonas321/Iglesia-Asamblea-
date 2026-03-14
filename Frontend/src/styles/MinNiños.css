@@ -21,6 +21,7 @@
     linear-gradient(180deg, #fffdf6 0%, #fff9ef 35%, #ffffff 100%);
   color: #1f2937;
   overflow: hidden;
+  min-height: 100vh;
 }
 
 .minninos-container {
@@ -30,7 +31,7 @@
 
 .minninos-hero {
   position: relative;
-  padding: 110px 0 70px;
+  padding: 110px 0 46px;
   overflow: hidden;
 }
 
@@ -94,7 +95,7 @@
   position: relative;
   z-index: 2;
   display: grid;
-  grid-template-columns: 1.1fr 0.9fr;
+  grid-template-columns: 1.08fr 0.92fr;
   align-items: center;
   gap: 42px;
 }
@@ -126,47 +127,7 @@
   line-height: 1.8;
   color: #4b5563;
   max-width: 640px;
-  margin-bottom: 28px;
-}
-
-.minninos-hero-buttons {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 14px;
-}
-
-.btn-primary-kids,
-.btn-secondary-kids {
-  text-decoration: none;
-  padding: 14px 24px;
-  border-radius: 18px;
-  font-weight: 800;
-  transition: all 0.3s ease;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.btn-primary-kids {
-  background: linear-gradient(135deg, #ffb703, #ff7b54);
-  color: #fff;
-  box-shadow: 0 14px 30px rgba(255, 123, 84, 0.28);
-}
-
-.btn-primary-kids:hover {
-  transform: translateY(-4px) scale(1.02);
-}
-
-.btn-secondary-kids {
-  background: #ffffff;
-  color: #17324d;
-  border: 2px solid #ffe29a;
-  box-shadow: 0 12px 26px rgba(0, 0, 0, 0.06);
-}
-
-.btn-secondary-kids:hover {
-  transform: translateY(-4px);
-  border-color: #ffc93c;
+  margin-bottom: 0;
 }
 
 .minninos-hero-image {
@@ -175,85 +136,74 @@
 
 .minninos-hero-image img {
   width: 100%;
-  height: 520px;
+  height: 500px;
   object-fit: cover;
   border-radius: 34px;
   box-shadow: 0 28px 60px rgba(23, 50, 77, 0.16);
   border: 6px solid rgba(255, 255, 255, 0.7);
 }
 
-.minninos-highlights {
-  padding: 10px 0 70px;
+.minninos-tabs-section {
+  padding: 8px 0 80px;
 }
 
-.minninos-highlights-grid {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 22px;
+.minninos-tabs-nav {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-bottom: 24px;
 }
 
-.highlight-card {
-  background: rgba(255, 255, 255, 0.82);
-  backdrop-filter: blur(8px);
-  border-radius: 28px;
-  padding: 28px 24px;
-  box-shadow: 0 18px 40px rgba(0, 0, 0, 0.07);
-  border: 1px solid rgba(255, 214, 102, 0.4);
-  transition: transform 0.3s ease;
-}
-
-.highlight-card:hover {
-  transform: translateY(-8px);
-}
-
-.highlight-icon {
-  width: 62px;
-  height: 62px;
-  border-radius: 18px;
-  display: grid;
-  place-items: center;
-  font-size: 1.45rem;
-  color: #fff;
-  background: linear-gradient(135deg, #ffb703, #ff7b54, #4ecdc4);
-  margin-bottom: 16px;
-}
-
-.highlight-card h3 {
-  font-size: 1.2rem;
+.minninos-tab-btn {
+  border: 1px solid rgba(255, 202, 40, 0.35);
+  background: rgba(255, 255, 255, 0.84);
   color: #17324d;
-  margin-bottom: 10px;
+  padding: 13px 22px;
+  border-radius: 18px;
+  font-weight: 800;
+  font-size: 0.98rem;
+  cursor: pointer;
+  transition: all 0.28s ease;
+  box-shadow: 0 10px 22px rgba(0, 0, 0, 0.05);
 }
 
-.highlight-card p {
-  color: #5b6472;
-  line-height: 1.7;
+.minninos-tab-btn:hover {
+  transform: translateY(-3px);
+  border-color: #ffb703;
 }
 
-.minninos-about,
-.minninos-activities,
-.minninos-schedule,
-.minninos-gallery,
-.minninos-editable-preview,
-.minninos-contact {
-  padding: 80px 0;
+.minninos-tab-btn.active {
+  background: linear-gradient(135deg, #ffb703, #ff7b54);
+  color: #fff;
+  border-color: transparent;
+  box-shadow: 0 14px 30px rgba(255, 123, 84, 0.26);
 }
 
-.minninos-about-grid {
-  display: grid;
-  grid-template-columns: 0.95fr 1.05fr;
-  gap: 46px;
-  align-items: center;
+.minninos-tab-panel {
+  background: rgba(255, 255, 255, 0.8);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 214, 102, 0.28);
+  border-radius: 34px;
+  padding: 30px;
+  box-shadow: 0 22px 48px rgba(15, 23, 42, 0.08);
 }
 
-.minninos-about-image img {
-  width: 100%;
-  height: 520px;
-  object-fit: cover;
-  border-radius: 32px;
-  box-shadow: 0 24px 50px rgba(0, 0, 0, 0.1);
+.tab-fade {
+  animation: tabFade 0.3s ease;
 }
 
-.section-chip {
+@keyframes tabFade {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.tab-chip {
   display: inline-block;
   padding: 8px 16px;
   border-radius: 999px;
@@ -264,20 +214,50 @@
   margin-bottom: 18px;
 }
 
-.minninos-about-content h2,
-.section-heading-center h2,
-.minninos-contact-box h2 {
+.tab-main-title {
   font-size: clamp(2rem, 4vw, 3rem);
   color: #17324d;
-  margin-bottom: 18px;
-  line-height: 1.15;
+  margin-bottom: 26px;
+  line-height: 1.14;
 }
 
-.minninos-about-content p,
-.section-heading-center p {
+.about-tab-grid {
+  display: grid;
+  grid-template-columns: 1.1fr 0.9fr;
+  gap: 22px;
+}
+
+.about-main-card,
+.about-side-card,
+.contact-tab-card {
+  background: linear-gradient(180deg, #ffffff, #fffaf2);
+  border-radius: 28px;
+  padding: 28px 24px;
+  border: 1px solid rgba(255, 202, 40, 0.2);
+  box-shadow: 0 16px 36px rgba(0, 0, 0, 0.05);
+}
+
+.about-main-card p,
+.about-side-card li,
+.contact-text p {
   color: #5b6472;
-  line-height: 1.8;
+  line-height: 1.85;
   font-size: 1.02rem;
+}
+
+.about-side-card h3 {
+  color: #17324d;
+  font-size: 1.3rem;
+  margin-bottom: 18px;
+}
+
+.about-side-card ul {
+  margin: 0;
+  padding-left: 20px;
+}
+
+.about-side-card li {
+  margin-bottom: 12px;
 }
 
 .verse-box {
@@ -295,12 +275,6 @@
   color: #ff7b54;
   font-size: 1.2rem;
   margin-top: 4px;
-}
-
-.section-heading-center {
-  text-align: center;
-  max-width: 760px;
-  margin: 0 auto 42px;
 }
 
 .activities-grid {
@@ -344,14 +318,6 @@
 .activity-card p {
   color: #5b6472;
   line-height: 1.75;
-}
-
-.minninos-schedule {
-  background: linear-gradient(
-    180deg,
-    rgba(255, 244, 199, 0.35),
-    rgba(255, 255, 255, 0.6)
-  );
 }
 
 .schedule-grid {
@@ -470,30 +436,15 @@
   line-height: 1.7;
 }
 
-.minninos-contact-box {
-  background: linear-gradient(135deg, #17324d, #21486d);
-  color: #fff;
-  border-radius: 34px;
-  padding: 40px;
+.contact-tab-card {
   display: grid;
-  grid-template-columns: 1.1fr 0.9fr;
-  gap: 30px;
-  align-items: center;
-  box-shadow: 0 24px 50px rgba(23, 50, 77, 0.22);
+  grid-template-columns: 1fr 0.9fr;
+  gap: 22px;
+  background: linear-gradient(135deg, #17324d, #21486d);
 }
 
-.minninos-contact-box .section-chip {
-  background: rgba(255, 255, 255, 0.14);
-  color: #ffe29a;
-}
-
-.minninos-contact-box h2 {
-  color: #ffffff;
-}
-
-.minninos-contact-box p {
-  color: rgba(255, 255, 255, 0.88);
-  line-height: 1.8;
+.contact-text p {
+  color: rgba(255, 255, 255, 0.9);
 }
 
 .contact-details {
@@ -509,12 +460,14 @@
   gap: 12px;
   margin-bottom: 12px;
   font-weight: 600;
+  color: #ffffff;
+  line-height: 1.7;
 }
 
 @media (max-width: 1100px) {
   .minninos-hero-content,
-  .minninos-about-grid,
-  .minninos-contact-box {
+  .about-tab-grid,
+  .contact-tab-card {
     grid-template-columns: 1fr;
   }
 
@@ -523,8 +476,7 @@
   }
 
   .schedule-grid,
-  .editable-grid,
-  .minninos-highlights-grid {
+  .editable-grid {
     grid-template-columns: 1fr;
   }
 
@@ -538,15 +490,14 @@
     grid-row: auto;
   }
 
-  .minninos-hero-image img,
-  .minninos-about-image img {
+  .minninos-hero-image img {
     height: 420px;
   }
 }
 
 @media (max-width: 768px) {
   .minninos-hero {
-    padding: 90px 0 50px;
+    padding: 90px 0 34px;
   }
 
   .minninos-hero-text h1 {
@@ -557,13 +508,20 @@
     font-size: 1rem;
   }
 
-  .minninos-hero-buttons {
-    flex-direction: column;
+  .minninos-tabs-nav {
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    padding-bottom: 4px;
   }
 
-  .btn-primary-kids,
-  .btn-secondary-kids {
-    width: 100%;
+  .minninos-tab-btn {
+    white-space: nowrap;
+    flex-shrink: 0;
+  }
+
+  .minninos-tab-panel {
+    padding: 22px 16px;
+    border-radius: 26px;
   }
 
   .activities-grid {
@@ -582,21 +540,11 @@
     height: 240px;
   }
 
-  .minninos-hero-image img,
-  .minninos-about-image img {
+  .minninos-hero-image img {
     height: 320px;
   }
 
-  .minninos-about,
-  .minninos-activities,
-  .minninos-schedule,
-  .minninos-gallery,
-  .minninos-editable-preview,
-  .minninos-contact {
-    padding: 60px 0;
-  }
-
-  .minninos-contact-box {
-    padding: 28px 20px;
+  .tab-main-title {
+    font-size: 2rem;
   }
 }

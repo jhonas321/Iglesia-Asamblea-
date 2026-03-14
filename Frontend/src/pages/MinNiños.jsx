@@ -1,3 +1,4 @@
+import { useState } from "react";
 import "../styles/MinNiños.css";
 import {
   FaChildren,
@@ -16,6 +17,8 @@ import {
 } from "react-icons/fa6";
 
 function MinNiños() {
+  const [activeTab, setActiveTab] = useState("about");
+
   const ministryData = {
     title: "Ministerio de Niños",
     subtitle:
@@ -93,6 +96,164 @@ function MinNiños() {
     ],
   };
 
+  const tabs = [
+    { id: "about", label: "Acerca de" },
+    { id: "activities", label: "Actividades" },
+    { id: "schedule", label: "Horario" },
+    { id: "gallery", label: "Galería" },
+    { id: "editable", label: "Editable" },
+    { id: "contact", label: "Contacto" },
+  ];
+
+  const renderTabContent = () => {
+    switch (activeTab) {
+      case "about":
+        return (
+          <div className="tab-fade">
+            <div className="tab-chip">Acerca de</div>
+            <h2 className="tab-main-title">
+              Un ministerio lleno de amor, alegría y aprendizaje
+            </h2>
+
+            <div className="about-tab-grid">
+              <div className="about-main-card">
+                <p>{ministryData.description}</p>
+
+                <div className="verse-box">
+                  <FaHeart className="verse-icon" />
+                  <p>{ministryData.verse}</p>
+                </div>
+              </div>
+
+              <div className="about-side-card">
+                <h3>Lo que encontrarás aquí</h3>
+                <ul>
+                  <li>Ambiente seguro y lleno de amor</li>
+                  <li>Enseñanza bíblica adaptada a niños</li>
+                  <li>Juegos, cantos y dinámicas</li>
+                  <li>Espacios creativos y participativos</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        );
+
+      case "activities":
+        return (
+          <div className="tab-fade">
+            <div className="tab-chip">Actividades</div>
+            <h2 className="tab-main-title">
+              ¿Qué hacemos en el Ministerio de Niños?
+            </h2>
+
+            <div className="activities-grid">
+              {ministryData.activities.map((item, index) => (
+                <article className="activity-card" key={index}>
+                  <div className="activity-icon">{item.icon}</div>
+                  <h3>{item.title}</h3>
+                  <p>{item.text}</p>
+                </article>
+              ))}
+            </div>
+          </div>
+        );
+
+      case "schedule":
+        return (
+          <div className="tab-fade">
+            <div className="tab-chip">Horario</div>
+            <h2 className="tab-main-title">Días y encuentros</h2>
+
+            <div className="schedule-grid">
+              {ministryData.schedules.map((item, index) => (
+                <article className="schedule-card" key={index}>
+                  <div className="schedule-top">
+                    <FaCalendarDays />
+                    <h3>{item.day}</h3>
+                  </div>
+
+                  <div className="schedule-info">
+                    <p>
+                      <FaClock /> {item.hour}
+                    </p>
+                    <p>{item.activity}</p>
+                  </div>
+                </article>
+              ))}
+            </div>
+          </div>
+        );
+
+      case "gallery":
+        return (
+          <div className="tab-fade">
+            <div className="tab-chip">Galería</div>
+            <h2 className="tab-main-title">Momentos especiales</h2>
+
+            <div className="gallery-grid">
+              {ministryData.gallery.map((image, index) => (
+                <div
+                  className={`gallery-item gallery-item-${index + 1}`}
+                  key={index}
+                >
+                  <img src={image} alt={`Galería ${index + 1}`} />
+                </div>
+              ))}
+            </div>
+          </div>
+        );
+
+      case "editable":
+        return (
+          <div className="tab-fade">
+            <div className="tab-chip">Editable</div>
+            <h2 className="tab-main-title">
+              Estructura pensada para administración
+            </h2>
+
+            <div className="editable-grid">
+              {ministryData.editableBlocks.map((item, index) => (
+                <article className="editable-card" key={index}>
+                  <div className="editable-icon">{item.icon}</div>
+                  <h3>{item.title}</h3>
+                  <p>{item.text}</p>
+                </article>
+              ))}
+            </div>
+          </div>
+        );
+
+      case "contact":
+        return (
+          <div className="tab-fade">
+            <div className="tab-chip">Contacto</div>
+            <h2 className="tab-main-title">¿Deseas que tu niño forme parte?</h2>
+
+            <div className="contact-tab-card">
+              <div className="contact-text">
+                <p>
+                  Estamos listos para recibir a cada pequeño con mucho amor,
+                  cuidado y enseñanza.
+                </p>
+              </div>
+
+              <div className="contact-details">
+                <p>
+                  <FaLocationDot /> {ministryData.location}
+                </p>
+                <p>
+                  <FaPhone /> {ministryData.contactPhone}
+                </p>
+              </div>
+            </div>
+          </div>
+        );
+
+      default:
+        return null;
+    }
+  };
+
   return (
     <main className="minninos-page">
       <section className="minninos-hero">
@@ -110,15 +271,6 @@ function MinNiños() {
 
             <h1>{ministryData.title}</h1>
             <p>{ministryData.subtitle}</p>
-
-            <div className="minninos-hero-buttons">
-              <a href="#actividades" className="btn-primary-kids">
-                Ver actividades
-              </a>
-              <a href="#galeria" className="btn-secondary-kids">
-                Explorar galería
-              </a>
-            </div>
           </div>
 
           <div className="minninos-hero-image">
@@ -127,165 +279,23 @@ function MinNiños() {
         </div>
       </section>
 
-      <section className="minninos-highlights">
-        <div className="minninos-container minninos-highlights-grid">
-          <article className="highlight-card">
-            <div className="highlight-icon">
-              <FaHeart />
-            </div>
-            <h3>Ambiente seguro</h3>
-            <p>Un lugar lleno de amor, cuidado y atención para cada niño.</p>
-          </article>
-
-          <article className="highlight-card">
-            <div className="highlight-icon">
-              <FaBookBible />
-            </div>
-            <h3>Aprendizaje bíblico</h3>
-            <p>Lecciones dinámicas para formar valores y fortalecer la fe.</p>
-          </article>
-
-          <article className="highlight-card">
-            <div className="highlight-icon">
-              <FaPuzzlePiece />
-            </div>
-            <h3>Diversión con propósito</h3>
-            <p>Juegos, cantos y actividades para aprender disfrutando.</p>
-          </article>
-        </div>
-      </section>
-
-      <section className="minninos-about">
-        <div className="minninos-container minninos-about-grid">
-          <div className="minninos-about-image">
-            <img src={ministryData.aboutImage} alt="Niños en el ministerio" />
-          </div>
-
-          <div className="minninos-about-content">
-            <span className="section-chip">Sobre este ministerio</span>
-            <h2>Creciendo con alegría, fe y amor</h2>
-            <p>{ministryData.description}</p>
-
-            <div className="verse-box">
-              <FaHeart className="verse-icon" />
-              <p>{ministryData.verse}</p>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      <section className="minninos-activities" id="actividades">
+      <section className="minninos-tabs-section">
         <div className="minninos-container">
-          <div className="section-heading-center">
-            <span className="section-chip">Actividades</span>
-            <h2>¿Qué hacemos en el Ministerio de Niños?</h2>
-            {/* <p>
-              Estas tarjetas pueden convertirse a futuro en contenido dinámico
-              desde el panel de administración.
-            </p> */}
-          </div>
-
-          <div className="activities-grid">
-            {ministryData.activities.map((item, index) => (
-              <article className="activity-card" key={index}>
-                <div className="activity-icon">{item.icon}</div>
-                <h3>{item.title}</h3>
-                <p>{item.text}</p>
-              </article>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      <section className="minninos-schedule">
-        <div className="minninos-container">
-          <div className="section-heading-center">
-            <span className="section-chip">Horarios</span>
-            <h2>Días y encuentros</h2>
-          </div>
-
-          <div className="schedule-grid">
-            {ministryData.schedules.map((item, index) => (
-              <article className="schedule-card" key={index}>
-                <div className="schedule-top">
-                  <FaCalendarDays />
-                  <h3>{item.day}</h3>
-                </div>
-
-                <div className="schedule-info">
-                  <p>
-                    <FaClock /> {item.hour}
-                  </p>
-                  <p>{item.activity}</p>
-                </div>
-              </article>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      <section className="minninos-gallery" id="galeria">
-        <div className="minninos-container">
-          <div className="section-heading-center">
-            <span className="section-chip">Galería</span>
-            <h2>Momentos especiales</h2>
-            <p>
-              Esta sección a futuro puede cargar imágenes desde la base de datos
-              o desde el panel admin.
-            </p>
-          </div>
-
-          <div className="gallery-grid">
-            {ministryData.gallery.map((image, index) => (
-              <div
-                className={`gallery-item gallery-item-${index + 1}`}
-                key={index}
+          <div className="minninos-tabs-nav">
+            {tabs.map((tab) => (
+              <button
+                key={tab.id}
+                className={`minninos-tab-btn ${
+                  activeTab === tab.id ? "active" : ""
+                }`}
+                onClick={() => setActiveTab(tab.id)}
               >
-                <img src={image} alt={`Galería ${index + 1}`} />
-              </div>
+                {tab.label}
+              </button>
             ))}
           </div>
-        </div>
-      </section>
 
-      <section className="minninos-editable-preview">
-        <div className="minninos-container">
-          <div className="section-heading-center">
-            <span className="section-chip">Base editable a futuro</span>
-            <h2>Estructura pensada para administración</h2>
-          </div>
-
-          <div className="editable-grid">
-            {ministryData.editableBlocks.map((item, index) => (
-              <article className="editable-card" key={index}>
-                <div className="editable-icon">{item.icon}</div>
-                <h3>{item.title}</h3>
-                <p>{item.text}</p>
-              </article>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      <section className="minninos-contact">
-        <div className="minninos-container minninos-contact-box">
-          <div>
-            <span className="section-chip">Contacto</span>
-            <h2>¿Deseas que tu niño forme parte?</h2>
-            <p>
-              Estamos listos para recibir a cada pequeño con mucho amor, cuidado
-              y enseñanza.
-            </p>
-          </div>
-
-          <div className="contact-details">
-            <p>
-              <FaLocationDot /> {ministryData.location}
-            </p>
-            <p>
-              <FaPhone /> {ministryData.contactPhone}
-            </p>
-          </div>
+          <div className="minninos-tab-panel">{renderTabContent()}</div>
         </div>
       </section>
     </main>

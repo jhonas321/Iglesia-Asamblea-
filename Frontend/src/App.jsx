@@ -8,6 +8,7 @@ import WhatsAppButton from "./components/WhatsAppButton";
 import Inicio from "./Pages/Inicio";
 import MinNiños from "./pages/MinNiños";
 import MinJovenes from "./pages/MinJovenes";
+import MinAlabanza from "./pages/MinAlabanza";
 
 function App() {
   return (
@@ -18,6 +19,7 @@ function App() {
         <Route path="/" element={<Inicio />} />
         <Route path="/ministerio-ninos" element={<MinNiños />} />
         <Route path="/ministerio-jovenes" element={<MinJovenes />} />
+        <Route path="/ministerio-alabanza" element={<MinAlabanza />} />
       </Routes>
 
       <Footer />
