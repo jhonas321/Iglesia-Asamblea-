@@ -1,86 +1,19 @@
-import { useEffect, useMemo, useState } from "react";
+import { useState } from "react";
 import "../styles/sobre-nosotros.css";
 
-import img1 from "/images/img1.jfif";
-import img2 from "/images/img2.jfif";
-import img3 from "/images/descarga.jfif";
+import img1 from "/images/117397.jpg";
+import img2 from "/images/img1.jfif";
+import img3 from "/images/img2.jfif";
+import img4 from "/images/descarga.jfif";
 
 function SobreNosotros() {
-  const aboutImages = [img1, img2, img3];
 
-  const sliderImages = useMemo(() => {
-    if (aboutImages.length === 0) return [];
-    return [...aboutImages, aboutImages[0]];
-  }, [aboutImages]);
+  const images = [img1, img2, img3, img4];
 
-  const [currentIndex, setCurrentIndex] = useState(0);
-  const [isPaused, setIsPaused] = useState(false);
-  const [noTransition, setNoTransition] = useState(false);
-
-  useEffect(() => {
-    if (isPaused || aboutImages.length <= 1) return;
-
-    const interval = setInterval(() => {
-      setCurrentIndex((prev) => prev + 1);
-    }, 4000);
-
-    return () => clearInterval(interval);
-  }, [isPaused, aboutImages.length]);
-
-  useEffect(() => {
-    if (aboutImages.length <= 1) return;
-
-    if (currentIndex === aboutImages.length) {
-      const timeout = setTimeout(() => {
-        setNoTransition(true);
-        setCurrentIndex(0);
-      }, 800);
-
-      return () => clearTimeout(timeout);
-    }
-  }, [currentIndex, aboutImages.length]);
-
-  useEffect(() => {
-    if (!noTransition) return;
-
-    const frame = requestAnimationFrame(() => {
-      requestAnimationFrame(() => {
-        setNoTransition(false);
-      });
-    });
-
-    return () => cancelAnimationFrame(frame);
-  }, [noTransition]);
-
-  const goToPrev = () => {
-    if (aboutImages.length <= 1) return;
-
-    if (currentIndex === 0) {
-      setNoTransition(true);
-      setCurrentIndex(aboutImages.length - 1);
-
-      requestAnimationFrame(() => {
-        requestAnimationFrame(() => {
-          setNoTransition(false);
-        });
-      });
-    } else {
-      setCurrentIndex((prev) => prev - 1);
-    }
-  };
-
-  const goToNext = () => {
-    if (aboutImages.length <= 1) return;
-    setCurrentIndex((prev) => prev + 1);
-  };
-
-  const activeDotIndex =
-    currentIndex === aboutImages.length ? 0 : currentIndex;
+  const [activeImage, setActiveImage] = useState(0);
 
   return (
     <section id="nosotros" className="light-section about-section">
-      <div className="section-bg-decoration decoration-left"></div>
-      <div className="section-bg-decoration decoration-right"></div>
 
       <div className="section-title">
         <h2>Sobre Nosotros</h2>
@@ -91,55 +24,25 @@ function SobreNosotros() {
       </div>
 
       <div className="about">
-        <div
-          className="about-slider"
-          onMouseEnter={() => setIsPaused(true)}
-          onMouseLeave={() => setIsPaused(false)}
-        >
-          <div
-            className={`about-track ${noTransition ? "no-transition" : ""}`}
-            style={{ transform: `translateX(-${currentIndex * 100}%)` }}
-          >
-            {sliderImages.map((image, index) => (
-              <div className="about-slide" key={index}>
-                <img src={image} alt={`Imagen iglesia ${index + 1}`} />
-              </div>
-            ))}
+
+        <div className="about-gallery">
+
+          <div className="about-main-image">
+            <img src={images[activeImage]} alt="Iglesia" />
           </div>
 
-          {aboutImages.length > 1 && (
-            <>
-              <button
-                className="about-arrow about-arrow-left"
-                onClick={goToPrev}
-                aria-label="Imagen anterior"
-                type="button"
-              >
-                ‹
-              </button>
-
-              <button
-                className="about-arrow about-arrow-right"
-                onClick={goToNext}
-                aria-label="Imagen siguiente"
-                type="button"
-              >
-                ›
-              </button>
-            </>
-          )}
-
-          <div className="about-dots">
-            {aboutImages.map((_, index) => (
-              <button
+          <div className="about-thumbnails">
+            {images.map((img, index) => (
+              <img
                 key={index}
-                type="button"
-                className={`about-dot ${activeDotIndex === index ? "active" : ""}`}
-                onClick={() => setCurrentIndex(index)}
-                aria-label={`Ir a la imagen ${index + 1}`}
-              ></button>
+                src={img}
+                alt="preview"
+                className={activeImage === index ? "active" : ""}
+                onClick={() => setActiveImage(index)}
+              />
             ))}
           </div>
+
         </div>
 
         <div className="about-text">
@@ -162,7 +65,9 @@ function SobreNosotros() {
             cálido, espiritual y lleno de propósito.
           </p>
         </div>
+
       </div>
+
     </section>
   );
 }
