@@ -2,9 +2,9 @@ import { useEffect, useState } from "react";
 import "../styles/heroe.css";
 
 import hero1 from "/images/imagen1.jfif";
-import hero2 from "/images/imagen1.jfif";
-import hero3 from "/images/imagen1.jfif";
-import hero4 from "/images/imagen1.jfif";
+import hero2 from "/images/imagen2.jfif";
+import hero3 from "/images/imagen3.jfif";
+import hero4 from "/images/imagen4.jfif";
 
 function Heroe() {
   const heroImages = [hero1, hero2, hero3, hero4];

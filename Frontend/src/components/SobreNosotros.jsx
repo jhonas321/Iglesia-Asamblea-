@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import "../styles/sobre-nosotros.css";
 
 import img1 from "/images/117397.jpg";
@@ -7,14 +8,12 @@ import img3 from "/images/img2.jfif";
 import img4 from "/images/descarga.jfif";
 
 function SobreNosotros() {
-
   const images = [img1, img2, img3, img4];
-
   const [activeImage, setActiveImage] = useState(0);
+  const navigate = useNavigate();
 
   return (
     <section id="nosotros" className="light-section about-section">
-
       <div className="section-title">
         <h2>Sobre Nosotros</h2>
         <p>
@@ -24,9 +23,7 @@ function SobreNosotros() {
       </div>
 
       <div className="about">
-
         <div className="about-gallery">
-
           <div className="about-main-image">
             <img src={images[activeImage]} alt="Iglesia" />
           </div>
@@ -36,13 +33,12 @@ function SobreNosotros() {
               <img
                 key={index}
                 src={img}
-                alt="preview"
+                alt={`preview-${index + 1}`}
                 className={activeImage === index ? "active" : ""}
                 onClick={() => setActiveImage(index)}
               />
             ))}
           </div>
-
         </div>
 
         <div className="about-text">
@@ -65,9 +61,27 @@ function SobreNosotros() {
             cálido, espiritual y lleno de propósito.
           </p>
         </div>
-
       </div>
 
+      {/* 👇 SECCIÓN ORGANIGRAMA */}
+      <div id="organigrama" className="organigrama-section">
+        <div className="section-title">
+          <h3>Organigrama General</h3>
+          <p>
+            Conoce la estructura de liderazgo y servicio de nuestra iglesia en
+            una página dedicada.
+          </p>
+        </div>
+
+        <div className="organigrama-preview">
+          <button
+            className="btn-ver-organigrama"
+            onClick={() => navigate("/organigrama")}
+          >
+            Ver organigrama completo
+          </button>
+        </div>
+      </div>
     </section>
   );
 }

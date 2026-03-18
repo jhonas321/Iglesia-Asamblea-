@@ -31,6 +31,11 @@ function HorariosSeccion() {
               <td>19:00</td>
             </tr>
             <tr>
+              <td>Viernes</td>
+              <td>Culto de Enseñanza</td>
+              <td>19:30</td>
+            </tr>
+            <tr>
               <td>Sábado</td>
               <td>Reunión de Jóvenes</td>
               <td>19:30</td>

@@ -234,3 +234,8 @@
       font-size: 0.95rem;
     }
   }
+
+
+  section {
+    scroll-margin-top: 110px;
+  }

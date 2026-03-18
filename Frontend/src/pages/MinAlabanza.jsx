@@ -1,11 +1,7 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import "../styles/MinAlabanza.css";
 import {
   FaMusic,
-  FaGuitar,
-  FaMicrophoneLines,
-  FaDrum,
-  FaHeadphones,
   FaClock,
   FaLocationDot,
   FaCalendarDays,
@@ -15,9 +11,59 @@ import {
   FaPlay,
   FaChevronLeft,
   FaChevronRight,
+  FaShieldHeart,
 } from "react-icons/fa6";
 
 function MinAlabanza() {
+  const [activeTab, setActiveTab] = useState("acerca");
+  const [heroIndex, setHeroIndex] = useState(0);
+
+  const tabsRef = useRef(null);
+  const isDown = useRef(false);
+  const isDragging = useRef(false);
+  const startX = useRef(0);
+  const scrollLeft = useRef(0);
+
+  const handleMouseDown = (e) => {
+    if (!tabsRef.current) return;
+    isDown.current = true;
+    isDragging.current = false;
+    startX.current = e.pageX - tabsRef.current.offsetLeft;
+    scrollLeft.current = tabsRef.current.scrollLeft;
+  };
+
+  const handleMouseLeave = () => {
+    isDown.current = false;
+  };
+
+  const handleMouseUp = () => {
+    isDown.current = false;
+
+    setTimeout(() => {
+      isDragging.current = false;
+    }, 0);
+  };
+
+  const handleMouseMove = (e) => {
+    if (!isDown.current || !tabsRef.current) return;
+
+    e.preventDefault();
+
+    const x = e.pageX - tabsRef.current.offsetLeft;
+    const walk = x - startX.current;
+
+    if (Math.abs(walk) > 6) {
+      isDragging.current = true;
+    }
+
+    tabsRef.current.scrollLeft = scrollLeft.current - walk * 1.2;
+  };
+
+  const handleTabClick = (tabKey) => {
+    if (isDragging.current) return;
+    setActiveTab(tabKey);
+  };
+
   const ministryData = {
     badge: "Adoración con propósito",
     title: "Ministerio de Alabanza",
@@ -79,6 +125,32 @@ function MinAlabanza() {
           },
         ],
       },
+      reglamentos: {
+        label: "Reglamentos",
+        title: "Normas para servir con orden, unidad y reverencia",
+        items: [
+          {
+            icon: <FaShieldHeart />,
+            title: "Puntualidad y compromiso",
+            text: "Cada integrante debe asistir puntualmente a ensayos, cultos y actividades programadas, mostrando responsabilidad en su servicio.",
+          },
+          {
+            icon: <FaShieldHeart />,
+            title: "Respeto y unidad",
+            text: "Se debe mantener una actitud de respeto hacia líderes, compañeros y congregación, fomentando la armonía dentro del equipo.",
+          },
+          {
+            icon: <FaShieldHeart />,
+            title: "Preparación espiritual y musical",
+            text: "Los miembros deben cultivar su vida espiritual y prepararse musicalmente para ministrar con excelencia.",
+          },
+          {
+            icon: <FaShieldHeart />,
+            title: "Cuidado de instrumentos y espacios",
+            text: "Todo integrante debe cuidar los instrumentos, equipos de sonido, micrófonos y áreas de ensayo o ministración.",
+          },
+        ],
+      },
       galeria: {
         label: "Galería",
         images: [
@@ -114,24 +186,28 @@ function MinAlabanza() {
         label: "Equipo",
         members: [
           {
-            role: "Dirección musical",
-            icon: <FaHeadphones />,
-            text: "Coordina repertorio, ensayos y dirección general.",
+            name: "Daniel Rocha",
+            role: "Director musical",
+            image:
+              "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=700&q=80",
           },
           {
-            role: "Vocalistas",
-            icon: <FaMicrophoneLines />,
-            text: "Ministran mediante canto con preparación espiritual y técnica.",
+            name: "Esther Molina",
+            role: "Vocalista principal",
+            image:
+              "https://images.unsplash.com/photo-1544005313-94ddf0286df2?auto=format&fit=crop&w=700&q=80",
           },
           {
-            role: "Instrumentistas",
-            icon: <FaGuitar />,
-            text: "Acompañan la adoración con excelencia y sensibilidad.",
+            name: "Samuel Vargas",
+            role: "Instrumentista",
+            image:
+              "https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?auto=format&fit=crop&w=700&q=80",
           },
           {
+            name: "Carla Méndez",
             role: "Percusión y ritmo",
-            icon: <FaDrum />,
-            text: "Aportan fuerza, dinamismo y armonía al equipo.",
+            image:
+              "https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&w=700&q=80",
           },
         ],
       },
@@ -144,8 +220,6 @@ function MinAlabanza() {
   };
 
   const tabKeys = Object.keys(ministryData.tabs);
-  const [activeTab, setActiveTab] = useState("acerca");
-  const [heroIndex, setHeroIndex] = useState(0);
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -218,6 +292,27 @@ function MinAlabanza() {
       );
     }
 
+    if (activeTab === "reglamentos") {
+      return (
+        <div className="maalabanza-regulations-wrap">
+          <div className="maalabanza-regulations-header">
+            <span className="maalabanza-section-badge">{current.label}</span>
+            <h2>{current.title}</h2>
+          </div>
+
+          <div className="maalabanza-regulations-grid">
+            {current.items.map((item, index) => (
+              <div className="maalabanza-regulation-card" key={index}>
+                <div className="maalabanza-regulation-icon">{item.icon}</div>
+                <h3>{item.title}</h3>
+                <p>{item.text}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+      );
+    }
+
     if (activeTab === "galeria") {
       return (
         <div className="maalabanza-gallery-grid">
@@ -252,9 +347,14 @@ function MinAlabanza() {
         <div className="maalabanza-team-grid">
           {current.members.map((member, index) => (
             <div className="maalabanza-team-card" key={index}>
-              <div className="maalabanza-team-icon">{member.icon}</div>
-              <h3>{member.role}</h3>
-              <p>{member.text}</p>
+              <div className="maalabanza-team-image">
+                <img src={member.image} alt={member.name} />
+              </div>
+
+              <div className="maalabanza-team-body">
+                <h3>{member.name}</h3>
+                <span className="maalabanza-team-role">{member.role}</span>
+              </div>
             </div>
           ))}
         </div>
@@ -335,7 +435,14 @@ function MinAlabanza() {
           </div>
         </div>
 
-        <div className="maalabanza-tabs">
+        <div
+          className="maalabanza-tabs"
+          ref={tabsRef}
+          onMouseDown={handleMouseDown}
+          onMouseLeave={handleMouseLeave}
+          onMouseUp={handleMouseUp}
+          onMouseMove={handleMouseMove}
+        >
           {tabKeys.map((key) => (
             <button
               key={key}
@@ -343,7 +450,7 @@ function MinAlabanza() {
               className={`maalabanza-tab-btn ${
                 activeTab === key ? "active" : ""
               }`}
-              onClick={() => setActiveTab(key)}
+              onClick={() => handleTabClick(key)}
             >
               {ministryData.tabs[key].label}
             </button>

@@ -1,11 +1,10 @@
-import { useMemo, useState } from "react";
+import { useMemo, useRef, useState } from "react";
 import "../styles/MinJovenes.css";
 import {
   FaUsers,
   FaBookBible,
   FaMusic,
   FaFire,
-  FaCamera,
   FaCalendarDays,
   FaClock,
   FaInstagram,
@@ -14,12 +13,42 @@ import {
   FaYoutube,
   FaLocationDot,
   FaHeart,
+  FaShieldHeart,
 } from "react-icons/fa6";
 
 function MinJovenes() {
   const [selectedAlbum, setSelectedAlbum] = useState(null);
   const [activeTab, setActiveTab] = useState("acerca");
   const [activityView, setActivityView] = useState("activas");
+
+  const tabsRef = useRef(null);
+  const isDown = useRef(false);
+  const startX = useRef(0);
+  const scrollLeft = useRef(0);
+
+  const handleMouseDown = (e) => {
+    if (!tabsRef.current) return;
+    isDown.current = true;
+    startX.current = e.pageX - tabsRef.current.offsetLeft;
+    scrollLeft.current = tabsRef.current.scrollLeft;
+  };
+
+  const handleMouseLeave = () => {
+    isDown.current = false;
+  };
+
+  const handleMouseUp = () => {
+    isDown.current = false;
+  };
+
+  const handleMouseMove = (e) => {
+    if (!isDown.current || !tabsRef.current) return;
+    e.preventDefault();
+    const x = e.pageX - tabsRef.current.offsetLeft;
+    const walk = (x - startX.current) * 1.2;
+    tabsRef.current.scrollLeft = scrollLeft.current - walk;
+  };
+
   const youthActivities = [
     {
       title: "Noche de cine",
@@ -71,9 +100,8 @@ function MinJovenes() {
     },
   ];
 
-  const calendarMonth = 2; // marzo (0 = enero)
+  const calendarMonth = 2;
   const calendarYear = 2026;
-
   const monthLabel = "Marzo 2026";
 
   const calendarDays = useMemo(() => {
@@ -135,6 +163,7 @@ function MinJovenes() {
   const finishedActivities = youthActivities.filter(
     (item) => item.status === "terminado"
   );
+
   const ministryData = {
     title: "Ministerio de Jóvenes",
     subtitle:
@@ -174,6 +203,56 @@ function MinJovenes() {
         icon: <FaUsers />,
         title: "Comunidad",
         text: "Creamos amistades sanas que ayudan a crecer, servir y mantenerse firmes en la fe.",
+      },
+    ],
+
+    regulations: [
+      {
+        icon: <FaShieldHeart />,
+        title: "Respeto y compañerismo",
+        text: "Cada joven debe mantener una actitud de respeto, empatía y buen trato con los demás participantes y líderes.",
+      },
+      {
+        icon: <FaShieldHeart />,
+        title: "Participación con orden",
+        text: "En reuniones, actividades y dinámicas se debe seguir la orientación de los líderes para mantener un ambiente organizado.",
+      },
+      {
+        icon: <FaShieldHeart />,
+        title: "Testimonio cristiano",
+        text: "Se espera una conducta acorde a los valores cristianos dentro y fuera de las actividades del ministerio.",
+      },
+      {
+        icon: <FaShieldHeart />,
+        title: "Cuidado de instalaciones",
+        text: "Todos deben cuidar los espacios, equipos, materiales y recursos utilizados en cada encuentro juvenil.",
+      },
+    ],
+
+    leaders: [
+      {
+        name: "Samuel Rocha",
+        role: "Líder Juvenil",
+        image:
+          "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=700&q=80",
+      },
+      {
+        name: "Daniela Vargas",
+        role: "Coordinadora",
+        image:
+          "https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&w=700&q=80",
+      },
+      {
+        name: "Marcos Pérez",
+        role: "Discipulador",
+        image:
+          "https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?auto=format&fit=crop&w=700&q=80",
+      },
+      {
+        name: "Esther Molina",
+        role: "Apoyo Juvenil",
+        image:
+          "https://images.unsplash.com/photo-1544005313-94ddf0286df2?auto=format&fit=crop&w=700&q=80",
       },
     ],
 
@@ -269,10 +348,18 @@ function MinJovenes() {
 
       <section className="yt-tabs-section">
         <div className="yt-container">
-          <div className="yt-tabs">
+          <div
+            className="yt-tabs"
+            ref={tabsRef}
+            onMouseDown={handleMouseDown}
+            onMouseLeave={handleMouseLeave}
+            onMouseUp={handleMouseUp}
+            onMouseMove={handleMouseMove}
+          >
             <button
               className={`yt-tab-btn ${activeTab === "acerca" ? "active" : ""}`}
               onClick={() => setActiveTab("acerca")}
+              type="button"
             >
               Acerca de
             </button>
@@ -282,24 +369,43 @@ function MinJovenes() {
                 activeTab === "actividades" ? "active" : ""
               }`}
               onClick={() => setActiveTab("actividades")}
+              type="button"
             >
               Actividades
             </button>
 
             <button
               className={`yt-tab-btn ${
-                activeTab === "galeria" ? "active" : ""
+                activeTab === "reglamentos" ? "active" : ""
               }`}
+              onClick={() => setActiveTab("reglamentos")}
+              type="button"
+            >
+              Reglamentos
+            </button>
+
+            <button
+              className={`yt-tab-btn ${
+                activeTab === "liderazgo" ? "active" : ""
+              }`}
+              onClick={() => setActiveTab("liderazgo")}
+              type="button"
+            >
+              Liderazgo
+            </button>
+
+            <button
+              className={`yt-tab-btn ${activeTab === "galeria" ? "active" : ""}`}
               onClick={() => setActiveTab("galeria")}
+              type="button"
             >
               Galería
             </button>
 
             <button
-              className={`yt-tab-btn ${
-                activeTab === "horario" ? "active" : ""
-              }`}
+              className={`yt-tab-btn ${activeTab === "horario" ? "active" : ""}`}
               onClick={() => setActiveTab("horario")}
+              type="button"
             >
               Horario
             </button>
@@ -307,6 +413,7 @@ function MinJovenes() {
             <button
               className={`yt-tab-btn ${activeTab === "redes" ? "active" : ""}`}
               onClick={() => setActiveTab("redes")}
+              type="button"
             >
               Redes sociales
             </button>
@@ -359,6 +466,7 @@ function MinJovenes() {
                       activityView === "activas" ? "active" : ""
                     }`}
                     onClick={() => setActivityView("activas")}
+                    type="button"
                   >
                     En curso y por llegar
                   </button>
@@ -368,6 +476,7 @@ function MinJovenes() {
                       activityView === "terminadas" ? "active" : ""
                     }`}
                     onClick={() => setActivityView("terminadas")}
+                    type="button"
                   >
                     Terminadas
                   </button>
@@ -560,6 +669,58 @@ function MinJovenes() {
                 )}
               </div>
             )}
+
+            {activeTab === "reglamentos" && (
+              <div className="yt-panel">
+                <div className="yt-panel-header">
+                  <span className="yt-chip">Reglamentos</span>
+                  <h2>Normas para una convivencia sana y edificante</h2>
+                  <p className="yt-activities-intro">
+                    Estos lineamientos ayudan a mantener un ambiente de respeto,
+                    orden y crecimiento dentro del ministerio juvenil.
+                  </p>
+                </div>
+
+                <div className="yt-regulations-grid">
+                  {ministryData.regulations.map((item, index) => (
+                    <article className="yt-regulation-card" key={index}>
+                      <div className="yt-regulation-icon">{item.icon}</div>
+                      <h3>{item.title}</h3>
+                      <p>{item.text}</p>
+                    </article>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {activeTab === "liderazgo" && (
+              <div className="yt-panel">
+                <div className="yt-panel-header">
+                  <span className="yt-chip">Liderazgo</span>
+                  <h2>Equipo que guía a la juventud</h2>
+                  <p className="yt-activities-intro">
+                    Conoce a los líderes y encargados que acompañan, orientan y
+                    sirven dentro del ministerio juvenil.
+                  </p>
+                </div>
+
+                <div className="yt-leaders-grid">
+                  {ministryData.leaders.map((leader, index) => (
+                    <article className="yt-leader-card" key={index}>
+                      <div className="yt-leader-image">
+                        <img src={leader.image} alt={leader.name} />
+                      </div>
+
+                      <div className="yt-leader-info">
+                        <h3>{leader.name}</h3>
+                        <p>{leader.role}</p>
+                      </div>
+                    </article>
+                  ))}
+                </div>
+              </div>
+            )}
+
             {activeTab === "galeria" && (
               <div className="yt-panel">
                 <div className="yt-panel-header">
@@ -602,6 +763,7 @@ function MinJovenes() {
                       <button
                         className="yt-back-albums-btn"
                         onClick={() => setSelectedAlbum(null)}
+                        type="button"
                       >
                         Volver a álbumes
                       </button>

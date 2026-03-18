@@ -149,9 +149,26 @@
 
 .minninos-tabs-nav {
   display: flex;
-  flex-wrap: wrap;
+  flex-wrap: nowrap;
   gap: 12px;
   margin-bottom: 24px;
+  overflow-x: auto;
+  overflow-y: hidden;
+  -webkit-overflow-scrolling: touch;
+  touch-action: pan-x;
+  scroll-behavior: smooth;
+  padding-bottom: 8px;
+  width: 100%;
+  cursor: grab;
+  user-select: none;
+}
+
+.minninos-tabs-nav:active {
+  cursor: grabbing;
+}
+
+.minninos-tabs-nav::-webkit-scrollbar {
+  display: none;
 }
 
 .minninos-tab-btn {
@@ -165,6 +182,8 @@
   cursor: pointer;
   transition: all 0.28s ease;
   box-shadow: 0 10px 22px rgba(0, 0, 0, 0.05);
+  flex: 0 0 auto;
+  white-space: nowrap;
 }
 
 .minninos-tab-btn:hover {
@@ -436,6 +455,106 @@
   line-height: 1.7;
 }
 
+.regulations-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 22px;
+}
+
+.regulation-card {
+  background: linear-gradient(180deg, #ffffff, #fffaf4);
+  border: 1px solid rgba(255, 183, 3, 0.18);
+  border-radius: 28px;
+  padding: 28px 24px;
+  box-shadow: 0 16px 34px rgba(0, 0, 0, 0.06);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.regulation-card:hover {
+  transform: translateY(-8px);
+  box-shadow: 0 22px 42px rgba(0, 0, 0, 0.1);
+}
+
+.regulation-icon {
+  width: 62px;
+  height: 62px;
+  border-radius: 18px;
+  background: linear-gradient(135deg, #ff7b54, #ffb703);
+  color: #fff;
+  display: grid;
+  place-items: center;
+  font-size: 1.35rem;
+  margin-bottom: 16px;
+  box-shadow: 0 12px 24px rgba(255, 123, 84, 0.2);
+}
+
+.regulation-card h3 {
+  color: #17324d;
+  margin-bottom: 10px;
+  font-size: 1.12rem;
+}
+
+.regulation-card p {
+  color: #5b6472;
+  line-height: 1.75;
+  margin-bottom: 0;
+}
+
+.leaders-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 22px;
+}
+
+.leader-card {
+  background: linear-gradient(180deg, #ffffff, #fff9ef);
+  border: 1px solid rgba(255, 183, 3, 0.2);
+  border-radius: 28px;
+  overflow: hidden;
+  box-shadow: 0 16px 34px rgba(0, 0, 0, 0.06);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.leader-card:hover {
+  transform: translateY(-8px);
+  box-shadow: 0 22px 42px rgba(0, 0, 0, 0.1);
+}
+
+.leader-image {
+  width: 100%;
+  height: 230px;
+  overflow: hidden;
+}
+
+.leader-image img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.45s ease;
+}
+
+.leader-card:hover .leader-image img {
+  transform: scale(1.08);
+}
+
+.leader-info {
+  padding: 18px 16px 20px;
+  text-align: center;
+}
+
+.leader-info h3 {
+  color: #17324d;
+  margin-bottom: 8px;
+  font-size: 1.08rem;
+}
+
+.leader-info p {
+  color: #5b6472;
+  line-height: 1.6;
+  margin: 0;
+  font-size: 0.95rem;
+}
+
 .contact-tab-card {
   display: grid;
   grid-template-columns: 1fr 0.9fr;
@@ -476,8 +595,13 @@
   }
 
   .schedule-grid,
-  .editable-grid {
+  .editable-grid,
+  .regulations-grid {
     grid-template-columns: 1fr;
+  }
+
+  .leaders-grid {
+    grid-template-columns: repeat(2, 1fr);
   }
 
   .gallery-grid {
@@ -511,12 +635,16 @@
   .minninos-tabs-nav {
     flex-wrap: nowrap;
     overflow-x: auto;
-    padding-bottom: 4px;
+    overflow-y: hidden;
+    justify-content: flex-start;
+    padding-bottom: 8px;
   }
 
   .minninos-tab-btn {
+    flex: 0 0 auto;
+    width: auto;
+    min-width: max-content;
     white-space: nowrap;
-    flex-shrink: 0;
   }
 
   .minninos-tab-panel {
@@ -524,7 +652,8 @@
     border-radius: 26px;
   }
 
-  .activities-grid {
+  .activities-grid,
+  .leaders-grid {
     grid-template-columns: 1fr;
   }
 
@@ -546,5 +675,9 @@
 
   .tab-main-title {
     font-size: 2rem;
+  }
+
+  .leader-image {
+    height: 210px;
   }
 }

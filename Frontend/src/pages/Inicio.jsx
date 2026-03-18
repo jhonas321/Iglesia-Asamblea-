@@ -7,6 +7,8 @@ import MisionVision from "../components/MisionVision";
 import HorariosSeccion from "../components/HorariosSeccion";
 import UbicacionSeccion from "../components/UbicacionSeccion";
 import ContactoSeccion from "../components/ContactoSeccion";
+import Reglamento from "./Reglamento";
+import ReglamentoPreview from "../components/ReglamentoPreview";
 
 function Inicio() {
   return (
@@ -14,6 +16,7 @@ function Inicio() {
       <Heroe />
       <Ministries />
       <SobreNosotros />
+      <ReglamentoPreview/>
       <MisionVision />
       <HorariosSeccion />
       <UbicacionSeccion />

@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useRef, useState } from "react";
 import "../styles/MinNiños.css";
 import {
   FaChildren,
@@ -14,10 +14,57 @@ import {
   FaImage,
   FaPenToSquare,
   FaStar,
+  FaShieldHeart,
 } from "react-icons/fa6";
 
 function MinNiños() {
   const [activeTab, setActiveTab] = useState("about");
+
+  const tabsRef = useRef(null);
+  const isDown = useRef(false);
+  const isDragging = useRef(false);
+  const startX = useRef(0);
+  const scrollLeft = useRef(0);
+
+  const handleMouseDown = (e) => {
+    if (!tabsRef.current) return;
+    isDown.current = true;
+    isDragging.current = false;
+    startX.current = e.pageX - tabsRef.current.offsetLeft;
+    scrollLeft.current = tabsRef.current.scrollLeft;
+  };
+
+  const handleMouseLeave = () => {
+    isDown.current = false;
+  };
+
+  const handleMouseUp = () => {
+    isDown.current = false;
+
+    setTimeout(() => {
+      isDragging.current = false;
+    }, 0);
+  };
+
+  const handleMouseMove = (e) => {
+    if (!isDown.current || !tabsRef.current) return;
+
+    e.preventDefault();
+
+    const x = e.pageX - tabsRef.current.offsetLeft;
+    const walk = x - startX.current;
+
+    if (Math.abs(walk) > 6) {
+      isDragging.current = true;
+    }
+
+    tabsRef.current.scrollLeft = scrollLeft.current - walk * 1.2;
+  };
+
+  const handleTabClick = (tabId) => {
+    if (isDragging.current) return;
+    setActiveTab(tabId);
+  };
 
   const ministryData = {
     title: "Ministerio de Niños",
@@ -71,6 +118,54 @@ function MinNiños() {
         text: "Espacios para crear, dibujar y expresar enseñanzas bíblicas de forma divertida.",
       },
     ],
+    regulations: [
+      {
+        icon: <FaShieldHeart />,
+        title: "Respeto y buen trato",
+        text: "Todos los niños deben tratar con respeto a sus compañeros, maestros y encargados dentro de cada actividad.",
+      },
+      {
+        icon: <FaShieldHeart />,
+        title: "Cuidado del espacio",
+        text: "Se debe mantener el orden y cuidar los materiales, juguetes, útiles y áreas asignadas al ministerio.",
+      },
+      {
+        icon: <FaShieldHeart />,
+        title: "Participación con obediencia",
+        text: "Los niños deben seguir las instrucciones de los maestros para realizar cada dinámica de forma segura y organizada.",
+      },
+      {
+        icon: <FaShieldHeart />,
+        title: "Ingreso y salida responsable",
+        text: "El ingreso y la salida de los niños debe realizarse con acompañamiento y autorización de sus padres o responsables.",
+      },
+    ],
+    leaders: [
+      {
+        name: "Ana Martínez",
+        role: "Líder de Niños",
+        image:
+          "https://images.unsplash.com/photo-1544005313-94ddf0286df2?auto=format&fit=crop&w=700&q=80",
+      },
+      {
+        name: "Luis Fernández",
+        role: "Maestro Bíblico",
+        image:
+          "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=700&q=80",
+      },
+      {
+        name: "Carla Gómez",
+        role: "Apoyo Infantil",
+        image:
+          "https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&w=700&q=80",
+      },
+      {
+        name: "Pedro Rojas",
+        role: "Coordinador",
+        image:
+          "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=700&q=80",
+      },
+    ],
     gallery: [
       "https://images.unsplash.com/photo-1516627145497-ae6968895b74?auto=format&fit=crop&w=1000&q=80",
       "https://images.unsplash.com/photo-1503454537195-1dcabb73ffb9?auto=format&fit=crop&w=1000&q=80",
@@ -99,6 +194,8 @@ function MinNiños() {
   const tabs = [
     { id: "about", label: "Acerca de" },
     { id: "activities", label: "Actividades" },
+    { id: "regulations", label: "Reglamentos" },
+    { id: "leaders", label: "Encargados" },
     { id: "schedule", label: "Horario" },
     { id: "gallery", label: "Galería" },
     { id: "editable", label: "Editable" },
@@ -152,6 +249,49 @@ function MinNiños() {
                   <div className="activity-icon">{item.icon}</div>
                   <h3>{item.title}</h3>
                   <p>{item.text}</p>
+                </article>
+              ))}
+            </div>
+          </div>
+        );
+
+      case "regulations":
+        return (
+          <div className="tab-fade">
+            <div className="tab-chip">Reglamentos</div>
+            <h2 className="tab-main-title">
+              Normas para un espacio seguro y ordenado
+            </h2>
+
+            <div className="regulations-grid">
+              {ministryData.regulations.map((item, index) => (
+                <article className="regulation-card" key={index}>
+                  <div className="regulation-icon">{item.icon}</div>
+                  <h3>{item.title}</h3>
+                  <p>{item.text}</p>
+                </article>
+              ))}
+            </div>
+          </div>
+        );
+
+      case "leaders":
+        return (
+          <div className="tab-fade">
+            <div className="tab-chip">Encargados</div>
+            <h2 className="tab-main-title">Equipo que guía a nuestros niños</h2>
+
+            <div className="leaders-grid">
+              {ministryData.leaders.map((leader, index) => (
+                <article className="leader-card" key={index}>
+                  <div className="leader-image">
+                    <img src={leader.image} alt={leader.name} />
+                  </div>
+
+                  <div className="leader-info">
+                    <h3>{leader.name}</h3>
+                    <p>{leader.role}</p>
+                  </div>
                 </article>
               ))}
             </div>
@@ -281,14 +421,22 @@ function MinNiños() {
 
       <section className="minninos-tabs-section">
         <div className="minninos-container">
-          <div className="minninos-tabs-nav">
+          <div
+            className="minninos-tabs-nav"
+            ref={tabsRef}
+            onMouseDown={handleMouseDown}
+            onMouseLeave={handleMouseLeave}
+            onMouseUp={handleMouseUp}
+            onMouseMove={handleMouseMove}
+          >
             {tabs.map((tab) => (
               <button
                 key={tab.id}
                 className={`minninos-tab-btn ${
                   activeTab === tab.id ? "active" : ""
                 }`}
-                onClick={() => setActiveTab(tab.id)}
+                onClick={() => handleTabClick(tab.id)}
+                type="button"
               >
                 {tab.label}
               </button>

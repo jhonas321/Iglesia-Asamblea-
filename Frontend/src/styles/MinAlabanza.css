@@ -270,11 +270,29 @@
   right: 14px;
 }
 
+/* ===== TABS DESLIZABLES ===== */
 .maalabanza-tabs {
   display: flex;
-  flex-wrap: wrap;
+  flex-wrap: nowrap;
   gap: 12px;
   margin-bottom: 22px;
+  overflow-x: auto;
+  overflow-y: hidden;
+  -webkit-overflow-scrolling: touch;
+  touch-action: pan-x;
+  scroll-behavior: smooth;
+  width: 100%;
+  cursor: grab;
+  user-select: none;
+  padding-bottom: 8px;
+}
+
+.maalabanza-tabs:active {
+  cursor: grabbing;
+}
+
+.maalabanza-tabs::-webkit-scrollbar {
+  display: none;
 }
 
 .maalabanza-tab-btn {
@@ -288,6 +306,8 @@
   color: rgba(241, 246, 255, 0.88);
   border: 1px solid rgba(255, 255, 255, 0.08);
   transition: all 0.3s ease;
+  flex: 0 0 auto;
+  white-space: nowrap;
 }
 
 .maalabanza-tab-btn:hover {
@@ -323,7 +343,8 @@
 .maalabanza-activity-card,
 .maalabanza-gallery-card,
 .maalabanza-schedule-card,
-.maalabanza-team-card {
+.maalabanza-team-card,
+.maalabanza-regulation-card {
   border-radius: 22px;
   background: rgba(255, 255, 255, 0.05);
   border: 1px solid rgba(210, 225, 255, 0.08);
@@ -347,12 +368,14 @@
 }
 
 .maalabanza-info-card h2,
-.maalabanza-side-card h3 {
+.maalabanza-side-card h3,
+.maalabanza-regulations-header h2 {
   margin: 0 0 16px;
   color: #f3f7ff;
 }
 
-.maalabanza-info-card h2 {
+.maalabanza-info-card h2,
+.maalabanza-regulations-header h2 {
   font-size: clamp(1.6rem, 2.8vw, 2.2rem);
 }
 
@@ -394,7 +417,7 @@
 
 .maalabanza-activities-grid,
 .maalabanza-schedule-grid,
-.maalabanza-team-grid {
+.maalabanza-regulations-grid {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 18px;
@@ -402,22 +425,23 @@
 
 .maalabanza-activity-card,
 .maalabanza-schedule-card,
-.maalabanza-team-card {
+.maalabanza-regulation-card {
   padding: 22px;
   transition: transform 0.35s ease, box-shadow 0.35s ease;
 }
 
 .maalabanza-activity-card:hover,
 .maalabanza-schedule-card:hover,
-.maalabanza-team-card:hover,
-.maalabanza-gallery-card:hover {
+.maalabanza-gallery-card:hover,
+.maalabanza-regulation-card:hover,
+.maalabanza-team-card:hover {
   transform: translateY(-6px);
   box-shadow: 0 22px 38px rgba(0, 0, 0, 0.24);
 }
 
 .maalabanza-activity-icon,
 .maalabanza-schedule-icon,
-.maalabanza-team-icon {
+.maalabanza-regulation-icon {
   width: 54px;
   height: 54px;
   border-radius: 16px;
@@ -433,17 +457,29 @@
 
 .maalabanza-activity-card h3,
 .maalabanza-schedule-card h3,
-.maalabanza-team-card h3 {
+.maalabanza-regulation-card h3 {
   margin-bottom: 12px;
   color: #ffffff;
 }
 
 .maalabanza-activity-card p,
 .maalabanza-schedule-card p,
-.maalabanza-team-card p {
+.maalabanza-regulation-card p {
   color: rgba(234, 241, 255, 0.78);
   line-height: 1.75;
   margin: 6px 0;
+}
+
+.maalabanza-regulations-wrap {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.maalabanza-regulations-header {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
 }
 
 .maalabanza-gallery-grid {
@@ -497,6 +533,56 @@
   font-weight: 600;
 }
 
+/* ===== EQUIPO ===== */
+.maalabanza-team-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 18px;
+}
+
+.maalabanza-team-card {
+  overflow: hidden;
+  transition: transform 0.35s ease, box-shadow 0.35s ease,
+    border-color 0.35s ease;
+}
+
+.maalabanza-team-image {
+  width: 100%;
+  height: 230px;
+  overflow: hidden;
+}
+
+.maalabanza-team-image img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  transition: transform 0.45s ease;
+}
+
+.maalabanza-team-card:hover .maalabanza-team-image img {
+  transform: scale(1.08);
+}
+
+.maalabanza-team-body {
+  padding: 18px 16px 20px;
+  text-align: center;
+}
+
+.maalabanza-team-body h3 {
+  margin: 0 0 8px;
+  color: #ffffff;
+  font-size: 1.05rem;
+}
+
+.maalabanza-team-role {
+  display: inline-block;
+  color: rgba(158, 232, 255, 0.92);
+  font-size: 0.92rem;
+  font-weight: 600;
+}
+
+/* ===== ANIMACIONES ===== */
 @keyframes maalabanzaFadeSlideUp {
   from {
     opacity: 0;
@@ -567,6 +653,16 @@
   .maalabanza-gallery-grid {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
+
+  .maalabanza-activities-grid,
+  .maalabanza-schedule-grid,
+  .maalabanza-regulations-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .maalabanza-team-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
 }
 
 @media (max-width: 768px) {
@@ -590,8 +686,9 @@
 
   .maalabanza-activities-grid,
   .maalabanza-schedule-grid,
-  .maalabanza-team-grid,
-  .maalabanza-gallery-grid {
+  .maalabanza-gallery-grid,
+  .maalabanza-regulations-grid,
+  .maalabanza-team-grid {
     grid-template-columns: 1fr;
   }
 
@@ -607,8 +704,19 @@
     flex: 1 1 100%;
   }
 
+  .maalabanza-tabs {
+    justify-content: flex-start;
+  }
+
   .maalabanza-tab-btn {
-    width: 100%;
+    width: auto;
+    min-width: max-content;
+    flex: 0 0 auto;
     text-align: center;
+    white-space: nowrap;
+  }
+
+  .maalabanza-team-image {
+    height: 210px;
   }
 }

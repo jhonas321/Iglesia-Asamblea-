@@ -16,11 +16,10 @@ function ContactoSeccion() {
 
       <div className="contact-container">
         <div className="contact-info">
-          <h3>Información de la Iglesia</h3>
+          <h3>Información de la iglesia</h3>
 
           <p>
-            <strong>Nombre:</strong> Asamblea Apostólica de la Fe en Cristo
-            Jesús
+            <strong>Nombre:</strong> Asamblea Apostólica de la Fe en Cristo Jesús
           </p>
 
           <p>
@@ -30,24 +29,6 @@ function ContactoSeccion() {
           <p>
             <strong>Teléfono:</strong> +591 70000000
           </p>
-
-          <p>
-            <strong>Email:</strong> contacto@asamblea.com
-          </p>
-        </div>
-
-        <div className="contact-form">
-          <h3>Envíanos un mensaje</h3>
-
-          <form>
-            <input type="text" placeholder="Tu nombre" required />
-            <input type="email" placeholder="Tu correo electrónico" required />
-            <textarea
-              placeholder="Escribe tu mensaje aquí..."
-              required
-            ></textarea>
-            <button type="submit">Enviar mensaje</button>
-          </form>
         </div>
       </div>
     </section>

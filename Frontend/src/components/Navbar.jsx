@@ -1,4 +1,6 @@
 import "../styles/navbar.css";
+import { Link } from "react-router-dom";
+import { HashLink } from "react-router-hash-link";
 
 function Navbar() {
   return (
@@ -12,16 +14,43 @@ function Navbar() {
 
         <div className="brand-text">
           <h1>Asamblea Apostolica</h1>
-          <p>de la fe en <span>Cristo Jesús</span></p>
+          <p>
+            de la fe en <span>Cristo Jesús</span>
+          </p>
         </div>
       </div>
 
       <ul className="nav-links">
-        <li><a href="#inicio">Inicio</a></li>
-        <li><a href="#nosotros">Nosotros</a></li>
-        <li><a href="#ministerios">Ministerios</a></li>
-        <li><a href="#horarios">Horarios</a></li>
-        <li><a href="#contacto">Contacto</a></li>
+        <li>
+          <HashLink smooth to="/#inicio">Inicio</HashLink>
+        </li>
+
+        <li>
+          <HashLink smooth to="/#nosotros">Nosotros</HashLink>
+        </li>
+
+        <li>
+          <HashLink smooth to="/#ministerios">Ministerios</HashLink>
+        </li>
+        
+        <li>
+          <HashLink smooth to="/#organigrama">Organigrama</HashLink>
+        </li>
+
+       
+
+        {/* 👇 PÁGINA */}
+        <li>
+          <HashLink smooth to="/#reglamento">Reglamento</HashLink>
+        </li>
+
+        <li>
+          <HashLink smooth to="/#horarios">Horarios</HashLink>
+        </li>
+
+        <li>
+          <HashLink smooth to="/#contacto">Contacto</HashLink>
+        </li>
       </ul>
     </nav>
   );
