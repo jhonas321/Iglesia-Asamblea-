@@ -13,6 +13,7 @@ import {
 function MinNiños() {
   const [activeTab, setActiveTab] = useState("about");
   const [menuOpen, setMenuOpen] = useState(false);
+  const [selectedActivity, setSelectedActivity] = useState(null);
 
   const toggleMenu = () => {
     setMenuOpen((prev) => !prev);
@@ -63,6 +64,8 @@ function MinNiños() {
         date: "Lunes 02 de marzo",
         hour: "09:00 - 10:00",
         place: "Sala infantil 1",
+        mapEmbed:
+          "https://www.google.com/maps?q=Iglesia+Asamblea+Apostolica+de+la+Fe+en+Cristo+Jesus+Sacaba&z=16&output=embed",
         status: "en-curso",
       },
       {
@@ -74,6 +77,9 @@ function MinNiños() {
         date: "Domingo 21 de abril",
         hour: "10:15 - 11:00",
         place: "Patio infantil",
+        mapEmbed:
+          "https://www.google.com/maps?q=Iglesia+Asamblea+Apostolica+de+la+Fe+en+Cristo+Jesus+Sacaba&z=16&output=embed",
+
         status: "por-llegar",
       },
       {
@@ -85,6 +91,9 @@ function MinNiños() {
         date: "Domingo 21 de abril",
         hour: "11:15 - 12:00",
         place: "Salón principal infantil",
+        mapEmbed:
+          "https://www.google.com/maps?q=Iglesia+Asamblea+Apostolica+de+la+Fe+en+Cristo+Jesus+Sacaba&z=16&output=embed",
+
         status: "terminado",
       },
       {
@@ -96,6 +105,9 @@ function MinNiños() {
         date: "Domingo 21 de abril",
         hour: "15:00 - 16:00",
         place: "Aula creativa",
+        mapEmbed:
+          "https://www.google.com/maps?q=Iglesia+Asamblea+Apostolica+de+la+Fe+en+Cristo+Jesus+Sacaba&z=16&output=embed",
+
         status: "por-llegar",
       },
     ],
@@ -211,7 +223,11 @@ function MinNiños() {
 
             <div className="activities-grid">
               {ministryData.activities.map((item, index) => (
-                <article className="activity-card" key={index}>
+                <article
+                  className="activity-card"
+                  key={index}
+                  onClick={() => setSelectedActivity(item)}
+                >
                   <div className="activity-image">
                     <img src={item.image} alt={item.title} />
 
@@ -226,19 +242,23 @@ function MinNiños() {
 
                   <div className="activity-body">
                     <h3>{item.title}</h3>
-                    <p className="activity-description">{item.description}</p>
 
                     <div className="activity-meta">
                       <p>
                         <FaCalendarDays /> {item.date}
                       </p>
-                      <p>
-                        <FaClock /> {item.hour}
-                      </p>
-                      <p>
-                        <FaLocationDot /> {item.place}
-                      </p>
                     </div>
+
+                    <button
+                      type="button"
+                      className="activity-details-btn"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        setSelectedActivity(item);
+                      }}
+                    >
+                      Ver detalles
+                    </button>
                   </div>
                 </article>
               ))}
@@ -396,7 +416,9 @@ function MinNiños() {
             {tabs.map((tab) => (
               <button
                 key={tab.id}
-                className={`minninos-tab-btn ${activeTab === tab.id ? "active" : ""}`}
+                className={`minninos-tab-btn ${
+                  activeTab === tab.id ? "active" : ""
+                }`}
                 onClick={() => setActiveTab(tab.id)}
                 type="button"
               >
@@ -444,6 +466,64 @@ function MinNiños() {
           <div className="minninos-tab-panel">{renderTabContent()}</div>
         </div>
       </section>
+      {selectedActivity && (
+        <div
+          className="activity-modal-overlay"
+          onClick={() => setSelectedActivity(null)}
+        >
+          <div className="activity-modal" onClick={(e) => e.stopPropagation()}>
+            <button
+              type="button"
+              className="activity-modal-close"
+              onClick={() => setSelectedActivity(null)}
+            >
+              ×
+            </button>
+
+            <div className="activity-modal-image">
+              <img src={selectedActivity.image} alt={selectedActivity.title} />
+            </div>
+
+            <div className="activity-modal-body">
+              <span
+                className={`activity-status activity-status-${selectedActivity.status}`}
+              >
+                {selectedActivity.status === "en-curso" && "En curso"}
+                {selectedActivity.status === "por-llegar" && "Por llegar"}
+                {selectedActivity.status === "terminado" && "Terminado"}
+              </span>
+
+              <h3>{selectedActivity.title}</h3>
+              <p className="activity-modal-description">
+                {selectedActivity.description}
+              </p>
+
+              <div className="activity-modal-meta">
+                <p>
+                  <FaCalendarDays /> {selectedActivity.date}
+                </p>
+                <p>
+                  <FaClock /> {selectedActivity.hour}
+                </p>
+                <p>
+                  <FaLocationDot /> {selectedActivity.place}
+                </p>
+              </div>
+
+              <div className="activity-map-wrapper">
+                <iframe
+                  src={selectedActivity.mapEmbed}
+                  title={`Mapa de ${selectedActivity.title}`}
+                  className="activity-map-iframe"
+                  loading="lazy"
+                  allowFullScreen
+                  referrerPolicy="no-referrer-when-downgrade"
+                ></iframe>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
     </main>
   );
 }

@@ -17,7 +17,7 @@ function MinJovenes() {
   const [selectedAlbum, setSelectedAlbum] = useState(null);
   const [activeTab, setActiveTab] = useState("acerca");
   const [menuOpen, setMenuOpen] = useState(false);
-
+  const [selectedActivity, setSelectedActivity] = useState(null);
   const toggleMenu = () => {
     setMenuOpen((prev) => !prev);
   };
@@ -56,6 +56,8 @@ function MinJovenes() {
         date: "Viernes 06 de marzo",
         hour: "19:00",
         place: "Salón juvenil",
+        mapEmbed:
+          "https://www.google.com/maps?q=Iglesia+Asamblea+Apostolica+de+la+Fe+en+Cristo+Jesus+Sacaba&z=16&output=embed",
         status: "terminado",
       },
       {
@@ -67,6 +69,8 @@ function MinJovenes() {
         date: "Domingo 15 de marzo",
         hour: "16:00",
         place: "Plaza principal",
+        mapEmbed:
+          "https://www.google.com/maps?q=Iglesia+Asamblea+Apostolica+de+la+Fe+en+Cristo+Jesus+Sacaba&z=16&output=embed",
         status: "por-llegar",
       },
       {
@@ -78,6 +82,8 @@ function MinJovenes() {
         date: "Viernes 13 de marzo",
         hour: "19:30",
         place: "Templo central",
+        mapEmbed:
+          "https://www.google.com/maps?q=Iglesia+Asamblea+Apostolica+de+la+Fe+en+Cristo+Jesus+Sacaba&z=16&output=embed",
         status: "en-curso",
       },
       {
@@ -89,6 +95,8 @@ function MinJovenes() {
         date: "10 al 12 de abril",
         hour: "08:30",
         place: "Casa campestre",
+        mapEmbed:
+          "https://www.google.com/maps?q=Iglesia+Asamblea+Apostolica+de+la+Fe+en+Cristo+Jesus+Sacaba&z=16&output=embed",
         status: "por-llegar",
       },
       {
@@ -100,6 +108,8 @@ function MinJovenes() {
         date: "Sábado 20 de marzo",
         hour: "08:00",
         place: "Ribera comunitaria",
+        mapEmbed:
+          "https://www.google.com/maps?q=Iglesia+Asamblea+Apostolica+de+la+Fe+en+Cristo+Jesus+Sacaba&z=16&output=embed",
         status: "por-llegar",
       },
       {
@@ -111,6 +121,8 @@ function MinJovenes() {
         date: "27 al 29 de marzo",
         hour: "07:00",
         place: "Centro de retiros",
+        mapEmbed:
+          "https://www.google.com/maps?q=Iglesia+Asamblea+Apostolica+de+la+Fe+en+Cristo+Jesus+Sacaba&z=16&output=embed",
         status: "por-llegar",
       },
     ],
@@ -359,7 +371,11 @@ function MinJovenes() {
 
                 <div className="yt-activity-cards-grid">
                   {ministryData.activities.map((item, index) => (
-                    <article className="yt-activity-event-card" key={index}>
+                    <article
+                      className="yt-activity-event-card"
+                      key={index}
+                      onClick={() => setSelectedActivity(item)}
+                    >
                       <div className="yt-activity-event-image">
                         <img src={item.image} alt={item.title} />
 
@@ -374,21 +390,23 @@ function MinJovenes() {
 
                       <div className="yt-activity-event-body">
                         <h3>{item.title}</h3>
-                        <p className="yt-activity-event-description">
-                          {item.description}
-                        </p>
 
                         <div className="yt-activity-event-meta">
                           <p>
                             <FaCalendarDays /> {item.date}
                           </p>
-                          <p>
-                            <FaClock /> {item.hour}
-                          </p>
-                          <p>
-                            <FaLocationDot /> {item.place}
-                          </p>
                         </div>
+
+                        <button
+                          type="button"
+                          className="yt-activity-details-btn"
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            setSelectedActivity(item);
+                          }}
+                        >
+                          Ver detalles
+                        </button>
                       </div>
                     </article>
                   ))}
@@ -593,6 +611,68 @@ function MinJovenes() {
           </div>
         </div>
       </section>
+      {selectedActivity && (
+        <div
+          className="yt-activity-modal-overlay"
+          onClick={() => setSelectedActivity(null)}
+        >
+          <div
+            className="yt-activity-modal"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <button
+              type="button"
+              className="yt-activity-modal-close"
+              onClick={() => setSelectedActivity(null)}
+            >
+              ×
+            </button>
+
+            <div className="yt-activity-modal-image">
+              <img src={selectedActivity.image} alt={selectedActivity.title} />
+            </div>
+
+            <div className="yt-activity-modal-body">
+              <span
+                className={`yt-activity-status yt-activity-status-${selectedActivity.status}`}
+              >
+                {selectedActivity.status === "en-curso" && "En curso"}
+                {selectedActivity.status === "por-llegar" && "Por llegar"}
+                {selectedActivity.status === "terminado" && "Terminado"}
+              </span>
+
+              <h3>{selectedActivity.title}</h3>
+
+              <p className="yt-activity-modal-description">
+                {selectedActivity.description}
+              </p>
+
+              <div className="yt-activity-modal-meta">
+                <p>
+                  <FaCalendarDays /> {selectedActivity.date}
+                </p>
+                <p>
+                  <FaClock /> {selectedActivity.hour}
+                </p>
+                <p>
+                  <FaLocationDot /> {selectedActivity.place}
+                </p>
+              </div>
+
+              <div className="yt-activity-map-wrapper">
+                <iframe
+                  src={selectedActivity.mapEmbed}
+                  title={`Mapa de ${selectedActivity.title}`}
+                  className="yt-activity-map-iframe"
+                  loading="lazy"
+                  allowFullScreen
+                  referrerPolicy="no-referrer-when-downgrade"
+                ></iframe>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
     </main>
   );
 }
