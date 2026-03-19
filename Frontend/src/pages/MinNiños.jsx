@@ -1,4 +1,4 @@
-import { useRef, useState } from "react";
+import { useState } from "react";
 import "../styles/MinNiños.css";
 import {
   FaChildren,
@@ -19,51 +19,15 @@ import {
 
 function MinNiños() {
   const [activeTab, setActiveTab] = useState("about");
+  const [menuOpen, setMenuOpen] = useState(false);
 
-  const tabsRef = useRef(null);
-  const isDown = useRef(false);
-  const isDragging = useRef(false);
-  const startX = useRef(0);
-  const scrollLeft = useRef(0);
-
-  const handleMouseDown = (e) => {
-    if (!tabsRef.current) return;
-    isDown.current = true;
-    isDragging.current = false;
-    startX.current = e.pageX - tabsRef.current.offsetLeft;
-    scrollLeft.current = tabsRef.current.scrollLeft;
-  };
-
-  const handleMouseLeave = () => {
-    isDown.current = false;
-  };
-
-  const handleMouseUp = () => {
-    isDown.current = false;
-
-    setTimeout(() => {
-      isDragging.current = false;
-    }, 0);
-  };
-
-  const handleMouseMove = (e) => {
-    if (!isDown.current || !tabsRef.current) return;
-
-    e.preventDefault();
-
-    const x = e.pageX - tabsRef.current.offsetLeft;
-    const walk = x - startX.current;
-
-    if (Math.abs(walk) > 6) {
-      isDragging.current = true;
-    }
-
-    tabsRef.current.scrollLeft = scrollLeft.current - walk * 1.2;
+  const toggleMenu = () => {
+    setMenuOpen((prev) => !prev);
   };
 
   const handleTabClick = (tabId) => {
-    if (isDragging.current) return;
     setActiveTab(tabId);
+    setMenuOpen(false);
   };
 
   const ministryData = {
@@ -98,24 +62,48 @@ function MinNiños() {
     ],
     activities: [
       {
-        icon: <FaBookBible />,
+        image:
+          "https://images.unsplash.com/photo-1503454537195-1dcabb73ffb9?auto=format&fit=crop&w=900&q=80",
         title: "Historias bíblicas",
-        text: "Enseñanzas adaptadas a la edad de los niños, con dinámicas visuales y participativas.",
+        description:
+          "Enseñanzas adaptadas a la edad de los niños, con dinámicas visuales y aprendizaje divertido.",
+        date: "Lunes 02 de Marzo",
+        hour: "09:00 - 10:00",
+        place: "Sala infantil 1",
+        status: "en-curso",
       },
       {
-        icon: <FaPuzzlePiece />,
+        image:
+          "https://images.unsplash.com/photo-1517164850305-99a3e65bb47e?auto=format&fit=crop&w=900&q=80",
         title: "Juegos y dinámicas",
-        text: "Actividades recreativas que fortalecen valores, compañerismo y trabajo en equipo.",
+        description:
+          "Actividades recreativas que fortalecen valores y compañerismo.",
+        date: "Domingo 21 de abril",
+        hour: "10:15 - 11:00",
+        place: "Patio infantil",
+        status: "por-llegar",
       },
       {
-        icon: <FaMusic />,
+        image:
+          "https://images.unsplash.com/photo-1519340241574-2cec6aef0c01?auto=format&fit=crop&w=900&q=80",
         title: "Alabanza infantil",
-        text: "Canciones alegres y momentos de adoración para aprender a amar a Dios desde pequeños.",
+        description:
+          "Canciones alegres y momentos de adoración para aprender a amar a Dios.",
+        date: "Domingo 21 de abril",
+        hour: "11:15 - 12:00",
+        place: "Salón principal infantil",
+        status: "terminado",
       },
       {
-        icon: <FaPaintbrush />,
+        image:
+          "https://images.unsplash.com/photo-1516627145497-ae6968895b74?auto=format&fit=crop&w=900&q=80",
         title: "Manualidades creativas",
-        text: "Espacios para crear, dibujar y expresar enseñanzas bíblicas de forma divertida.",
+        description:
+          "Espacios para crear, dibujar y expresar enseñanzas bíblicas.",
+        date: "Domingo 21 de abril",
+        hour: "15:00 - 16:00",
+        place: "Aula creativa",
+        status: "por-llegar",
       },
     ],
     regulations: [
@@ -198,7 +186,6 @@ function MinNiños() {
     { id: "leaders", label: "Encargados" },
     { id: "schedule", label: "Horario" },
     { id: "gallery", label: "Galería" },
-    { id: "editable", label: "Editable" },
     { id: "contact", label: "Contacto" },
   ];
 
@@ -246,9 +233,34 @@ function MinNiños() {
             <div className="activities-grid">
               {ministryData.activities.map((item, index) => (
                 <article className="activity-card" key={index}>
-                  <div className="activity-icon">{item.icon}</div>
-                  <h3>{item.title}</h3>
-                  <p>{item.text}</p>
+                  <div className="activity-image">
+                    <img src={item.image} alt={item.title} />
+
+                    <span
+                      className={`activity-status activity-status-${item.status}`}
+                    >
+                      {item.status === "en-curso" && "En curso"}
+                      {item.status === "por-llegar" && "Por llegar"}
+                      {item.status === "terminado" && "Terminado"}
+                    </span>
+                  </div>
+
+                  <div className="activity-body">
+                    <h3>{item.title}</h3>
+                    <p className="activity-description">{item.description}</p>
+
+                    <div className="activity-meta">
+                      <p>
+                        <FaCalendarDays /> {item.date}
+                      </p>
+                      <p>
+                        <FaClock /> {item.hour}
+                      </p>
+                      <p>
+                        <FaLocationDot /> {item.place}
+                      </p>
+                    </div>
+                  </div>
                 </article>
               ))}
             </div>
@@ -421,26 +433,34 @@ function MinNiños() {
 
       <section className="minninos-tabs-section">
         <div className="minninos-container">
-          <div
-            className="minninos-tabs-nav"
-            ref={tabsRef}
-            onMouseDown={handleMouseDown}
-            onMouseLeave={handleMouseLeave}
-            onMouseUp={handleMouseUp}
-            onMouseMove={handleMouseMove}
-          >
-            {tabs.map((tab) => (
-              <button
-                key={tab.id}
-                className={`minninos-tab-btn ${
-                  activeTab === tab.id ? "active" : ""
-                }`}
-                onClick={() => handleTabClick(tab.id)}
-                type="button"
-              >
-                {tab.label}
-              </button>
-            ))}
+          <div className="minninos-menu-wrapper">
+            <button
+              className={`minninos-menu-btn ${menuOpen ? "open" : ""}`}
+              onClick={toggleMenu}
+              type="button"
+              aria-label="Abrir menú"
+            >
+              <span></span>
+              <span></span>
+              <span></span>
+            </button>
+
+            {menuOpen && (
+              <div className="minninos-dropdown">
+                {tabs.map((tab) => (
+                  <button
+                    key={tab.id}
+                    className={`minninos-dropdown-item ${
+                      activeTab === tab.id ? "active" : ""
+                    }`}
+                    onClick={() => handleTabClick(tab.id)}
+                    type="button"
+                  >
+                    {tab.label}
+                  </button>
+                ))}
+              </div>
+            )}
           </div>
 
           <div className="minninos-tab-panel">{renderTabContent()}</div>

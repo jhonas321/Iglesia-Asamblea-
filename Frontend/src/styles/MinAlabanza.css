@@ -271,56 +271,94 @@
 }
 
 /* ===== TABS DESLIZABLES ===== */
-.maalabanza-tabs {
+.maalabanza-menu-wrapper {
+  position: relative;
   display: flex;
-  flex-wrap: nowrap;
-  gap: 12px;
+  align-items: center;
+  gap: 14px;
   margin-bottom: 22px;
-  overflow-x: auto;
-  overflow-y: hidden;
-  -webkit-overflow-scrolling: touch;
-  touch-action: pan-x;
-  scroll-behavior: smooth;
-  width: 100%;
-  cursor: grab;
-  user-select: none;
-  padding-bottom: 8px;
+  z-index: 15;
 }
 
-.maalabanza-tabs:active {
-  cursor: grabbing;
-}
-
-.maalabanza-tabs::-webkit-scrollbar {
-  display: none;
-}
-
-.maalabanza-tab-btn {
+.maalabanza-menu-btn {
+  width: 56px;
+  height: 56px;
   border: none;
-  padding: 11px 18px;
-  border-radius: 999px;
-  font-size: 0.92rem;
-  font-weight: 600;
+  border-radius: 18px;
+  background: linear-gradient(135deg, #22c3ff, #8d5cff);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 6px;
   cursor: pointer;
-  background: rgba(255, 255, 255, 0.07);
-  color: rgba(241, 246, 255, 0.88);
-  border: 1px solid rgba(255, 255, 255, 0.08);
-  transition: all 0.3s ease;
-  flex: 0 0 auto;
-  white-space: nowrap;
+  box-shadow: 0 16px 34px rgba(94, 91, 255, 0.24);
+  transition: transform 0.25s ease, box-shadow 0.25s ease;
+  flex-shrink: 0;
 }
 
-.maalabanza-tab-btn:hover {
+.maalabanza-menu-btn:hover {
   transform: translateY(-2px);
-  background: rgba(120, 162, 255, 0.14);
+  box-shadow: 0 20px 40px rgba(94, 91, 255, 0.32);
 }
 
-.maalabanza-tab-btn.active {
+.maalabanza-menu-btn span {
+  display: block;
+  width: 24px;
+  height: 3px;
+  background: #ffffff;
+  border-radius: 999px;
+  transition: all 0.3s ease;
+}
+
+.maalabanza-current-tab {
+  font-size: 1rem;
+  font-weight: 700;
+  color: rgba(241, 246, 255, 0.92);
+  line-height: 1;
+}
+
+.maalabanza-dropdown {
+  position: absolute;
+  top: 70px;
+  left: 0;
+  min-width: 250px;
+  background: rgba(10, 18, 40, 0.96);
+  border: 1px solid rgba(176, 202, 255, 0.12);
+  border-radius: 22px;
+  padding: 10px;
+  box-shadow: 0 22px 44px rgba(0, 0, 0, 0.3);
+  backdrop-filter: blur(14px);
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.maalabanza-dropdown-item {
+  width: 100%;
+  border: none;
+  padding: 14px 16px;
+  border-radius: 14px;
+  font-size: 0.95rem;
+  font-weight: 700;
+  text-align: left;
+  cursor: pointer;
+  color: #ffffff;
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid transparent;
+  transition: all 0.25s ease;
+}
+
+.maalabanza-dropdown-item:hover {
+  background: rgba(120, 162, 255, 0.14);
+  border-color: rgba(158, 232, 255, 0.18);
+}
+
+.maalabanza-dropdown-item.active {
   background: linear-gradient(135deg, #22c3ff, #8d5cff);
   color: #ffffff;
-  box-shadow: 0 14px 32px rgba(94, 91, 255, 0.25);
+  box-shadow: 0 14px 28px rgba(94, 91, 255, 0.22);
 }
-
 .maalabanza-content {
   padding: 28px;
   border-radius: 28px;
@@ -704,19 +742,115 @@
     flex: 1 1 100%;
   }
 
-  .maalabanza-tabs {
-    justify-content: flex-start;
-  }
-
-  .maalabanza-tab-btn {
-    width: auto;
-    min-width: max-content;
-    flex: 0 0 auto;
-    text-align: center;
-    white-space: nowrap;
-  }
-
   .maalabanza-team-image {
     height: 210px;
   }
+  .maalabanza-menu-wrapper {
+    margin-bottom: 18px;
+  }
+
+  .maalabanza-menu-btn {
+    width: 52px;
+    height: 52px;
+    border-radius: 16px;
+  }
+
+  .maalabanza-current-tab {
+    font-size: 0.95rem;
+  }
+
+  .maalabanza-dropdown {
+    top: 64px;
+    left: 0;
+    right: 0;
+    min-width: 100%;
+  }
+}
+.maalabanza-menu-wrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  margin-bottom: 22px;
+  z-index: 15;
+}
+
+.maalabanza-menu-btn {
+  width: 56px;
+  height: 56px;
+  border: none;
+  border-radius: 18px;
+  background: linear-gradient(135deg, #22c3ff, #8d5cff);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 6px;
+  cursor: pointer;
+  box-shadow: 0 16px 34px rgba(94, 91, 255, 0.24);
+  transition: transform 0.25s ease, box-shadow 0.25s ease;
+  flex-shrink: 0;
+}
+
+.maalabanza-menu-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 20px 40px rgba(94, 91, 255, 0.32);
+}
+
+.maalabanza-menu-btn span {
+  display: block;
+  width: 24px;
+  height: 3px;
+  background: #ffffff;
+  border-radius: 999px;
+  transition: all 0.3s ease;
+}
+
+.maalabanza-current-tab {
+  font-size: 1rem;
+  font-weight: 700;
+  color: rgba(241, 246, 255, 0.92);
+  line-height: 1;
+}
+
+.maalabanza-dropdown {
+  position: absolute;
+  top: 70px;
+  left: 0;
+  min-width: 250px;
+  background: rgba(10, 18, 40, 0.96);
+  border: 1px solid rgba(176, 202, 255, 0.12);
+  border-radius: 22px;
+  padding: 10px;
+  box-shadow: 0 22px 44px rgba(0, 0, 0, 0.3);
+  backdrop-filter: blur(14px);
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.maalabanza-dropdown-item {
+  width: 100%;
+  border: none;
+  padding: 14px 16px;
+  border-radius: 14px;
+  font-size: 0.95rem;
+  font-weight: 700;
+  text-align: left;
+  cursor: pointer;
+  color: #ffffff;
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid transparent;
+  transition: all 0.25s ease;
+}
+
+.maalabanza-dropdown-item:hover {
+  background: rgba(120, 162, 255, 0.14);
+  border-color: rgba(158, 232, 255, 0.18);
+}
+
+.maalabanza-dropdown-item.active {
+  background: linear-gradient(135deg, #22c3ff, #8d5cff);
+  color: #ffffff;
+  box-shadow: 0 14px 28px rgba(94, 91, 255, 0.22);
 }

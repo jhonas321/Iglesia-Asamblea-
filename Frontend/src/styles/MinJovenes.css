@@ -123,56 +123,93 @@
 }
 
 /* ===== TABS DESLIZABLES ===== */
-.yt-tabs {
+.yt-menu-wrapper {
+  position: relative;
   display: flex;
-  flex-wrap: nowrap;
-  gap: 12px;
+  align-items: center;
+  gap: 14px;
   margin-bottom: 28px;
-  overflow-x: auto;
-  overflow-y: hidden;
-  -webkit-overflow-scrolling: touch;
-  touch-action: pan-x;
-  scroll-behavior: smooth;
-  width: 100%;
-  cursor: grab;
-  user-select: none;
-  padding-bottom: 8px;
+  z-index: 20;
 }
 
-.yt-tabs:active {
-  cursor: grabbing;
-}
-
-.yt-tabs::-webkit-scrollbar {
-  display: none;
-}
-
-.yt-tab-btn {
+.yt-menu-btn {
+  width: 58px;
+  height: 58px;
   border: none;
+  border-radius: 18px;
+  background: linear-gradient(135deg, #ff2d95, #7b61ff);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 6px;
   cursor: pointer;
-  padding: 13px 20px;
-  border-radius: 14px;
+  box-shadow: 0 16px 34px rgba(123, 97, 255, 0.24);
+  transition: transform 0.25s ease, box-shadow 0.25s ease;
+  flex-shrink: 0;
+}
+
+.yt-menu-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 20px 40px rgba(123, 97, 255, 0.32);
+}
+
+.yt-menu-btn span {
+  display: block;
+  width: 24px;
+  height: 3px;
+  background: #ffffff;
+  border-radius: 999px;
+  transition: all 0.3s ease;
+}
+
+.yt-current-tab {
+  font-size: 1.06rem;
   font-weight: 800;
   color: #ffffff;
-  background: rgba(255, 255, 255, 0.08);
-  border: 1px solid rgba(255, 255, 255, 0.12);
-  transition: all 0.3s ease;
-  backdrop-filter: blur(10px);
-  flex: 0 0 auto;
-  white-space: nowrap;
+  line-height: 1;
 }
 
-.yt-tab-btn:hover {
-  transform: translateY(-3px);
-  border-color: rgba(134, 247, 255, 0.32);
+.yt-dropdown {
+  position: absolute;
+  top: 72px;
+  left: 0;
+  min-width: 260px;
+  background: rgba(16, 23, 45, 0.96);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 22px;
+  padding: 10px;
+  box-shadow: 0 22px 44px rgba(0, 0, 0, 0.3);
+  backdrop-filter: blur(14px);
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
 }
 
-.yt-tab-btn.active {
+.yt-dropdown-item {
+  width: 100%;
+  border: none;
+  cursor: pointer;
+  padding: 14px 16px;
+  border-radius: 14px;
+  font-weight: 800;
+  text-align: left;
+  color: #ffffff;
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid transparent;
+  transition: all 0.25s ease;
+}
+
+.yt-dropdown-item:hover {
+  border-color: rgba(134, 247, 255, 0.24);
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.yt-dropdown-item.active {
   background: linear-gradient(135deg, #ff2d95, #7b61ff);
   border-color: transparent;
-  box-shadow: 0 18px 36px rgba(123, 97, 255, 0.24);
+  box-shadow: 0 14px 28px rgba(123, 97, 255, 0.22);
 }
-
 .yt-tab-content {
   min-height: 420px;
 }
@@ -480,248 +517,6 @@
   margin-top: 10px;
 }
 
-.yt-activity-subtabs {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 12px;
-  margin-bottom: 26px;
-}
-
-.yt-activity-subtab {
-  border: none;
-  cursor: pointer;
-  padding: 12px 18px;
-  border-radius: 14px;
-  font-weight: 800;
-  color: #ffffff;
-  background: rgba(255, 255, 255, 0.08);
-  border: 1px solid rgba(255, 255, 255, 0.12);
-  transition: all 0.3s ease;
-}
-
-.yt-activity-subtab:hover {
-  transform: translateY(-2px);
-  border-color: rgba(134, 247, 255, 0.32);
-}
-
-.yt-activity-subtab.active {
-  background: linear-gradient(135deg, #00e5ff, #7b61ff);
-  border-color: transparent;
-  box-shadow: 0 16px 32px rgba(123, 97, 255, 0.24);
-}
-
-.yt-calendar-wrap {
-  background: rgba(255, 255, 255, 0.05);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  border-radius: 28px;
-  padding: 24px;
-  margin-bottom: 28px;
-}
-
-.yt-calendar-header {
-  display: flex;
-  justify-content: space-between;
-  gap: 16px;
-  align-items: center;
-  flex-wrap: wrap;
-  margin-bottom: 18px;
-}
-
-.yt-calendar-header h3 {
-  font-size: 1.5rem;
-  margin: 0;
-}
-
-.yt-calendar-legend {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 14px;
-}
-
-.yt-legend-item {
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  color: rgba(255, 255, 255, 0.84);
-  font-weight: 700;
-  font-size: 0.92rem;
-}
-
-.yt-legend-dot {
-  width: 12px;
-  height: 12px;
-  border-radius: 50%;
-  display: inline-block;
-}
-
-.yt-dot-current {
-  background: #00e676;
-}
-
-.yt-dot-upcoming {
-  background: #00b0ff;
-}
-
-.yt-dot-finished {
-  background: #ff8a80;
-}
-
-.yt-calendar-weekdays {
-  display: grid;
-  grid-template-columns: repeat(7, 1fr);
-  gap: 10px;
-  margin-bottom: 10px;
-}
-
-.yt-calendar-weekdays span {
-  text-align: center;
-  font-weight: 800;
-  color: #86f7ff;
-  padding: 10px 0;
-}
-
-.yt-calendar-grid {
-  display: grid;
-  grid-template-columns: repeat(7, 1fr);
-  gap: 10px;
-}
-
-.yt-calendar-day {
-  min-height: 150px;
-  border-radius: 18px;
-  padding: 12px;
-  background: rgba(255, 255, 255, 0.06);
-  border: 1px solid rgba(255, 255, 255, 0.08);
-  transition: transform 0.25s ease, border-color 0.25s ease;
-  display: flex;
-  flex-direction: column;
-}
-
-.yt-calendar-day:hover {
-  transform: translateY(-3px);
-}
-
-.yt-calendar-day--empty {
-  background: transparent;
-  border: 1px dashed rgba(255, 255, 255, 0.04);
-}
-
-.yt-cal-day--current {
-  border-color: rgba(0, 230, 118, 0.55);
-  box-shadow: inset 0 0 0 1px rgba(0, 230, 118, 0.18);
-}
-
-.yt-cal-day--upcoming {
-  border-color: rgba(0, 176, 255, 0.5);
-  box-shadow: inset 0 0 0 1px rgba(0, 176, 255, 0.16);
-}
-
-.yt-cal-day--finished {
-  border-color: rgba(255, 138, 128, 0.42);
-  box-shadow: inset 0 0 0 1px rgba(255, 138, 128, 0.14);
-}
-
-.yt-calendar-day-number {
-  font-size: 1rem;
-  font-weight: 900;
-  margin-bottom: 10px;
-}
-
-.yt-calendar-events-mini {
-  display: flex;
-  flex-direction: column;
-  gap: 6px;
-}
-
-.yt-calendar-event-card {
-  display: flex;
-  flex-direction: column;
-  gap: 2px;
-  padding: 7px 8px;
-  border-radius: 10px;
-  color: white;
-  line-height: 1.25;
-  box-shadow: 0 6px 14px rgba(0, 0, 0, 0.12);
-}
-
-.yt-calendar-event-title {
-  font-size: 0.72rem;
-  font-weight: 800;
-}
-
-.yt-calendar-event-time {
-  font-size: 0.66rem;
-  opacity: 0.95;
-}
-
-.yt-calendar-event-place {
-  font-size: 0.62rem;
-  opacity: 0.88;
-}
-
-.yt-calendar-no-event {
-  font-size: 0.68rem;
-  color: rgba(255, 255, 255, 0.38);
-}
-
-.yt-mini-en-curso {
-  background: linear-gradient(135deg, #00c853, #00e676);
-}
-
-.yt-mini-por-llegar {
-  background: linear-gradient(135deg, #0091ea, #00b0ff);
-}
-
-.yt-mini-terminado {
-  background: linear-gradient(135deg, #ff7043, #ff8a80);
-}
-
-.yt-calendar-mini-tag {
-  display: inline-block;
-  font-size: 0.72rem;
-  line-height: 1.3;
-  padding: 6px 8px;
-  border-radius: 10px;
-  font-weight: 700;
-  color: white;
-}
-
-.yt-live-lists {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 22px;
-}
-
-.yt-live-box {
-  background: rgba(255, 255, 255, 0.05);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  border-radius: 24px;
-  padding: 22px;
-}
-
-.yt-live-box-title {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 12px;
-  margin-bottom: 16px;
-}
-
-.yt-live-box-title h3 {
-  margin: 0;
-  font-size: 1.18rem;
-}
-
-.yt-live-box-title span {
-  min-width: 34px;
-  height: 34px;
-  border-radius: 999px;
-  display: grid;
-  place-items: center;
-  font-weight: 800;
-  background: rgba(255, 255, 255, 0.08);
-}
-
 .yt-live-list,
 .yt-finished-list {
   display: flex;
@@ -759,14 +554,6 @@
   color: rgba(255, 255, 255, 0.62);
 }
 
-.yt-live-item-current {
-  border-color: rgba(0, 230, 118, 0.3);
-}
-
-.yt-live-item-upcoming {
-  border-color: rgba(0, 176, 255, 0.28);
-}
-
 .yt-status-badge {
   white-space: nowrap;
   padding: 8px 12px;
@@ -786,25 +573,6 @@
 
 .yt-status-finished {
   background: linear-gradient(135deg, #ff7043, #ff8a80);
-}
-
-.yt-finished-wrapper {
-  display: flex;
-  flex-direction: column;
-  gap: 18px;
-}
-
-.yt-finished-header h3 {
-  margin-bottom: 8px;
-}
-
-.yt-finished-header p {
-  color: rgba(255, 255, 255, 0.72);
-}
-
-.yt-empty-text {
-  color: rgba(255, 255, 255, 0.65);
-  margin: 0;
 }
 
 .yt-albums-grid {
@@ -1066,18 +834,6 @@
     padding: 24px 18px;
   }
 
-  .yt-tabs {
-    gap: 10px;
-    justify-content: flex-start;
-  }
-
-  .yt-tab-btn {
-    width: auto;
-    min-width: max-content;
-    flex: 0 0 auto;
-    white-space: nowrap;
-  }
-
   .yt-activities-grid,
   .yt-gallery-grid,
   .yt-social-grid,
@@ -1132,4 +888,35 @@
   .yt-tab-content {
     min-height: auto;
   }
+  .yt-menu-wrapper {
+    margin-bottom: 20px;
+  }
+
+  .yt-menu-btn {
+    width: 52px;
+    height: 52px;
+    border-radius: 16px;
+  }
+
+  .yt-current-tab {
+    font-size: 0.98rem;
+  }
+
+  .yt-dropdown {
+    top: 64px;
+    left: 0;
+    right: 0;
+    min-width: 100%;
+  }
+}
+.yt-menu-btn.open span:nth-child(1) {
+  transform: translateY(9px) rotate(45deg);
+}
+
+.yt-menu-btn.open span:nth-child(2) {
+  opacity: 0;
+}
+
+.yt-menu-btn.open span:nth-child(3) {
+  transform: translateY(-9px) rotate(-45deg);
 }

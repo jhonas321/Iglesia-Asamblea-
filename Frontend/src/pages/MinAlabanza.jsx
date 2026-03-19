@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import "../styles/MinAlabanza.css";
 import {
   FaMusic,
@@ -17,51 +17,15 @@ import {
 function MinAlabanza() {
   const [activeTab, setActiveTab] = useState("acerca");
   const [heroIndex, setHeroIndex] = useState(0);
+  const [menuOpen, setMenuOpen] = useState(false);
 
-  const tabsRef = useRef(null);
-  const isDown = useRef(false);
-  const isDragging = useRef(false);
-  const startX = useRef(0);
-  const scrollLeft = useRef(0);
-
-  const handleMouseDown = (e) => {
-    if (!tabsRef.current) return;
-    isDown.current = true;
-    isDragging.current = false;
-    startX.current = e.pageX - tabsRef.current.offsetLeft;
-    scrollLeft.current = tabsRef.current.scrollLeft;
-  };
-
-  const handleMouseLeave = () => {
-    isDown.current = false;
-  };
-
-  const handleMouseUp = () => {
-    isDown.current = false;
-
-    setTimeout(() => {
-      isDragging.current = false;
-    }, 0);
-  };
-
-  const handleMouseMove = (e) => {
-    if (!isDown.current || !tabsRef.current) return;
-
-    e.preventDefault();
-
-    const x = e.pageX - tabsRef.current.offsetLeft;
-    const walk = x - startX.current;
-
-    if (Math.abs(walk) > 6) {
-      isDragging.current = true;
-    }
-
-    tabsRef.current.scrollLeft = scrollLeft.current - walk * 1.2;
+  const toggleMenu = () => {
+    setMenuOpen((prev) => !prev);
   };
 
   const handleTabClick = (tabKey) => {
-    if (isDragging.current) return;
     setActiveTab(tabKey);
+    setMenuOpen(false);
   };
 
   const ministryData = {
@@ -435,26 +399,38 @@ function MinAlabanza() {
           </div>
         </div>
 
-        <div
-          className="maalabanza-tabs"
-          ref={tabsRef}
-          onMouseDown={handleMouseDown}
-          onMouseLeave={handleMouseLeave}
-          onMouseUp={handleMouseUp}
-          onMouseMove={handleMouseMove}
-        >
-          {tabKeys.map((key) => (
-            <button
-              key={key}
-              type="button"
-              className={`maalabanza-tab-btn ${
-                activeTab === key ? "active" : ""
-              }`}
-              onClick={() => handleTabClick(key)}
-            >
-              {ministryData.tabs[key].label}
-            </button>
-          ))}
+        <div className="maalabanza-menu-wrapper">
+          <button
+            type="button"
+            className={`maalabanza-menu-btn ${menuOpen ? "open" : ""}`}
+            onClick={toggleMenu}
+            aria-label="Abrir menú"
+          >
+            <span></span>
+            <span></span>
+            <span></span>
+          </button>
+
+          <span className="maalabanza-current-tab">
+            {ministryData.tabs[activeTab].label}
+          </span>
+
+          {menuOpen && (
+            <div className="maalabanza-dropdown">
+              {tabKeys.map((key) => (
+                <button
+                  key={key}
+                  type="button"
+                  className={`maalabanza-dropdown-item ${
+                    activeTab === key ? "active" : ""
+                  }`}
+                  onClick={() => handleTabClick(key)}
+                >
+                  {ministryData.tabs[key].label}
+                </button>
+              ))}
+            </div>
+          )}
         </div>
 
         <div className="maalabanza-content">{renderTabContent()}</div>

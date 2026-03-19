@@ -1,4 +1,4 @@
-import { useMemo, useRef, useState } from "react";
+import { useState } from "react";
 import "../styles/MinJovenes.css";
 import {
   FaUsers,
@@ -19,150 +19,16 @@ import {
 function MinJovenes() {
   const [selectedAlbum, setSelectedAlbum] = useState(null);
   const [activeTab, setActiveTab] = useState("acerca");
-  const [activityView, setActivityView] = useState("activas");
+  const [menuOpen, setMenuOpen] = useState(false);
 
-  const tabsRef = useRef(null);
-  const isDown = useRef(false);
-  const startX = useRef(0);
-  const scrollLeft = useRef(0);
-
-  const handleMouseDown = (e) => {
-    if (!tabsRef.current) return;
-    isDown.current = true;
-    startX.current = e.pageX - tabsRef.current.offsetLeft;
-    scrollLeft.current = tabsRef.current.scrollLeft;
+  const toggleMenu = () => {
+    setMenuOpen((prev) => !prev);
   };
 
-  const handleMouseLeave = () => {
-    isDown.current = false;
+  const handleTabClick = (tabId) => {
+    setActiveTab(tabId);
+    setMenuOpen(false);
   };
-
-  const handleMouseUp = () => {
-    isDown.current = false;
-  };
-
-  const handleMouseMove = (e) => {
-    if (!isDown.current || !tabsRef.current) return;
-    e.preventDefault();
-    const x = e.pageX - tabsRef.current.offsetLeft;
-    const walk = (x - startX.current) * 1.2;
-    tabsRef.current.scrollLeft = scrollLeft.current - walk;
-  };
-
-  const youthActivities = [
-    {
-      title: "Noche de cine",
-      date: "2026-03-06",
-      endDate: "2026-03-06",
-      time: "19:00",
-      place: "Salón juvenil",
-      status: "terminado",
-    },
-    {
-      title: "Día de río",
-      date: "2026-03-20",
-      endDate: "2026-03-20",
-      time: "08:00",
-      place: "Ribera comunitaria",
-      status: "por-llegar",
-    },
-    {
-      title: "Evangelismo",
-      date: "2026-03-15",
-      endDate: "2026-03-15",
-      time: "16:00",
-      place: "Plaza principal",
-      status: "por-llegar",
-    },
-    {
-      title: "Culto unido",
-      date: "2026-03-13",
-      endDate: "2026-03-13",
-      time: "19:30",
-      place: "Templo central",
-      status: "en-curso",
-    },
-    {
-      title: "Campamento militar",
-      date: "2026-03-27",
-      endDate: "2026-03-29",
-      time: "07:00",
-      place: "Centro de retiros",
-      status: "por-llegar",
-    },
-    {
-      title: "Campamento juvenil",
-      date: "2026-04-10",
-      endDate: "2026-04-12",
-      time: "08:30",
-      place: "Casa campestre",
-      status: "por-llegar",
-    },
-  ];
-
-  const calendarMonth = 2;
-  const calendarYear = 2026;
-  const monthLabel = "Marzo 2026";
-
-  const calendarDays = useMemo(() => {
-    const firstDay = new Date(calendarYear, calendarMonth, 1);
-    const lastDay = new Date(calendarYear, calendarMonth + 1, 0);
-
-    const startWeekDay = firstDay.getDay();
-    const totalDays = lastDay.getDate();
-
-    const cells = [];
-
-    for (let i = 0; i < startWeekDay; i++) {
-      cells.push({ empty: true, key: `empty-${i}` });
-    }
-
-    for (let day = 1; day <= totalDays; day++) {
-      const currentDate = `${calendarYear}-${String(calendarMonth + 1).padStart(
-        2,
-        "0"
-      )}-${String(day).padStart(2, "0")}`;
-
-      const matchedActivities = youthActivities.filter((activity) => {
-        const start = new Date(activity.date);
-        const end = new Date(activity.endDate || activity.date);
-        const current = new Date(currentDate);
-        return current >= start && current <= end;
-      });
-
-      let statusClass = "";
-      if (matchedActivities.some((a) => a.status === "en-curso")) {
-        statusClass = "yt-cal-day--current";
-      } else if (matchedActivities.some((a) => a.status === "por-llegar")) {
-        statusClass = "yt-cal-day--upcoming";
-      } else if (matchedActivities.some((a) => a.status === "terminado")) {
-        statusClass = "yt-cal-day--finished";
-      }
-
-      cells.push({
-        empty: false,
-        day,
-        date: currentDate,
-        activities: matchedActivities,
-        statusClass,
-        key: currentDate,
-      });
-    }
-
-    return cells;
-  }, []);
-
-  const currentActivities = youthActivities.filter(
-    (item) => item.status === "en-curso"
-  );
-
-  const upcomingActivities = youthActivities.filter(
-    (item) => item.status === "por-llegar"
-  );
-
-  const finishedActivities = youthActivities.filter(
-    (item) => item.status === "terminado"
-  );
 
   const ministryData = {
     title: "Ministerio de Jóvenes",
@@ -185,24 +51,48 @@ function MinJovenes() {
 
     activities: [
       {
-        icon: <FaBookBible />,
-        title: "Estudios bíblicos",
-        text: "Aprendemos la Palabra de Dios de forma práctica, clara y cercana a la vida juvenil.",
+        image:
+          "https://images.unsplash.com/photo-1489599849927-2ee91cede3ba?auto=format&fit=crop&w=900&q=80",
+        title: "Noche de cine",
+        description:
+          "Una noche especial de convivencia, reflexión y amistad para compartir en comunidad.",
+        date: "Viernes 06 de marzo",
+        hour: "19:00",
+        place: "Salón juvenil",
+        status: "terminado",
       },
       {
-        icon: <FaMusic />,
-        title: "Noches de alabanza",
-        text: "Momentos especiales para adorar a Dios con música, pasión y entrega.",
+        image:
+          "https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?auto=format&fit=crop&w=900&q=80",
+        title: "Evangelismo",
+        description:
+          "Salida especial para compartir el mensaje de esperanza con otros jóvenes y familias.",
+        date: "Domingo 15 de marzo",
+        hour: "16:00",
+        place: "Plaza principal",
+        status: "por-llegar",
       },
       {
-        icon: <FaFire />,
-        title: "Encuentros juveniles",
-        text: "Reuniones dinámicas con mensajes, juegos, integración y reflexiones.",
+        image:
+          "https://images.unsplash.com/photo-1492684223066-81342ee5ff30?auto=format&fit=crop&w=900&q=80",
+        title: "Culto unido",
+        description:
+          "Encuentro de adoración, mensaje y comunión junto a toda la congregación juvenil.",
+        date: "Viernes 13 de marzo",
+        hour: "19:30",
+        place: "Templo central",
+        status: "en-curso",
       },
       {
-        icon: <FaUsers />,
-        title: "Comunidad",
-        text: "Creamos amistades sanas que ayudan a crecer, servir y mantenerse firmes en la fe.",
+        image:
+          "https://images.unsplash.com/photo-1529156069898-49953e39b3ac?auto=format&fit=crop&w=900&q=80",
+        title: "Campamento juvenil",
+        description:
+          "Tiempo especial de retiro, enseñanza, dinámicas y fortalecimiento espiritual.",
+        date: "10 al 12 de abril",
+        hour: "08:30",
+        place: "Casa campestre",
+        status: "por-llegar",
       },
     ],
 
@@ -348,75 +238,105 @@ function MinJovenes() {
 
       <section className="yt-tabs-section">
         <div className="yt-container">
-          <div
-            className="yt-tabs"
-            ref={tabsRef}
-            onMouseDown={handleMouseDown}
-            onMouseLeave={handleMouseLeave}
-            onMouseUp={handleMouseUp}
-            onMouseMove={handleMouseMove}
-          >
+          <div className="yt-menu-wrapper">
             <button
-              className={`yt-tab-btn ${activeTab === "acerca" ? "active" : ""}`}
-              onClick={() => setActiveTab("acerca")}
+              className={`yt-menu-btn ${menuOpen ? "open" : ""}`}
+              onClick={toggleMenu}
               type="button"
+              aria-label="Abrir menú"
             >
-              Acerca de
+              <span></span>
+              <span></span>
+              <span></span>
             </button>
 
-            <button
-              className={`yt-tab-btn ${
-                activeTab === "actividades" ? "active" : ""
-              }`}
-              onClick={() => setActiveTab("actividades")}
-              type="button"
-            >
-              Actividades
-            </button>
+            <span className="yt-current-tab">
+              {
+                {
+                  acerca: "Acerca de",
+                  actividades: "Actividades",
+                  reglamentos: "Reglamentos",
+                  liderazgo: "Liderazgo",
+                  galeria: "Galería",
+                  horario: "Horario",
+                  redes: "Redes sociales",
+                }[activeTab]
+              }
+            </span>
 
-            <button
-              className={`yt-tab-btn ${
-                activeTab === "reglamentos" ? "active" : ""
-              }`}
-              onClick={() => setActiveTab("reglamentos")}
-              type="button"
-            >
-              Reglamentos
-            </button>
+            {menuOpen && (
+              <div className="yt-dropdown">
+                <button
+                  className={`yt-dropdown-item ${
+                    activeTab === "acerca" ? "active" : ""
+                  }`}
+                  onClick={() => handleTabClick("acerca")}
+                  type="button"
+                >
+                  Acerca de
+                </button>
 
-            <button
-              className={`yt-tab-btn ${
-                activeTab === "liderazgo" ? "active" : ""
-              }`}
-              onClick={() => setActiveTab("liderazgo")}
-              type="button"
-            >
-              Liderazgo
-            </button>
+                <button
+                  className={`yt-dropdown-item ${
+                    activeTab === "actividades" ? "active" : ""
+                  }`}
+                  onClick={() => handleTabClick("actividades")}
+                  type="button"
+                >
+                  Actividades
+                </button>
 
-            <button
-              className={`yt-tab-btn ${activeTab === "galeria" ? "active" : ""}`}
-              onClick={() => setActiveTab("galeria")}
-              type="button"
-            >
-              Galería
-            </button>
+                <button
+                  className={`yt-dropdown-item ${
+                    activeTab === "reglamentos" ? "active" : ""
+                  }`}
+                  onClick={() => handleTabClick("reglamentos")}
+                  type="button"
+                >
+                  Reglamentos
+                </button>
 
-            <button
-              className={`yt-tab-btn ${activeTab === "horario" ? "active" : ""}`}
-              onClick={() => setActiveTab("horario")}
-              type="button"
-            >
-              Horario
-            </button>
+                <button
+                  className={`yt-dropdown-item ${
+                    activeTab === "liderazgo" ? "active" : ""
+                  }`}
+                  onClick={() => handleTabClick("liderazgo")}
+                  type="button"
+                >
+                  Liderazgo
+                </button>
 
-            <button
-              className={`yt-tab-btn ${activeTab === "redes" ? "active" : ""}`}
-              onClick={() => setActiveTab("redes")}
-              type="button"
-            >
-              Redes sociales
-            </button>
+                <button
+                  className={`yt-dropdown-item ${
+                    activeTab === "galeria" ? "active" : ""
+                  }`}
+                  onClick={() => handleTabClick("galeria")}
+                  type="button"
+                >
+                  Galería
+                </button>
+
+                <button
+                  className={`yt-dropdown-item ${
+                    activeTab === "horario" ? "active" : ""
+                  }`}
+                  onClick={() => handleTabClick("horario")}
+                  type="button"
+                >
+                  Horario
+                </button>
+
+                <button
+                  className={`yt-dropdown-item ${
+                    activeTab === "redes" ? "active" : ""
+                  }`}
+                  onClick={() => handleTabClick("redes")}
+                  type="button"
+                >
+                  Redes sociales
+                </button>
+              </div>
+            )}
           </div>
 
           <div className="yt-tab-content">
@@ -460,208 +380,50 @@ function MinJovenes() {
                   </p>
                 </div>
 
-                <div className="yt-activity-subtabs">
-                  <button
-                    className={`yt-activity-subtab ${
-                      activityView === "activas" ? "active" : ""
-                    }`}
-                    onClick={() => setActivityView("activas")}
-                    type="button"
-                  >
-                    En curso y por llegar
-                  </button>
-
-                  <button
-                    className={`yt-activity-subtab ${
-                      activityView === "terminadas" ? "active" : ""
-                    }`}
-                    onClick={() => setActivityView("terminadas")}
-                    type="button"
-                  >
-                    Terminadas
-                  </button>
-                </div>
-
-                {activityView === "activas" && (
-                  <>
-                    <div className="yt-calendar-wrap">
-                      <div className="yt-calendar-header">
-                        <h3>{monthLabel}</h3>
-
-                        <div className="yt-calendar-legend">
-                          <span className="yt-legend-item">
-                            <i className="yt-legend-dot yt-dot-current"></i> En
-                            curso
-                          </span>
-                          <span className="yt-legend-item">
-                            <i className="yt-legend-dot yt-dot-upcoming"></i>{" "}
-                            Por llegar
-                          </span>
-                          <span className="yt-legend-item">
-                            <i className="yt-legend-dot yt-dot-finished"></i>{" "}
-                            Terminado
-                          </span>
-                        </div>
-                      </div>
-
-                      <div className="yt-calendar-weekdays">
-                        <span>Dom</span>
-                        <span>Lun</span>
-                        <span>Mar</span>
-                        <span>Mié</span>
-                        <span>Jue</span>
-                        <span>Vie</span>
-                        <span>Sáb</span>
-                      </div>
-
-                      <div className="yt-calendar-grid">
-                        {calendarDays.map((cell) =>
-                          cell.empty ? (
-                            <div
-                              className="yt-calendar-day yt-calendar-day--empty"
-                              key={cell.key}
-                            ></div>
-                          ) : (
-                            <div
-                              className={`yt-calendar-day ${cell.statusClass}`}
-                              key={cell.key}
-                            >
-                              <div className="yt-calendar-day-number">
-                                {cell.day}
-                              </div>
-
-                              <div className="yt-calendar-events-mini">
-                                {cell.activities.length > 0 ? (
-                                  cell.activities.map((activity, index) => (
-                                    <div
-                                      key={`${activity.title}-${index}`}
-                                      className={`yt-calendar-event-card yt-mini-${activity.status}`}
-                                    >
-                                      <strong className="yt-calendar-event-title">
-                                        {activity.title}
-                                      </strong>
-                                      <span className="yt-calendar-event-time">
-                                        {activity.time}
-                                      </span>
-                                      <small className="yt-calendar-event-place">
-                                        {activity.place}
-                                      </small>
-                                    </div>
-                                  ))
-                                ) : (
-                                  <span className="yt-calendar-no-event">
-                                    Sin actividad
-                                  </span>
-                                )}
-                              </div>
-                            </div>
-                          )
-                        )}
-                      </div>
-                    </div>
-
-                    <div className="yt-live-lists">
-                      <div className="yt-live-box">
-                        <div className="yt-live-box-title">
-                          <h3>Actividades en curso</h3>
-                          <span>{currentActivities.length}</span>
-                        </div>
-
-                        <div className="yt-live-list">
-                          {currentActivities.length > 0 ? (
-                            currentActivities.map((activity, index) => (
-                              <article
-                                className="yt-live-item yt-live-item-current"
-                                key={index}
-                              >
-                                <div>
-                                  <h4>{activity.title}</h4>
-                                  <p>
-                                    {activity.date} · {activity.time}
-                                  </p>
-                                  <small>{activity.place}</small>
-                                </div>
-                                <span className="yt-status-badge yt-status-current">
-                                  En curso
-                                </span>
-                              </article>
-                            ))
-                          ) : (
-                            <p className="yt-empty-text">
-                              No hay actividades en curso.
-                            </p>
-                          )}
-                        </div>
-                      </div>
-
-                      <div className="yt-live-box">
-                        <div className="yt-live-box-title">
-                          <h3>Próximas actividades</h3>
-                          <span>{upcomingActivities.length}</span>
-                        </div>
-
-                        <div className="yt-live-list">
-                          {upcomingActivities.length > 0 ? (
-                            upcomingActivities.map((activity, index) => (
-                              <article
-                                className="yt-live-item yt-live-item-upcoming"
-                                key={index}
-                              >
-                                <div>
-                                  <h4>{activity.title}</h4>
-                                  <p>
-                                    {activity.date}
-                                    {activity.endDate !== activity.date
-                                      ? ` al ${activity.endDate}`
-                                      : ""}{" "}
-                                    · {activity.time}
-                                  </p>
-                                  <small>{activity.place}</small>
-                                </div>
-                                <span className="yt-status-badge yt-status-upcoming">
-                                  Por llegar
-                                </span>
-                              </article>
-                            ))
-                          ) : (
-                            <p className="yt-empty-text">
-                              No hay actividades próximas.
-                            </p>
-                          )}
-                        </div>
-                      </div>
-                    </div>
-                  </>
-                )}
-
-                {activityView === "terminadas" && (
-                  <div className="yt-finished-wrapper">
-                    <div className="yt-finished-header">
-                      <h3>Actividades terminadas</h3>
-                      <p>
-                        Historial de actividades ya realizadas por el
-                        ministerio.
+                {activeTab === "actividades" && (
+                  <div className="yt-panel">
+                    <div className="yt-panel-header">
+                      <span className="yt-chip">Actividades</span>
+                      <h2>Actividades del ministerio juvenil</h2>
+                      <p className="yt-activities-intro">
+                        Conoce las actividades, encuentros y eventos especiales
+                        del ministerio juvenil.
                       </p>
                     </div>
 
-                    <div className="yt-finished-list">
-                      {finishedActivities.map((activity, index) => (
-                        <article className="yt-finished-item" key={index}>
-                          <div>
-                            <h4>{activity.title}</h4>
-                            <p>
-                              {activity.date}
-                              {activity.endDate !== activity.date
-                                ? ` al ${activity.endDate}`
-                                : ""}{" "}
-                              · {activity.time}
-                            </p>
-                            <small>{activity.place}</small>
+                    <div className="yt-activity-cards-grid">
+                      {ministryData.activities.map((item, index) => (
+                        <article className="yt-activity-event-card" key={index}>
+                          <div className="yt-activity-event-image">
+                            <img src={item.image} alt={item.title} />
+
+                            <span
+                              className={`yt-activity-status yt-activity-status-${item.status}`}
+                            >
+                              {item.status === "en-curso" && "En curso"}
+                              {item.status === "por-llegar" && "Por llegar"}
+                              {item.status === "terminado" && "Terminado"}
+                            </span>
                           </div>
 
-                          <span className="yt-status-badge yt-status-finished">
-                            Terminado
-                          </span>
+                          <div className="yt-activity-event-body">
+                            <h3>{item.title}</h3>
+                            <p className="yt-activity-event-description">
+                              {item.description}
+                            </p>
+
+                            <div className="yt-activity-event-meta">
+                              <p>
+                                <FaCalendarDays /> {item.date}
+                              </p>
+                              <p>
+                                <FaClock /> {item.hour}
+                              </p>
+                              <p>
+                                <FaLocationDot /> {item.place}
+                              </p>
+                            </div>
+                          </div>
                         </article>
                       ))}
                     </div>
