@@ -122,7 +122,44 @@
   padding: 20px 0 85px;
 }
 
-/* ===== TABS DESLIZABLES ===== */
+/* ===== TABS DESKTOP ===== */
+.yt-tabs-desktop {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-bottom: 28px;
+}
+
+.yt-tab-btn {
+  border: none;
+  cursor: pointer;
+  padding: 13px 20px;
+  border-radius: 14px;
+  font-weight: 800;
+  color: #ffffff;
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  transition: all 0.3s ease;
+  backdrop-filter: blur(10px);
+  white-space: nowrap;
+}
+
+.yt-tab-btn:hover {
+  transform: translateY(-3px);
+  border-color: rgba(134, 247, 255, 0.32);
+}
+
+.yt-tab-btn.active {
+  background: linear-gradient(135deg, #ff2d95, #7b61ff);
+  border-color: transparent;
+  box-shadow: 0 18px 36px rgba(123, 97, 255, 0.24);
+}
+
+/* ===== MENU MOBILE ===== */
+.yt-menu-mobile {
+  display: none;
+}
+
 .yt-menu-wrapper {
   position: relative;
   display: flex;
@@ -210,6 +247,20 @@
   border-color: transparent;
   box-shadow: 0 14px 28px rgba(123, 97, 255, 0.22);
 }
+
+.yt-menu-btn.open span:nth-child(1) {
+  transform: translateY(9px) rotate(45deg);
+}
+
+.yt-menu-btn.open span:nth-child(2) {
+  opacity: 0;
+}
+
+.yt-menu-btn.open span:nth-child(3) {
+  transform: translateY(-9px) rotate(-45deg);
+}
+
+/* ===== PANEL ===== */
 .yt-tab-content {
   min-height: 420px;
 }
@@ -256,6 +307,7 @@
   line-height: 1.15;
 }
 
+/* ===== ABOUT ===== */
 .yt-about-grid {
   display: grid;
   grid-template-columns: 1.1fr 0.9fr;
@@ -309,272 +361,113 @@
   margin-top: 4px;
 }
 
-.yt-activities-grid {
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 20px;
-}
-
-.yt-activity-card {
-  background: rgba(255, 255, 255, 0.06);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  border-radius: 24px;
-  padding: 26px 22px;
-  transition: all 0.3s ease;
-}
-
-.yt-activity-card:hover {
-  transform: translateY(-8px) rotate(-1deg);
-  border-color: rgba(255, 45, 149, 0.3);
-  box-shadow: 0 20px 38px rgba(123, 97, 255, 0.18);
-}
-
-.yt-activity-icon {
-  width: 62px;
-  height: 62px;
-  display: grid;
-  place-items: center;
-  border-radius: 18px;
-  font-size: 1.35rem;
-  margin-bottom: 16px;
-  background: linear-gradient(135deg, #00e5ff, #7b61ff, #ff2d95);
-}
-
-.yt-activity-card h3 {
-  margin-bottom: 10px;
-}
-
-.yt-activity-card p {
-  color: rgba(255, 255, 255, 0.76);
-  line-height: 1.72;
-}
-
-.yt-gallery-grid {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 18px;
-}
-
-.yt-gallery-item {
-  position: relative;
-  overflow: hidden;
-  border-radius: 24px;
-  height: 250px;
-  border: 1px solid rgba(255, 255, 255, 0.1);
-}
-
-.yt-gallery-item img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  transition: transform 0.45s ease, filter 0.45s ease;
-}
-
-.yt-gallery-item:hover img {
-  transform: scale(1.08);
-  filter: saturate(1.15);
-}
-
-.yt-gallery-overlay {
-  position: absolute;
-  inset: 0;
-  background: linear-gradient(
-    to top,
-    rgba(11, 16, 32, 0.72),
-    rgba(11, 16, 32, 0.1)
-  );
-  display: flex;
-  align-items: flex-end;
-  justify-content: flex-end;
-  padding: 18px;
-  opacity: 0;
-  transition: opacity 0.3s ease;
-  font-size: 1.2rem;
-  color: #ffffff;
-}
-
-.yt-gallery-item:hover .yt-gallery-overlay {
-  opacity: 1;
-}
-
-.yt-schedule-grid {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 20px;
-}
-
-.yt-schedule-card {
-  background: rgba(255, 255, 255, 0.06);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  border-radius: 24px;
-  padding: 24px 22px;
-  transition: transform 0.3s ease;
-}
-
-.yt-schedule-card:hover {
-  transform: translateY(-8px);
-}
-
-.yt-schedule-top {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  color: #86f7ff;
-  margin-bottom: 16px;
-}
-
-.yt-schedule-top h3 {
-  color: #ffffff;
-}
-
-.yt-schedule-info p {
-  color: rgba(255, 255, 255, 0.78);
-  line-height: 1.7;
-  margin-bottom: 10px;
-}
-
-.yt-schedule-info p:first-child {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  color: #ffffff;
-  font-weight: 700;
-}
-
-.yt-social-wrapper {
-  display: grid;
-  grid-template-columns: 0.9fr 1.1fr;
-  gap: 24px;
-  align-items: start;
-}
-
-.yt-social-text-card {
-  background: rgba(255, 255, 255, 0.06);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  border-radius: 24px;
-  padding: 24px;
-}
-
-.yt-social-text-card p {
-  color: rgba(255, 255, 255, 0.78);
-  line-height: 1.8;
-}
-
-.yt-social-location {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  margin-top: 18px;
-  color: #86f7ff;
-  font-weight: 700;
-}
-
-.yt-social-grid {
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: 18px;
-}
-
-.yt-social-card {
-  text-decoration: none;
-  color: #ffffff;
-  background: rgba(255, 255, 255, 0.06);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  border-radius: 22px;
-  padding: 24px;
-  transition: all 0.3s ease;
-}
-
-.yt-social-card:hover {
-  transform: translateY(-8px);
-  border-color: rgba(0, 229, 255, 0.28);
-  box-shadow: 0 20px 38px rgba(0, 0, 0, 0.18);
-}
-
-.yt-social-icon {
-  width: 58px;
-  height: 58px;
-  border-radius: 18px;
-  display: grid;
-  place-items: center;
-  font-size: 1.3rem;
-  margin-bottom: 14px;
-  background: linear-gradient(135deg, #ff2d95, #7b61ff, #00e5ff);
-}
-
-.yt-social-card h3 {
-  margin-bottom: 8px;
-}
-
-.yt-social-card p {
-  color: rgba(255, 255, 255, 0.76);
-  line-height: 1.6;
-}
-
+/* ===== ACTIVIDADES EN CARDS ===== */
 .yt-activities-intro {
   color: rgba(255, 255, 255, 0.76);
   line-height: 1.7;
   margin-top: 10px;
 }
 
-.yt-live-list,
-.yt-finished-list {
+.yt-activity-cards-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 16px;
+}
+
+.yt-activity-event-card {
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 24px;
+  overflow: hidden;
+  transition: all 0.3s ease;
+  box-shadow: 0 16px 34px rgba(0, 0, 0, 0.14);
+}
+
+.yt-activity-event-card:hover {
+  transform: translateY(-6px);
+  border-color: rgba(134, 247, 255, 0.24);
+  box-shadow: 0 22px 42px rgba(0, 0, 0, 0.2);
+}
+
+.yt-activity-event-image {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 4 / 5;
+  overflow: hidden;
+}
+
+.yt-activity-event-image img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  transition: transform 0.45s ease;
+}
+
+.yt-activity-event-card:hover .yt-activity-event-image img {
+  transform: scale(1.06);
+}
+
+.yt-activity-status {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  padding: 6px 10px;
+  border-radius: 999px;
+  font-size: 0.78rem;
+  font-weight: 800;
+  color: #ffffff;
+  box-shadow: 0 8px 18px rgba(0, 0, 0, 0.16);
+}
+
+.yt-activity-status-en-curso {
+  background: linear-gradient(135deg, #22c55e, #16a34a);
+}
+
+.yt-activity-status-por-llegar {
+  background: linear-gradient(135deg, #3b82f6, #2563eb);
+}
+
+.yt-activity-status-terminado {
+  background: linear-gradient(135deg, #9ca3af, #6b7280);
+}
+
+.yt-activity-event-body {
+  padding: 16px 16px 18px;
+}
+
+.yt-activity-event-body h3 {
+  margin: 0 0 8px;
+  font-size: 1rem;
+  line-height: 1.35;
+  color: #ffffff;
+}
+
+.yt-activity-event-description {
+  color: rgba(255, 255, 255, 0.76);
+  line-height: 1.6;
+  margin-bottom: 12px;
+  font-size: 0.92rem;
+}
+
+.yt-activity-event-meta {
   display: flex;
   flex-direction: column;
-  gap: 14px;
+  gap: 8px;
 }
 
-.yt-live-item,
-.yt-finished-item {
+.yt-activity-event-meta p {
   display: flex;
-  justify-content: space-between;
-  align-items: flex-start;
-  gap: 16px;
-  padding: 16px;
-  border-radius: 18px;
-  background: rgba(255, 255, 255, 0.06);
-  border: 1px solid rgba(255, 255, 255, 0.08);
-}
-
-.yt-live-item h4,
-.yt-finished-item h4 {
-  margin: 0 0 6px;
-  font-size: 1rem;
-}
-
-.yt-live-item p,
-.yt-finished-item p {
-  margin: 0 0 4px;
+  align-items: center;
+  gap: 8px;
+  margin: 0;
   color: rgba(255, 255, 255, 0.82);
-  line-height: 1.6;
+  font-weight: 600;
+  line-height: 1.4;
+  font-size: 0.9rem;
 }
 
-.yt-live-item small,
-.yt-finished-item small {
-  color: rgba(255, 255, 255, 0.62);
-}
-
-.yt-status-badge {
-  white-space: nowrap;
-  padding: 8px 12px;
-  border-radius: 999px;
-  font-size: 0.8rem;
-  font-weight: 800;
-  color: #fff;
-}
-
-.yt-status-current {
-  background: linear-gradient(135deg, #00c853, #00e676);
-}
-
-.yt-status-upcoming {
-  background: linear-gradient(135deg, #0091ea, #00b0ff);
-}
-
-.yt-status-finished {
-  background: linear-gradient(135deg, #ff7043, #ff8a80);
-}
-
+/* ===== GALERÍA ===== */
 .yt-albums-grid {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
@@ -675,6 +568,148 @@
 .yt-back-albums-btn:hover {
   transform: translateY(-3px);
   box-shadow: 0 14px 28px rgba(123, 97, 255, 0.25);
+}
+
+.yt-gallery-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 18px;
+}
+
+.yt-gallery-item {
+  position: relative;
+  overflow: hidden;
+  border-radius: 24px;
+  height: 250px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.yt-gallery-item img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.45s ease, filter 0.45s ease;
+}
+
+.yt-gallery-item:hover img {
+  transform: scale(1.08);
+  filter: saturate(1.15);
+}
+
+/* ===== HORARIO ===== */
+.yt-schedule-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 20px;
+}
+
+.yt-schedule-card {
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 24px;
+  padding: 24px 22px;
+  transition: transform 0.3s ease;
+}
+
+.yt-schedule-card:hover {
+  transform: translateY(-8px);
+}
+
+.yt-schedule-top {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  color: #86f7ff;
+  margin-bottom: 16px;
+}
+
+.yt-schedule-top h3 {
+  color: #ffffff;
+}
+
+.yt-schedule-info p {
+  color: rgba(255, 255, 255, 0.78);
+  line-height: 1.7;
+  margin-bottom: 10px;
+}
+
+.yt-schedule-info p:first-child {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: #ffffff;
+  font-weight: 700;
+}
+
+/* ===== REDES ===== */
+.yt-social-wrapper {
+  display: grid;
+  grid-template-columns: 0.9fr 1.1fr;
+  gap: 24px;
+  align-items: start;
+}
+
+.yt-social-text-card {
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 24px;
+  padding: 24px;
+}
+
+.yt-social-text-card p {
+  color: rgba(255, 255, 255, 0.78);
+  line-height: 1.8;
+}
+
+.yt-social-location {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-top: 18px;
+  color: #86f7ff;
+  font-weight: 700;
+}
+
+.yt-social-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 18px;
+}
+
+.yt-social-card {
+  text-decoration: none;
+  color: #ffffff;
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 22px;
+  padding: 24px;
+  transition: all 0.3s ease;
+}
+
+.yt-social-card:hover {
+  transform: translateY(-8px);
+  border-color: rgba(0, 229, 255, 0.28);
+  box-shadow: 0 20px 38px rgba(0, 0, 0, 0.18);
+}
+
+.yt-social-icon {
+  width: 58px;
+  height: 58px;
+  border-radius: 18px;
+  display: grid;
+  place-items: center;
+  font-size: 1.3rem;
+  margin-bottom: 14px;
+  background: linear-gradient(135deg, #ff2d95, #7b61ff, #00e5ff);
+}
+
+.yt-social-card h3 {
+  margin-bottom: 8px;
+}
+
+.yt-social-card p {
+  color: rgba(255, 255, 255, 0.76);
+  line-height: 1.6;
 }
 
 /* ===== REGLAMENTOS ===== */
@@ -787,6 +822,7 @@
   color: rgba(255, 255, 255, 0.74);
 }
 
+/* ===== RESPONSIVE ===== */
 @media (max-width: 1100px) {
   .yt-hero-grid,
   .yt-about-grid,
@@ -794,12 +830,11 @@
     grid-template-columns: 1fr;
   }
 
-  .yt-activities-grid {
+  .yt-activity-cards-grid {
     grid-template-columns: repeat(2, 1fr);
   }
 
   .yt-schedule-grid,
-  .yt-live-lists,
   .yt-regulations-grid {
     grid-template-columns: 1fr;
   }
@@ -816,10 +851,6 @@
     grid-template-columns: repeat(2, 1fr);
   }
 
-  .yt-calendar-grid {
-    grid-template-columns: repeat(7, minmax(0, 1fr));
-  }
-
   .yt-hero-image img {
     height: 420px;
   }
@@ -834,39 +865,20 @@
     padding: 24px 18px;
   }
 
-  .yt-activities-grid,
+  .yt-tabs-desktop {
+    display: none;
+  }
+
+  .yt-menu-mobile {
+    display: block;
+  }
+
+  .yt-activity-cards-grid,
   .yt-gallery-grid,
   .yt-social-grid,
   .yt-albums-grid,
   .yt-leaders-grid {
     grid-template-columns: 1fr;
-  }
-
-  .yt-calendar-wrap {
-    padding: 18px;
-  }
-
-  .yt-calendar-weekdays span {
-    font-size: 0.82rem;
-  }
-
-  .yt-calendar-event-title {
-    font-size: 0.66rem;
-  }
-
-  .yt-calendar-event-time,
-  .yt-calendar-event-place {
-    font-size: 0.58rem;
-  }
-
-  .yt-calendar-mini-tag {
-    font-size: 0.64rem;
-    padding: 5px 6px;
-  }
-
-  .yt-live-item,
-  .yt-finished-item {
-    flex-direction: column;
   }
 
   .yt-album-image {
@@ -888,6 +900,7 @@
   .yt-tab-content {
     min-height: auto;
   }
+
   .yt-menu-wrapper {
     margin-bottom: 20px;
   }
@@ -908,15 +921,4 @@
     right: 0;
     min-width: 100%;
   }
-}
-.yt-menu-btn.open span:nth-child(1) {
-  transform: translateY(9px) rotate(45deg);
-}
-
-.yt-menu-btn.open span:nth-child(2) {
-  opacity: 0;
-}
-
-.yt-menu-btn.open span:nth-child(3) {
-  transform: translateY(-9px) rotate(-45deg);
 }

@@ -3,17 +3,10 @@ import "../styles/MinNiños.css";
 import {
   FaChildren,
   FaHeart,
-  FaBookBible,
-  FaPuzzlePiece,
-  FaMusic,
-  FaPaintbrush,
   FaCalendarDays,
   FaClock,
   FaLocationDot,
   FaPhone,
-  FaImage,
-  FaPenToSquare,
-  FaStar,
   FaShieldHeart,
 } from "react-icons/fa6";
 
@@ -36,13 +29,12 @@ function MinNiños() {
       "Un espacio lleno de amor, aprendizaje y alegría donde los más pequeños pueden conocer a Jesús mientras crecen en valores y fe.",
     heroImage:
       "https://images.unsplash.com/photo-1516627145497-ae6968895b74?auto=format&fit=crop&w=1400&q=80",
-    aboutImage:
-      "https://images.unsplash.com/photo-1503454537195-1dcabb73ffb9?auto=format&fit=crop&w=1200&q=80",
     verse: "Dejad a los niños venir a mí, y no se lo impidáis. - Marcos 10:14",
     description:
       "Nuestro Ministerio de Niños está diseñado para acompañar a cada pequeño en su desarrollo espiritual, emocional y social, mediante enseñanzas bíblicas dinámicas, juegos, música, actividades creativas y momentos especiales de oración.",
     contactPhone: "+591 70000000",
     location: "Asamblea de Dios - Área Infantil",
+
     schedules: [
       {
         day: "Domingo",
@@ -60,6 +52,7 @@ function MinNiños() {
         activity: "Ensayo especial y cantos",
       },
     ],
+
     activities: [
       {
         image:
@@ -67,7 +60,7 @@ function MinNiños() {
         title: "Historias bíblicas",
         description:
           "Enseñanzas adaptadas a la edad de los niños, con dinámicas visuales y aprendizaje divertido.",
-        date: "Lunes 02 de Marzo",
+        date: "Lunes 02 de marzo",
         hour: "09:00 - 10:00",
         place: "Sala infantil 1",
         status: "en-curso",
@@ -106,6 +99,7 @@ function MinNiños() {
         status: "por-llegar",
       },
     ],
+
     regulations: [
       {
         icon: <FaShieldHeart />,
@@ -128,6 +122,7 @@ function MinNiños() {
         text: "El ingreso y la salida de los niños debe realizarse con acompañamiento y autorización de sus padres o responsables.",
       },
     ],
+
     leaders: [
       {
         name: "Ana Martínez",
@@ -154,28 +149,12 @@ function MinNiños() {
           "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=700&q=80",
       },
     ],
+
     gallery: [
       "https://images.unsplash.com/photo-1516627145497-ae6968895b74?auto=format&fit=crop&w=1000&q=80",
       "https://images.unsplash.com/photo-1503454537195-1dcabb73ffb9?auto=format&fit=crop&w=1000&q=80",
       "https://images.unsplash.com/photo-1519340241574-2cec6aef0c01?auto=format&fit=crop&w=1000&q=80",
       "https://images.unsplash.com/photo-1517164850305-99a3e65bb47e?auto=format&fit=crop&w=1000&q=80",
-    ],
-    editableBlocks: [
-      {
-        icon: <FaImage />,
-        title: "Portada editable",
-        text: "Aquí a futuro el admin podrá cambiar imagen principal, título, subtítulo y botones.",
-      },
-      {
-        icon: <FaPenToSquare />,
-        title: "Contenido editable",
-        text: "Se podrá modificar descripción, versículo, actividades, horarios y toda la información del ministerio.",
-      },
-      {
-        icon: <FaStar />,
-        title: "Galería dinámica",
-        text: "El admin podrá subir nuevas fotos, eliminar imágenes antiguas y destacar eventos importantes.",
-      },
     ],
   };
 
@@ -355,26 +334,6 @@ function MinNiños() {
           </div>
         );
 
-      case "editable":
-        return (
-          <div className="tab-fade">
-            <div className="tab-chip">Editable</div>
-            <h2 className="tab-main-title">
-              Estructura pensada para administración
-            </h2>
-
-            <div className="editable-grid">
-              {ministryData.editableBlocks.map((item, index) => (
-                <article className="editable-card" key={index}>
-                  <div className="editable-icon">{item.icon}</div>
-                  <h3>{item.title}</h3>
-                  <p>{item.text}</p>
-                </article>
-              ))}
-            </div>
-          </div>
-        );
-
       case "contact":
         return (
           <div className="tab-fade">
@@ -433,34 +392,53 @@ function MinNiños() {
 
       <section className="minninos-tabs-section">
         <div className="minninos-container">
-          <div className="minninos-menu-wrapper">
-            <button
-              className={`minninos-menu-btn ${menuOpen ? "open" : ""}`}
-              onClick={toggleMenu}
-              type="button"
-              aria-label="Abrir menú"
-            >
-              <span></span>
-              <span></span>
-              <span></span>
-            </button>
+          <div className="minninos-tabs-desktop">
+            {tabs.map((tab) => (
+              <button
+                key={tab.id}
+                className={`minninos-tab-btn ${activeTab === tab.id ? "active" : ""}`}
+                onClick={() => setActiveTab(tab.id)}
+                type="button"
+              >
+                {tab.label}
+              </button>
+            ))}
+          </div>
 
-            {menuOpen && (
-              <div className="minninos-dropdown">
-                {tabs.map((tab) => (
-                  <button
-                    key={tab.id}
-                    className={`minninos-dropdown-item ${
-                      activeTab === tab.id ? "active" : ""
-                    }`}
-                    onClick={() => handleTabClick(tab.id)}
-                    type="button"
-                  >
-                    {tab.label}
-                  </button>
-                ))}
-              </div>
-            )}
+          <div className="minninos-menu-mobile">
+            <div className="minninos-menu-wrapper">
+              <button
+                className={`minninos-menu-btn ${menuOpen ? "open" : ""}`}
+                onClick={toggleMenu}
+                type="button"
+                aria-label="Abrir menú"
+              >
+                <span></span>
+                <span></span>
+                <span></span>
+              </button>
+
+              <span className="minninos-current-tab">
+                {tabs.find((tab) => tab.id === activeTab)?.label}
+              </span>
+
+              {menuOpen && (
+                <div className="minninos-dropdown">
+                  {tabs.map((tab) => (
+                    <button
+                      key={tab.id}
+                      className={`minninos-dropdown-item ${
+                        activeTab === tab.id ? "active" : ""
+                      }`}
+                      onClick={() => handleTabClick(tab.id)}
+                      type="button"
+                    >
+                      {tab.label}
+                    </button>
+                  ))}
+                </div>
+              )}
+            </div>
           </div>
 
           <div className="minninos-tab-panel">{renderTabContent()}</div>

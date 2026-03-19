@@ -8,7 +8,6 @@ import {
   FaInstagram,
   FaFacebookF,
   FaYoutube,
-  FaPlay,
   FaChevronLeft,
   FaChevronRight,
   FaShieldHeart,
@@ -59,36 +58,60 @@ function MinAlabanza() {
           "Participación en cultos, vigilias y eventos especiales",
         ],
       },
+
       actividades: {
         label: "Actividades",
         title: "Nuestras actividades y participación",
+        intro:
+          "Conoce las reuniones, ensayos y presentaciones especiales del ministerio de alabanza.",
         items: [
           {
+            image:
+              "https://images.unsplash.com/photo-1511379938547-c1f69419868d?q=80&w=1200&auto=format&fit=crop",
             title: "Ensayo general",
-            day: "Viernes",
-            time: "19:00 - 21:00",
+            description:
+              "Tiempo de preparación musical y espiritual para fortalecer la unidad, excelencia y coordinación de todo el equipo.",
+            date: "Viernes 12 de abril",
+            hour: "19:00 - 21:00",
             place: "Templo principal",
+            status: "en-curso",
           },
           {
+            image:
+              "https://images.unsplash.com/photo-1506157786151-b8491531f063?q=80&w=1200&auto=format&fit=crop",
             title: "Culto dominical",
-            day: "Domingo",
-            time: "08:30 - 12:00",
+            description:
+              "Participación especial durante el servicio principal, guiando a la congregación en adoración y alabanza.",
+            date: "Domingo 14 de abril",
+            hour: "08:30 - 12:00",
             place: "Auditorio central",
+            status: "por-llegar",
           },
           {
+            image:
+              "https://images.unsplash.com/photo-1493225457124-a3eb161ffa5f?q=80&w=1200&auto=format&fit=crop",
             title: "Noche de adoración",
-            day: "Último sábado del mes",
-            time: "19:30",
+            description:
+              "Un encuentro especial centrado en la presencia de Dios, con música, oración y ministración congregacional.",
+            date: "Sábado 27 de abril",
+            hour: "19:30",
             place: "Salón principal",
+            status: "por-llegar",
           },
           {
+            image:
+              "https://images.unsplash.com/photo-1507874457470-272b3c8d8ee2?q=80&w=1200&auto=format&fit=crop",
             title: "Capacitación musical",
-            day: "Segundo jueves del mes",
-            time: "20:00",
+            description:
+              "Espacio de formación para mejorar técnica, armonía, interpretación y servicio dentro del ministerio.",
+            date: "Jueves 04 de abril",
+            hour: "20:00",
             place: "Sala de ensayo",
+            status: "terminado",
           },
         ],
       },
+
       reglamentos: {
         label: "Reglamentos",
         title: "Normas para servir con orden, unidad y reverencia",
@@ -115,6 +138,7 @@ function MinAlabanza() {
           },
         ],
       },
+
       galeria: {
         label: "Galería",
         images: [
@@ -126,6 +150,7 @@ function MinAlabanza() {
           "https://images.unsplash.com/photo-1501386761578-eac5c94b800a?q=80&w=1200&auto=format&fit=crop",
         ],
       },
+
       horario: {
         label: "Horario",
         schedule: [
@@ -146,6 +171,7 @@ function MinAlabanza() {
           },
         ],
       },
+
       equipo: {
         label: "Equipo",
         members: [
@@ -234,24 +260,49 @@ function MinAlabanza() {
 
     if (activeTab === "actividades") {
       return (
-        <div className="maalabanza-activities-grid">
-          {current.items.map((item, index) => (
-            <div className="maalabanza-activity-card" key={index}>
-              <div className="maalabanza-activity-icon">
-                <FaPlay />
-              </div>
-              <h3>{item.title}</h3>
-              <p>
-                <strong>Día:</strong> {item.day}
-              </p>
-              <p>
-                <strong>Hora:</strong> {item.time}
-              </p>
-              <p>
-                <strong>Lugar:</strong> {item.place}
-              </p>
-            </div>
-          ))}
+        <div className="maalabanza-activities-wrap">
+          <div className="maalabanza-activities-header">
+            <span className="maalabanza-section-badge">{current.label}</span>
+            <h2>{current.title}</h2>
+            <p>{current.intro}</p>
+          </div>
+
+          <div className="maalabanza-activity-cards-grid">
+            {current.items.map((item, index) => (
+              <article className="maalabanza-activity-event-card" key={index}>
+                <div className="maalabanza-activity-event-image">
+                  <img src={item.image} alt={item.title} />
+
+                  <span
+                    className={`maalabanza-activity-status maalabanza-activity-status-${item.status}`}
+                  >
+                    {item.status === "en-curso" && "En curso"}
+                    {item.status === "por-llegar" && "Por llegar"}
+                    {item.status === "terminado" && "Terminado"}
+                  </span>
+                </div>
+
+                <div className="maalabanza-activity-event-body">
+                  <h3>{item.title}</h3>
+                  <p className="maalabanza-activity-event-description">
+                    {item.description}
+                  </p>
+
+                  <div className="maalabanza-activity-event-meta">
+                    <p>
+                      <FaCalendarDays /> {item.date}
+                    </p>
+                    <p>
+                      <FaClock /> {item.hour}
+                    </p>
+                    <p>
+                      <FaLocationDot /> {item.place}
+                    </p>
+                  </div>
+                </div>
+              </article>
+            ))}
+          </div>
         </div>
       );
     }
@@ -399,38 +450,55 @@ function MinAlabanza() {
           </div>
         </div>
 
-        <div className="maalabanza-menu-wrapper">
-          <button
-            type="button"
-            className={`maalabanza-menu-btn ${menuOpen ? "open" : ""}`}
-            onClick={toggleMenu}
-            aria-label="Abrir menú"
-          >
-            <span></span>
-            <span></span>
-            <span></span>
-          </button>
+        <div className="maalabanza-tabs-desktop">
+          {tabKeys.map((key) => (
+            <button
+              key={key}
+              type="button"
+              className={`maalabanza-tab-btn ${
+                activeTab === key ? "active" : ""
+              }`}
+              onClick={() => setActiveTab(key)}
+            >
+              {ministryData.tabs[key].label}
+            </button>
+          ))}
+        </div>
 
-          <span className="maalabanza-current-tab">
-            {ministryData.tabs[activeTab].label}
-          </span>
+        <div className="maalabanza-menu-mobile">
+          <div className="maalabanza-menu-wrapper">
+            <button
+              type="button"
+              className={`maalabanza-menu-btn ${menuOpen ? "open" : ""}`}
+              onClick={toggleMenu}
+              aria-label="Abrir menú"
+            >
+              <span></span>
+              <span></span>
+              <span></span>
+            </button>
 
-          {menuOpen && (
-            <div className="maalabanza-dropdown">
-              {tabKeys.map((key) => (
-                <button
-                  key={key}
-                  type="button"
-                  className={`maalabanza-dropdown-item ${
-                    activeTab === key ? "active" : ""
-                  }`}
-                  onClick={() => handleTabClick(key)}
-                >
-                  {ministryData.tabs[key].label}
-                </button>
-              ))}
-            </div>
-          )}
+            <span className="maalabanza-current-tab">
+              {ministryData.tabs[activeTab].label}
+            </span>
+
+            {menuOpen && (
+              <div className="maalabanza-dropdown">
+                {tabKeys.map((key) => (
+                  <button
+                    key={key}
+                    type="button"
+                    className={`maalabanza-dropdown-item ${
+                      activeTab === key ? "active" : ""
+                    }`}
+                    onClick={() => handleTabClick(key)}
+                  >
+                    {ministryData.tabs[key].label}
+                  </button>
+                ))}
+              </div>
+            )}
+          </div>
         </div>
 
         <div className="maalabanza-content">{renderTabContent()}</div>

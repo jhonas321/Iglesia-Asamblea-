@@ -2,9 +2,6 @@ import { useState } from "react";
 import "../styles/MinJovenes.css";
 import {
   FaUsers,
-  FaBookBible,
-  FaMusic,
-  FaFire,
   FaCalendarDays,
   FaClock,
   FaInstagram,
@@ -92,6 +89,28 @@ function MinJovenes() {
         date: "10 al 12 de abril",
         hour: "08:30",
         place: "Casa campestre",
+        status: "por-llegar",
+      },
+      {
+        image:
+          "https://images.unsplash.com/photo-1500534314209-a25ddb2bd429?auto=format&fit=crop&w=900&q=80",
+        title: "Día de río",
+        description:
+          "Actividad recreativa para fortalecer la amistad, la unidad y el compañerismo juvenil.",
+        date: "Sábado 20 de marzo",
+        hour: "08:00",
+        place: "Ribera comunitaria",
+        status: "por-llegar",
+      },
+      {
+        image:
+          "https://images.unsplash.com/photo-1505373877841-8d25f7d46678?auto=format&fit=crop&w=900&q=80",
+        title: "Campamento militar",
+        description:
+          "Jornada intensa de formación, disciplina, servicio y crecimiento espiritual.",
+        date: "27 al 29 de marzo",
+        hour: "07:00",
+        place: "Centro de retiros",
         status: "por-llegar",
       },
     ],
@@ -214,6 +233,16 @@ function MinJovenes() {
     },
   };
 
+  const tabs = [
+    { id: "acerca", label: "Acerca de" },
+    { id: "actividades", label: "Actividades" },
+    { id: "reglamentos", label: "Reglamentos" },
+    { id: "liderazgo", label: "Liderazgo" },
+    { id: "galeria", label: "Galería" },
+    { id: "horario", label: "Horario" },
+    { id: "redes", label: "Redes sociales" },
+  ];
+
   return (
     <main className="yt-page">
       <section className="yt-hero">
@@ -238,105 +267,53 @@ function MinJovenes() {
 
       <section className="yt-tabs-section">
         <div className="yt-container">
-          <div className="yt-menu-wrapper">
-            <button
-              className={`yt-menu-btn ${menuOpen ? "open" : ""}`}
-              onClick={toggleMenu}
-              type="button"
-              aria-label="Abrir menú"
-            >
-              <span></span>
-              <span></span>
-              <span></span>
-            </button>
+          <div className="yt-tabs-desktop">
+            {tabs.map((tab) => (
+              <button
+                key={tab.id}
+                className={`yt-tab-btn ${activeTab === tab.id ? "active" : ""}`}
+                onClick={() => setActiveTab(tab.id)}
+                type="button"
+              >
+                {tab.label}
+              </button>
+            ))}
+          </div>
 
-            <span className="yt-current-tab">
-              {
-                {
-                  acerca: "Acerca de",
-                  actividades: "Actividades",
-                  reglamentos: "Reglamentos",
-                  liderazgo: "Liderazgo",
-                  galeria: "Galería",
-                  horario: "Horario",
-                  redes: "Redes sociales",
-                }[activeTab]
-              }
-            </span>
+          <div className="yt-menu-mobile">
+            <div className="yt-menu-wrapper">
+              <button
+                className={`yt-menu-btn ${menuOpen ? "open" : ""}`}
+                onClick={toggleMenu}
+                type="button"
+                aria-label="Abrir menú"
+              >
+                <span></span>
+                <span></span>
+                <span></span>
+              </button>
 
-            {menuOpen && (
-              <div className="yt-dropdown">
-                <button
-                  className={`yt-dropdown-item ${
-                    activeTab === "acerca" ? "active" : ""
-                  }`}
-                  onClick={() => handleTabClick("acerca")}
-                  type="button"
-                >
-                  Acerca de
-                </button>
+              <span className="yt-current-tab">
+                {tabs.find((tab) => tab.id === activeTab)?.label}
+              </span>
 
-                <button
-                  className={`yt-dropdown-item ${
-                    activeTab === "actividades" ? "active" : ""
-                  }`}
-                  onClick={() => handleTabClick("actividades")}
-                  type="button"
-                >
-                  Actividades
-                </button>
-
-                <button
-                  className={`yt-dropdown-item ${
-                    activeTab === "reglamentos" ? "active" : ""
-                  }`}
-                  onClick={() => handleTabClick("reglamentos")}
-                  type="button"
-                >
-                  Reglamentos
-                </button>
-
-                <button
-                  className={`yt-dropdown-item ${
-                    activeTab === "liderazgo" ? "active" : ""
-                  }`}
-                  onClick={() => handleTabClick("liderazgo")}
-                  type="button"
-                >
-                  Liderazgo
-                </button>
-
-                <button
-                  className={`yt-dropdown-item ${
-                    activeTab === "galeria" ? "active" : ""
-                  }`}
-                  onClick={() => handleTabClick("galeria")}
-                  type="button"
-                >
-                  Galería
-                </button>
-
-                <button
-                  className={`yt-dropdown-item ${
-                    activeTab === "horario" ? "active" : ""
-                  }`}
-                  onClick={() => handleTabClick("horario")}
-                  type="button"
-                >
-                  Horario
-                </button>
-
-                <button
-                  className={`yt-dropdown-item ${
-                    activeTab === "redes" ? "active" : ""
-                  }`}
-                  onClick={() => handleTabClick("redes")}
-                  type="button"
-                >
-                  Redes sociales
-                </button>
-              </div>
-            )}
+              {menuOpen && (
+                <div className="yt-dropdown">
+                  {tabs.map((tab) => (
+                    <button
+                      key={tab.id}
+                      className={`yt-dropdown-item ${
+                        activeTab === tab.id ? "active" : ""
+                      }`}
+                      onClick={() => handleTabClick(tab.id)}
+                      type="button"
+                    >
+                      {tab.label}
+                    </button>
+                  ))}
+                </div>
+              )}
+            </div>
           </div>
 
           <div className="yt-tab-content">
@@ -373,62 +350,49 @@ function MinJovenes() {
               <div className="yt-panel">
                 <div className="yt-panel-header">
                   <span className="yt-chip">Actividades</span>
-                  <h2>Calendario de actividades juveniles</h2>
+                  <h2>Actividades del ministerio juvenil</h2>
                   <p className="yt-activities-intro">
-                    Aquí puedes ver lo que ya pasó, lo que está en curso y lo
-                    que se viene próximamente dentro del ministerio.
+                    Conoce las actividades, encuentros y eventos especiales del
+                    ministerio juvenil.
                   </p>
                 </div>
 
-                {activeTab === "actividades" && (
-                  <div className="yt-panel">
-                    <div className="yt-panel-header">
-                      <span className="yt-chip">Actividades</span>
-                      <h2>Actividades del ministerio juvenil</h2>
-                      <p className="yt-activities-intro">
-                        Conoce las actividades, encuentros y eventos especiales
-                        del ministerio juvenil.
-                      </p>
-                    </div>
+                <div className="yt-activity-cards-grid">
+                  {ministryData.activities.map((item, index) => (
+                    <article className="yt-activity-event-card" key={index}>
+                      <div className="yt-activity-event-image">
+                        <img src={item.image} alt={item.title} />
 
-                    <div className="yt-activity-cards-grid">
-                      {ministryData.activities.map((item, index) => (
-                        <article className="yt-activity-event-card" key={index}>
-                          <div className="yt-activity-event-image">
-                            <img src={item.image} alt={item.title} />
+                        <span
+                          className={`yt-activity-status yt-activity-status-${item.status}`}
+                        >
+                          {item.status === "en-curso" && "En curso"}
+                          {item.status === "por-llegar" && "Por llegar"}
+                          {item.status === "terminado" && "Terminado"}
+                        </span>
+                      </div>
 
-                            <span
-                              className={`yt-activity-status yt-activity-status-${item.status}`}
-                            >
-                              {item.status === "en-curso" && "En curso"}
-                              {item.status === "por-llegar" && "Por llegar"}
-                              {item.status === "terminado" && "Terminado"}
-                            </span>
-                          </div>
+                      <div className="yt-activity-event-body">
+                        <h3>{item.title}</h3>
+                        <p className="yt-activity-event-description">
+                          {item.description}
+                        </p>
 
-                          <div className="yt-activity-event-body">
-                            <h3>{item.title}</h3>
-                            <p className="yt-activity-event-description">
-                              {item.description}
-                            </p>
-
-                            <div className="yt-activity-event-meta">
-                              <p>
-                                <FaCalendarDays /> {item.date}
-                              </p>
-                              <p>
-                                <FaClock /> {item.hour}
-                              </p>
-                              <p>
-                                <FaLocationDot /> {item.place}
-                              </p>
-                            </div>
-                          </div>
-                        </article>
-                      ))}
-                    </div>
-                  </div>
-                )}
+                        <div className="yt-activity-event-meta">
+                          <p>
+                            <FaCalendarDays /> {item.date}
+                          </p>
+                          <p>
+                            <FaClock /> {item.hour}
+                          </p>
+                          <p>
+                            <FaLocationDot /> {item.place}
+                          </p>
+                        </div>
+                      </div>
+                    </article>
+                  ))}
+                </div>
               </div>
             )}
 
