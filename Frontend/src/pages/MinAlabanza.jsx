@@ -17,6 +17,7 @@ function MinAlabanza() {
   const [activeTab, setActiveTab] = useState("acerca");
   const [heroIndex, setHeroIndex] = useState(0);
   const [menuOpen, setMenuOpen] = useState(false);
+  const [selectedActivity, setSelectedActivity] = useState(null);
 
   const toggleMenu = () => {
     setMenuOpen((prev) => !prev);
@@ -74,6 +75,8 @@ function MinAlabanza() {
             date: "Viernes 12 de abril",
             hour: "19:00 - 21:00",
             place: "Templo principal",
+            mapEmbed:
+              "https://www.google.com/maps?q=Iglesia+Asamblea+Apostolica+de+la+Fe+en+Cristo+Jesus+Sacaba&z=16&output=embed",
             status: "en-curso",
           },
           {
@@ -85,6 +88,8 @@ function MinAlabanza() {
             date: "Domingo 14 de abril",
             hour: "08:30 - 12:00",
             place: "Auditorio central",
+            mapEmbed:
+              "https://www.google.com/maps?q=Iglesia+Asamblea+Apostolica+de+la+Fe+en+Cristo+Jesus+Sacaba&z=16&output=embed",
             status: "por-llegar",
           },
           {
@@ -96,6 +101,8 @@ function MinAlabanza() {
             date: "Sábado 27 de abril",
             hour: "19:30",
             place: "Salón principal",
+            mapEmbed:
+              "https://www.google.com/maps?q=Iglesia+Asamblea+Apostolica+de+la+Fe+en+Cristo+Jesus+Sacaba&z=16&output=embed",
             status: "por-llegar",
           },
           {
@@ -107,6 +114,8 @@ function MinAlabanza() {
             date: "Jueves 04 de abril",
             hour: "20:00",
             place: "Sala de ensayo",
+            mapEmbed:
+              "https://www.google.com/maps?q=Iglesia+Asamblea+Apostolica+de+la+Fe+en+Cristo+Jesus+Sacaba&z=16&output=embed",
             status: "terminado",
           },
         ],
@@ -269,7 +278,11 @@ function MinAlabanza() {
 
           <div className="maalabanza-activity-cards-grid">
             {current.items.map((item, index) => (
-              <article className="maalabanza-activity-event-card" key={index}>
+              <article
+                className="maalabanza-activity-event-card"
+                key={index}
+                onClick={() => setSelectedActivity(item)}
+              >
                 <div className="maalabanza-activity-event-image">
                   <img src={item.image} alt={item.title} />
 
@@ -284,21 +297,23 @@ function MinAlabanza() {
 
                 <div className="maalabanza-activity-event-body">
                   <h3>{item.title}</h3>
-                  <p className="maalabanza-activity-event-description">
-                    {item.description}
-                  </p>
 
                   <div className="maalabanza-activity-event-meta">
                     <p>
                       <FaCalendarDays /> {item.date}
                     </p>
-                    <p>
-                      <FaClock /> {item.hour}
-                    </p>
-                    <p>
-                      <FaLocationDot /> {item.place}
-                    </p>
                   </div>
+
+                  <button
+                    type="button"
+                    className="maalabanza-activity-details-btn"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      setSelectedActivity(item);
+                    }}
+                  >
+                    Ver detalles
+                  </button>
                 </div>
               </article>
             ))}
@@ -384,11 +399,9 @@ function MinAlabanza() {
       <div className="maalabanza-bg-orb maalabanza-orb-1"></div>
       <div className="maalabanza-bg-orb maalabanza-orb-2"></div>
       <div className="maalabanza-bg-orb maalabanza-orb-3"></div>
-
       <div className="maalabanza-music-note maalabanza-note-1">♪</div>
       <div className="maalabanza-music-note maalabanza-note-2">♫</div>
       <div className="maalabanza-music-note maalabanza-note-3">♬</div>
-
       <div className="maalabanza-container">
         <div className="maalabanza-hero">
           <div className="maalabanza-hero-left">
@@ -503,6 +516,69 @@ function MinAlabanza() {
 
         <div className="maalabanza-content">{renderTabContent()}</div>
       </div>
+      ç
+      {selectedActivity && (
+        <div
+          className="maalabanza-activity-modal-overlay"
+          onClick={() => setSelectedActivity(null)}
+        >
+          <div
+            className="maalabanza-activity-modal"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <button
+              type="button"
+              className="maalabanza-activity-modal-close"
+              onClick={() => setSelectedActivity(null)}
+            >
+              ×
+            </button>
+
+            <div className="maalabanza-activity-modal-image">
+              <img src={selectedActivity.image} alt={selectedActivity.title} />
+            </div>
+
+            <div className="maalabanza-activity-modal-body">
+              <span
+                className={`maalabanza-activity-status maalabanza-activity-status-${selectedActivity.status}`}
+              >
+                {selectedActivity.status === "en-curso" && "En curso"}
+                {selectedActivity.status === "por-llegar" && "Por llegar"}
+                {selectedActivity.status === "terminado" && "Terminado"}
+              </span>
+
+              <h3>{selectedActivity.title}</h3>
+
+              <p className="maalabanza-activity-modal-description">
+                {selectedActivity.description}
+              </p>
+
+              <div className="maalabanza-activity-modal-meta">
+                <p>
+                  <FaCalendarDays /> {selectedActivity.date}
+                </p>
+                <p>
+                  <FaClock /> {selectedActivity.hour}
+                </p>
+                <p>
+                  <FaLocationDot /> {selectedActivity.place}
+                </p>
+              </div>
+
+              <div className="maalabanza-activity-map-wrapper">
+                <iframe
+                  src={selectedActivity.mapEmbed}
+                  title={`Mapa de ${selectedActivity.title}`}
+                  className="maalabanza-activity-map-iframe"
+                  loading="lazy"
+                  allowFullScreen
+                  referrerPolicy="no-referrer-when-downgrade"
+                ></iframe>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
     </section>
   );
 }

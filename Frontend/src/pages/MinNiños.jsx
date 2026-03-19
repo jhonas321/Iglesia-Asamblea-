@@ -509,17 +509,17 @@ function MinNiños() {
                   <FaLocationDot /> {selectedActivity.place}
                 </p>
               </div>
+            </div>
 
-              <div className="activity-map-wrapper">
-                <iframe
-                  src={selectedActivity.mapEmbed}
-                  title={`Mapa de ${selectedActivity.title}`}
-                  className="activity-map-iframe"
-                  loading="lazy"
-                  allowFullScreen
-                  referrerPolicy="no-referrer-when-downgrade"
-                ></iframe>
-              </div>
+            <div className="activity-map-wrapper">
+              <iframe
+                src={selectedActivity.mapEmbed}
+                title={`Mapa de ${selectedActivity.title}`}
+                className="activity-map-iframe"
+                loading="lazy"
+                allowFullScreen
+                referrerPolicy="no-referrer-when-downgrade"
+              ></iframe>
             </div>
           </div>
         </div>

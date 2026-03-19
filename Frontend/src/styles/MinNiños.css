@@ -801,24 +801,71 @@
     right: 0;
     min-width: 100%;
   }
+
   .activity-modal {
-    grid-template-columns: 1fr;
+    position: relative;
+    width: min(920px, 100%);
+    max-height: 90vh;
+    background: #ffffff;
+    border-radius: 28px;
+    box-shadow: 0 24px 60px rgba(0, 0, 0, 0.2);
+    display: grid;
+    grid-template-columns: 0.95fr 1.05fr;
+    grid-template-areas:
+      "image body"
+      "map map";
+    overflow: hidden;
+  }
+
+  .activity-modal-image {
+    width: 100%;
+    height: 240px;
+    min-height: 240px;
+    flex-shrink: 0;
   }
 
   .activity-modal-image img {
-    min-height: 260px;
-    max-height: 300px;
+    width: 100%;
+    height: 100%;
+    min-height: unset;
+    max-height: unset;
+    object-fit: cover;
+    display: block;
   }
 
   .activity-modal-body {
-    padding: 22px 18px 20px;
+    grid-area: body;
+    padding: 28px 24px 24px;
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
   }
 
   .activity-modal-body h3 {
     font-size: 1.5rem;
+    line-height: 1.2;
   }
+
+  .activity-modal-description {
+    font-size: 0.96rem;
+    line-height: 1.65;
+  }
+
+  .activity-modal-meta p {
+    font-size: 0.95rem;
+  }
+
+  .activity-map-wrapper {
+    grid-area: map;
+    width: 100%;
+    padding: 0 12px 12px; /* 👈 esto crea el espacio */
+    box-sizing: border-box;
+  }
+
   .activity-map-iframe {
-    height: 220px;
+    width: 100%;
+    height: 180px;
+    display: block;
   }
 }
 .activity-details-btn {
