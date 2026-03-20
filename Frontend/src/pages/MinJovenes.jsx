@@ -1,4 +1,5 @@
-import { useState } from "react";
+import { useState, useLayoutEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import "../styles/MinJovenes.css";
 import {
   FaUsers,
@@ -18,6 +19,12 @@ function MinJovenes() {
   const [activeTab, setActiveTab] = useState("acerca");
   const [menuOpen, setMenuOpen] = useState(false);
   const [selectedActivity, setSelectedActivity] = useState(null);
+  const navigate = useNavigate();
+
+  useLayoutEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
+
   const toggleMenu = () => {
     setMenuOpen((prev) => !prev);
   };
@@ -256,12 +263,20 @@ function MinJovenes() {
   ];
 
   return (
-    <main className="yt-page">
+    <main className="yt-page yt-page-enter">
       <section className="yt-hero">
         <div className="yt-glow yt-glow-1"></div>
         <div className="yt-glow yt-glow-2"></div>
 
         <div className="yt-container yt-hero-grid">
+          <button
+            type="button"
+            className="yt-back-btn"
+            onClick={() => navigate(-1)}
+          >
+            ← Atrás
+          </button>
+
           <div className="yt-hero-text">
             <span className="yt-badge">
               <FaUsers /> Generación con propósito
@@ -611,6 +626,7 @@ function MinJovenes() {
           </div>
         </div>
       </section>
+
       {selectedActivity && (
         <div
           className="yt-activity-modal-overlay"

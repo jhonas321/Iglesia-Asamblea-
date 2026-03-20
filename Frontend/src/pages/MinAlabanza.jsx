@@ -1,4 +1,5 @@
-import { useEffect, useState } from "react";
+import { useEffect, useLayoutEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import "../styles/MinAlabanza.css";
 import {
   FaMusic,
@@ -18,6 +19,11 @@ function MinAlabanza() {
   const [heroIndex, setHeroIndex] = useState(0);
   const [menuOpen, setMenuOpen] = useState(false);
   const [selectedActivity, setSelectedActivity] = useState(null);
+  const navigate = useNavigate();
+
+  useLayoutEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
 
   const toggleMenu = () => {
     setMenuOpen((prev) => !prev);
@@ -38,11 +44,6 @@ function MinAlabanza() {
       "https://images.unsplash.com/photo-1511379938547-c1f69419868d?q=80&w=2000&auto=format&fit=crop",
       "https://images.unsplash.com/photo-1506157786151-b8491531f063?q=80&w=2000&auto=format&fit=crop",
       "https://images.unsplash.com/photo-1493225457124-a3eb161ffa5f?q=80&w=2000&auto=format&fit=crop",
-    ],
-    stats: [
-      { number: "25+", label: "Integrantes activos" },
-      { number: "4", label: "Áreas de servicio" },
-      { number: "10+", label: "Eventos especiales" },
     ],
     tabs: {
       acerca: {
@@ -210,12 +211,34 @@ function MinAlabanza() {
           },
         ],
       },
+
+      redes: {
+        label: "Redes",
+        title: "Conéctate con el ministerio",
+        description:
+          "Síguenos para enterarte de ensayos, participaciones especiales, noches de adoración, convocatorias y contenido musical del ministerio.",
+        items: [
+          {
+            icon: <FaInstagram />,
+            name: "Instagram",
+            user: "@alabanza.asamblea",
+            link: "#",
+          },
+          {
+            icon: <FaFacebookF />,
+            name: "Facebook",
+            user: "Ministerio de Alabanza Asamblea",
+            link: "#",
+          },
+          {
+            icon: <FaYoutube />,
+            name: "YouTube",
+            user: "Alabanza Asamblea TV",
+            link: "#",
+          },
+        ],
+      },
     },
-    social: [
-      { icon: <FaInstagram />, name: "Instagram", link: "#" },
-      { icon: <FaFacebookF />, name: "Facebook", link: "#" },
-      { icon: <FaYoutube />, name: "YouTube", link: "#" },
-    ],
   };
 
   const tabKeys = Object.keys(ministryData.tabs);
@@ -391,19 +414,54 @@ function MinAlabanza() {
       );
     }
 
+    if (activeTab === "redes") {
+      return (
+        <div className="maalabanza-redes-wrap">
+          <div className="maalabanza-redes-header">
+            <span className="maalabanza-section-badge">{current.label}</span>
+            <h2>{current.title}</h2>
+            <p>{current.description}</p>
+          </div>
+
+          <div className="maalabanza-redes-grid">
+            {current.items.map((item, index) => (
+              <a
+                key={index}
+                href={item.link}
+                className="maalabanza-red-social-card"
+              >
+                <div className="maalabanza-red-social-icon">{item.icon}</div>
+                <h3>{item.name}</h3>
+                <p>{item.user}</p>
+              </a>
+            ))}
+          </div>
+        </div>
+      );
+    }
+
     return null;
   };
 
   return (
-    <section className="maalabanza-page">
+    <section className="maalabanza-page maalabanza-page-enter">
       <div className="maalabanza-bg-orb maalabanza-orb-1"></div>
       <div className="maalabanza-bg-orb maalabanza-orb-2"></div>
       <div className="maalabanza-bg-orb maalabanza-orb-3"></div>
       <div className="maalabanza-music-note maalabanza-note-1">♪</div>
       <div className="maalabanza-music-note maalabanza-note-2">♫</div>
       <div className="maalabanza-music-note maalabanza-note-3">♬</div>
+
       <div className="maalabanza-container">
         <div className="maalabanza-hero">
+          <button
+            type="button"
+            className="maalabanza-back-btn"
+            onClick={() => navigate(-1)}
+          >
+            ← Atrás
+          </button>
+
           <div className="maalabanza-hero-left">
             <span className="maalabanza-badge">
               <FaMusic />
@@ -412,23 +470,6 @@ function MinAlabanza() {
 
             <h1>{ministryData.title}</h1>
             <p>{ministryData.subtitle}</p>
-
-            <div className="maalabanza-stats">
-              {ministryData.stats.map((stat, index) => (
-                <div className="maalabanza-stat-box" key={index}>
-                  <h3>{stat.number}</h3>
-                  <span>{stat.label}</span>
-                </div>
-              ))}
-            </div>
-
-            <div className="maalabanza-socials">
-              {ministryData.social.map((item, index) => (
-                <a key={index} href={item.link} aria-label={item.name}>
-                  {item.icon}
-                </a>
-              ))}
-            </div>
           </div>
 
           <div className="maalabanza-hero-right">
@@ -516,7 +557,7 @@ function MinAlabanza() {
 
         <div className="maalabanza-content">{renderTabContent()}</div>
       </div>
-      ç
+
       {selectedActivity && (
         <div
           className="maalabanza-activity-modal-overlay"

@@ -1,4 +1,5 @@
-import { useState } from "react";
+import { useState, useLayoutEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import "../styles/MinNiños.css";
 import {
   FaChildren,
@@ -14,6 +15,11 @@ function MinNiños() {
   const [activeTab, setActiveTab] = useState("about");
   const [menuOpen, setMenuOpen] = useState(false);
   const [selectedActivity, setSelectedActivity] = useState(null);
+  const navigate = useNavigate();
+
+  useLayoutEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
 
   const toggleMenu = () => {
     setMenuOpen((prev) => !prev);
@@ -79,7 +85,6 @@ function MinNiños() {
         place: "Patio infantil",
         mapEmbed:
           "https://www.google.com/maps?q=Iglesia+Asamblea+Apostolica+de+la+Fe+en+Cristo+Jesus+Sacaba&z=16&output=embed",
-
         status: "por-llegar",
       },
       {
@@ -93,7 +98,6 @@ function MinNiños() {
         place: "Salón principal infantil",
         mapEmbed:
           "https://www.google.com/maps?q=Iglesia+Asamblea+Apostolica+de+la+Fe+en+Cristo+Jesus+Sacaba&z=16&output=embed",
-
         status: "terminado",
       },
       {
@@ -107,7 +111,6 @@ function MinNiños() {
         place: "Aula creativa",
         mapEmbed:
           "https://www.google.com/maps?q=Iglesia+Asamblea+Apostolica+de+la+Fe+en+Cristo+Jesus+Sacaba&z=16&output=embed",
-
         status: "por-llegar",
       },
     ],
@@ -386,7 +389,7 @@ function MinNiños() {
   };
 
   return (
-    <main className="minninos-page">
+    <main className="minninos-page minninos-page-enter">
       <section className="minninos-hero">
         <div className="minninos-hero-overlay"></div>
 
@@ -395,6 +398,14 @@ function MinNiños() {
         <div className="minninos-floating shape-3"></div>
 
         <div className="minninos-container minninos-hero-content">
+          <button
+            type="button"
+            className="minninos-back-btn"
+            onClick={() => navigate(-1)}
+          >
+            ← Atrás
+          </button>
+
           <div className="minninos-hero-text">
             <span className="minninos-badge">
               <FaChildren /> Espacio especial para los más pequeños
@@ -466,6 +477,7 @@ function MinNiños() {
           <div className="minninos-tab-panel">{renderTabContent()}</div>
         </div>
       </section>
+
       {selectedActivity && (
         <div
           className="activity-modal-overlay"
