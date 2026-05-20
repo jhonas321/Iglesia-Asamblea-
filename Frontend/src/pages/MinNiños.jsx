@@ -1,6 +1,6 @@
 import { useState, useLayoutEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import "../styles/MinNiños.css";
+import "../styles/MinNinos.css";
 import {
   FaChildren,
   FaHeart,

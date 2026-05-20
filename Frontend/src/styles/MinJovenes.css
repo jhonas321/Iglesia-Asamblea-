@@ -29,9 +29,19 @@
   margin: 0 auto;
 }
 
+/* ===== HERO ===== */
 .yt-hero {
   position: relative;
   padding: 110px 0 60px;
+}
+
+.yt-hero-grid {
+  position: relative;
+  z-index: 2;
+  display: grid;
+  grid-template-columns: 1.05fr 0.95fr;
+  gap: 42px;
+  align-items: center;
 }
 
 .yt-glow {
@@ -62,20 +72,11 @@
 @keyframes ytFloat {
   0%,
   100% {
-    transform: translateY(0px) translateX(0px);
+    transform: translateY(0) translateX(0);
   }
   50% {
     transform: translateY(-16px) translateX(8px);
   }
-}
-
-.yt-hero-grid {
-  position: relative;
-  z-index: 2;
-  display: grid;
-  grid-template-columns: 1.05fr 0.95fr;
-  gap: 42px;
-  align-items: center;
 }
 
 .yt-badge {
@@ -95,7 +96,7 @@
 .yt-hero-text h1 {
   font-size: clamp(2.6rem, 5vw, 4.5rem);
   line-height: 1.05;
-  margin-bottom: 18px;
+  margin: 0 0 18px;
   font-weight: 900;
   background: linear-gradient(135deg, #ffffff, #86f7ff, #ff8ad4);
   -webkit-background-clip: text;
@@ -107,6 +108,11 @@
   line-height: 1.8;
   color: rgba(255, 255, 255, 0.8);
   max-width: 630px;
+  margin: 0;
+}
+
+.yt-hero-image {
+  position: relative;
 }
 
 .yt-hero-image img {
@@ -118,11 +124,11 @@
   border: 1px solid rgba(255, 255, 255, 0.14);
 }
 
+/* ===== TABS ===== */
 .yt-tabs-section {
   padding: 20px 0 85px;
 }
 
-/* ===== TABS DESKTOP ===== */
 .yt-tabs-desktop {
   display: flex;
   flex-wrap: wrap;
@@ -134,7 +140,7 @@
   border: none;
   cursor: pointer;
   padding: 13px 20px;
-  border-radius: 14px;
+  border-radius: 16px;
   font-weight: 800;
   color: #ffffff;
   background: rgba(255, 255, 255, 0.08);
@@ -200,6 +206,18 @@
   transition: all 0.3s ease;
 }
 
+.yt-menu-btn.open span:nth-child(1) {
+  transform: translateY(9px) rotate(45deg);
+}
+
+.yt-menu-btn.open span:nth-child(2) {
+  opacity: 0;
+}
+
+.yt-menu-btn.open span:nth-child(3) {
+  transform: translateY(-9px) rotate(-45deg);
+}
+
 .yt-current-tab {
   font-size: 1.06rem;
   font-weight: 800;
@@ -248,18 +266,6 @@
   box-shadow: 0 14px 28px rgba(123, 97, 255, 0.22);
 }
 
-.yt-menu-btn.open span:nth-child(1) {
-  transform: translateY(9px) rotate(45deg);
-}
-
-.yt-menu-btn.open span:nth-child(2) {
-  opacity: 0;
-}
-
-.yt-menu-btn.open span:nth-child(3) {
-  transform: translateY(-9px) rotate(-45deg);
-}
-
 /* ===== PANEL ===== */
 .yt-tab-content {
   min-height: 420px;
@@ -305,6 +311,7 @@
 .yt-panel-header h2 {
   font-size: clamp(1.9rem, 4vw, 2.8rem);
   line-height: 1.15;
+  margin: 0;
 }
 
 /* ===== ABOUT ===== */
@@ -315,10 +322,26 @@
 }
 
 .yt-about-card,
-.yt-about-list-card {
+.yt-about-list-card,
+.yt-social-text-card,
+.yt-social-card,
+.yt-schedule-card,
+.yt-regulation-card,
+.yt-leader-card,
+.yt-album-card,
+.yt-activity-event-card {
   background: rgba(255, 255, 255, 0.06);
   border: 1px solid rgba(255, 255, 255, 0.1);
   border-radius: 24px;
+  box-shadow: 0 16px 34px rgba(0, 0, 0, 0.14);
+}
+
+.yt-about-card,
+.yt-about-list-card,
+.yt-social-text-card,
+.yt-schedule-card,
+.yt-regulation-card,
+.yt-social-card {
   padding: 24px;
 }
 
@@ -329,7 +352,7 @@
 }
 
 .yt-about-list-card h3 {
-  margin-bottom: 14px;
+  margin: 0 0 14px;
 }
 
 .yt-about-list-card ul {
@@ -361,7 +384,7 @@
   margin-top: 4px;
 }
 
-/* ===== ACTIVIDADES EN CARDS ===== */
+/* ===== ACTIVIDADES ===== */
 .yt-activities-intro {
   color: rgba(255, 255, 255, 0.76);
   line-height: 1.7;
@@ -375,12 +398,8 @@
 }
 
 .yt-activity-event-card {
-  background: rgba(255, 255, 255, 0.06);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  border-radius: 24px;
   overflow: hidden;
   transition: all 0.3s ease;
-  box-shadow: 0 16px 34px rgba(0, 0, 0, 0.14);
 }
 
 .yt-activity-event-card:hover {
@@ -467,17 +486,40 @@
   font-size: 0.9rem;
 }
 
+.yt-activity-details-btn {
+  margin-top: 14px;
+  width: 100%;
+  border: none;
+  border-radius: 14px;
+  padding: 12px 14px;
+  font-weight: 800;
+  cursor: pointer;
+  color: #ffffff;
+  background: linear-gradient(135deg, #ff2d95, #7b61ff);
+  transition: transform 0.25s ease, box-shadow 0.25s ease;
+}
+
+.yt-activity-details-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 14px 28px rgba(123, 97, 255, 0.24);
+}
+
 /* ===== GALERÍA ===== */
+.yt-albums-grid,
+.yt-gallery-grid,
+.yt-schedule-grid,
+.yt-regulations-grid,
+.yt-leaders-grid,
+.yt-social-grid {
+  gap: 18px;
+}
+
 .yt-albums-grid {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
-  gap: 22px;
 }
 
 .yt-album-card {
-  background: rgba(255, 255, 255, 0.06);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  border-radius: 26px;
   overflow: hidden;
   cursor: pointer;
   transition: transform 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
@@ -510,14 +552,14 @@
 }
 
 .yt-album-content h3 {
-  margin-bottom: 10px;
+  margin: 0 0 10px;
   font-size: 1.15rem;
 }
 
 .yt-album-content p {
   color: rgba(255, 255, 255, 0.76);
   line-height: 1.7;
-  margin-bottom: 14px;
+  margin: 0 0 14px;
 }
 
 .yt-album-content span {
@@ -546,12 +588,13 @@
 
 .yt-selected-album-top h3 {
   font-size: 1.5rem;
-  margin-bottom: 8px;
+  margin: 0 0 8px;
 }
 
 .yt-selected-album-top p {
   color: rgba(255, 255, 255, 0.76);
   line-height: 1.7;
+  margin: 0;
 }
 
 .yt-back-albums-btn {
@@ -573,7 +616,6 @@
 .yt-gallery-grid {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
-  gap: 18px;
 }
 
 .yt-gallery-item {
@@ -600,14 +642,9 @@
 .yt-schedule-grid {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
-  gap: 20px;
 }
 
 .yt-schedule-card {
-  background: rgba(255, 255, 255, 0.06);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  border-radius: 24px;
-  padding: 24px 22px;
   transition: transform 0.3s ease;
 }
 
@@ -624,13 +661,14 @@
 }
 
 .yt-schedule-top h3 {
+  margin: 0;
   color: #ffffff;
 }
 
 .yt-schedule-info p {
   color: rgba(255, 255, 255, 0.78);
   line-height: 1.7;
-  margin-bottom: 10px;
+  margin: 0 0 10px;
 }
 
 .yt-schedule-info p:first-child {
@@ -649,16 +687,10 @@
   align-items: start;
 }
 
-.yt-social-text-card {
-  background: rgba(255, 255, 255, 0.06);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  border-radius: 24px;
-  padding: 24px;
-}
-
 .yt-social-text-card p {
   color: rgba(255, 255, 255, 0.78);
   line-height: 1.8;
+  margin: 0;
 }
 
 .yt-social-location {
@@ -673,16 +705,11 @@
 .yt-social-grid {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
-  gap: 18px;
 }
 
 .yt-social-card {
   text-decoration: none;
   color: #ffffff;
-  background: rgba(255, 255, 255, 0.06);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  border-radius: 22px;
-  padding: 24px;
   transition: all 0.3s ease;
 }
 
@@ -704,19 +731,19 @@
 }
 
 .yt-social-card h3 {
-  margin-bottom: 8px;
+  margin: 0 0 8px;
 }
 
 .yt-social-card p {
   color: rgba(255, 255, 255, 0.76);
   line-height: 1.6;
+  margin: 0;
 }
 
 /* ===== REGLAMENTOS ===== */
 .yt-regulations-grid {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
-  gap: 22px;
 }
 
 .yt-regulation-card {
@@ -754,29 +781,24 @@
 
 .yt-regulation-card h3 {
   color: #ffffff;
-  margin-bottom: 10px;
+  margin: 0 0 10px;
   font-size: 1.12rem;
 }
 
 .yt-regulation-card p {
   color: rgba(255, 255, 255, 0.76);
   line-height: 1.75;
-  margin-bottom: 0;
+  margin: 0;
 }
 
 /* ===== LIDERAZGO ===== */
 .yt-leaders-grid {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
-  gap: 22px;
 }
 
 .yt-leader-card {
-  background: rgba(255, 255, 255, 0.06);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  border-radius: 26px;
   overflow: hidden;
-  box-shadow: 0 16px 34px rgba(0, 0, 0, 0.14);
   transition: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease;
   backdrop-filter: blur(8px);
 }
@@ -822,378 +844,7 @@
   color: rgba(255, 255, 255, 0.74);
 }
 
-/* ===== RESPONSIVE ===== */
-@media (max-width: 1100px) {
-  .yt-hero-grid,
-  .yt-about-grid,
-  .yt-social-wrapper {
-    grid-template-columns: 1fr;
-  }
-
-  .yt-activity-cards-grid {
-    grid-template-columns: repeat(2, 1fr);
-  }
-
-  .yt-schedule-grid,
-  .yt-regulations-grid {
-    grid-template-columns: 1fr;
-  }
-
-  .yt-leaders-grid {
-    grid-template-columns: repeat(2, 1fr);
-  }
-
-  .yt-gallery-grid {
-    grid-template-columns: repeat(2, 1fr);
-  }
-
-  .yt-albums-grid {
-    grid-template-columns: repeat(2, 1fr);
-  }
-
-  .yt-hero-image img {
-    height: 420px;
-  }
-}
-
-@media (max-width: 768px) {
-  .yt-hero {
-    padding: 95px 0 50px;
-  }
-
-  .yt-panel {
-    padding: 24px 18px;
-  }
-
-  .yt-tabs-desktop {
-    display: none;
-  }
-
-  .yt-menu-mobile {
-    display: block;
-  }
-
-  .yt-activity-cards-grid,
-  .yt-gallery-grid,
-  .yt-social-grid,
-  .yt-albums-grid,
-  .yt-leaders-grid {
-    grid-template-columns: 1fr;
-  }
-
-  .yt-album-image {
-    height: 200px;
-  }
-
-  .yt-hero-image img {
-    height: 320px;
-  }
-
-  .yt-gallery-item {
-    height: 220px;
-  }
-
-  .yt-leader-image {
-    height: 210px;
-  }
-
-  .yt-tab-content {
-    min-height: auto;
-  }
-
-  .yt-menu-wrapper {
-    margin-bottom: 20px;
-  }
-
-  .yt-menu-btn {
-    width: 52px;
-    height: 52px;
-    border-radius: 16px;
-  }
-
-  .yt-current-tab {
-    font-size: 0.98rem;
-  }
-
-  .yt-dropdown {
-    top: 64px;
-    left: 0;
-    right: 0;
-    min-width: 100%;
-  }
-
-  .yt-activity-modal {
-    grid-template-columns: 1fr;
-  }
-
-  .yt-activity-modal-image img {
-    min-height: 260px;
-    max-height: 300px;
-  }
-
-  .yt-activity-modal-body {
-    padding: 22px 18px 20px;
-  }
-
-  .yt-activity-modal-body h3 {
-    font-size: 1.5rem;
-  }
-
-  .yt-activity-map-iframe {
-    height: 220px;
-  }
-
-  .yt-activity-modal-left {
-    min-height: auto;
-    height: 260px;
-  }
-
-  .yt-activity-modal-right {
-    padding: 20px 18px 18px;
-  }
-
-  .yt-activity-modal-top {
-    padding-right: 0;
-  }
-
-  .yt-activity-modal-top .yt-activity-status {
-    position: static;
-    display: inline-flex;
-    margin-bottom: 14px;
-  }
-
-  .yt-activity-modal-right h3 {
-    font-size: 1.45rem;
-  }
-
-  .yt-activity-map-iframe {
-    height: 220px;
-  }
-}
-
-.yt-activity-details-btn {
-  margin-top: 14px;
-  width: 100%;
-  border: none;
-  border-radius: 14px;
-  padding: 12px 14px;
-  font-weight: 800;
-  cursor: pointer;
-  color: #ffffff;
-  background: linear-gradient(135deg, #ff2d95, #7b61ff);
-  transition: transform 0.25s ease, box-shadow 0.25s ease;
-}
-
-.yt-activity-details-btn:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 14px 28px rgba(123, 97, 255, 0.24);
-}
-
-.yt-activity-modal-overlay {
-  position: fixed;
-  inset: 0;
-  background: rgba(5, 10, 20, 0.72);
-  backdrop-filter: blur(6px);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 24px;
-  z-index: 3000;
-}
-
-.yt-activity-modal {
-  width: min(980px, 100%);
-  max-height: 90vh;
-  overflow-y: auto;
-  border-radius: 28px;
-  background: #11192d;
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  box-shadow: 0 30px 70px rgba(0, 0, 0, 0.35);
-  position: relative;
-}
-
-.yt-activity-modal-close {
-  position: absolute;
-  top: 16px;
-  right: 16px;
-  width: 42px;
-  height: 42px;
-  border: none;
-  border-radius: 50%;
-  font-size: 1.5rem;
-  cursor: pointer;
-  color: #17324d;
-  background: rgba(23, 50, 77, 0.12);
-  z-index: 10;
-  transition: all 0.25s ease;
-}
-
-.yt-activity-modal-close:hover {
-  background: rgba(23, 50, 77, 0.2);
-  transform: scale(1.05);
-}
-
-.yt-activity-modal-image {
-  width: 100%;
-  height: 320px;
-  overflow: hidden;
-}
-
-.yt-activity-modal-image img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  display: block;
-}
-
-.yt-activity-modal-body {
-  padding: 24px;
-}
-
-.yt-activity-modal-body h3 {
-  font-size: 1.8rem;
-  margin: 14px 0 12px;
-  color: #ffffff;
-}
-
-.yt-activity-modal-description {
-  color: #5b6472;
-  line-height: 1.75;
-  margin-bottom: 18px;
-  font-size: 1rem;
-}
-
-.yt-activity-modal-meta {
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-  margin-bottom: 22px;
-}
-
-.yt-activity-modal-meta p {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  margin: 0;
-  color: #4b5563;
-  font-weight: 700;
-  font-size: 1rem;
-  line-height: 1.5;
-}
-.yt-activity-map-wrapper {
-  width: 100%;
-  margin-top: 18px;
-  border-radius: 20px;
-  overflow: hidden;
-  border: 1px solid rgba(23, 50, 77, 0.12);
-  background: #ffffff;
-  box-shadow: 0 12px 26px rgba(15, 23, 42, 0.08);
-}
-
-.yt-activity-map-iframe {
-  width: 100%;
-  height: 280px;
-  border: none;
-  display: block;
-}
-.yt-activity-modal-left {
-  height: 100%;
-  min-height: 620px;
-}
-
-.yt-activity-modal-left img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  display: block;
-}
-.yt-activity-modal-right {
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-  padding: 30px 26px 24px;
-  background: #f8fafc;
-}
-
-.yt-activity-modal-top {
-  position: relative;
-  padding-right: 96px;
-}
-
-.yt-activity-modal-left {
-  height: 100%;
-  min-height: 620px;
-}
-
-.yt-activity-modal-left img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  display: block;
-}
-
-.yt-activity-modal-right {
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-  padding: 30px 26px 24px;
-  background: #f8fafc;
-}
-
-.yt-activity-modal-top {
-  position: relative;
-  padding-right: 96px;
-}
-
-.yt-activity-modal-right h3 {
-  font-size: 2rem;
-  line-height: 1.15;
-  margin: 0 0 14px;
-  color: #17324d;
-}
-
-.yt-activity-modal-description {
-  color: #5b6472;
-  line-height: 1.75;
-  margin-bottom: 18px;
-  font-size: 1rem;
-}
-
-.yt-activity-modal-meta {
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-  margin-bottom: 22px;
-}
-
-.yt-activity-modal-meta p {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  margin: 0;
-  color: #4b5563;
-  font-weight: 700;
-  font-size: 1rem;
-  line-height: 1.5;
-}
-
-.yt-activity-map-wrapper {
-  width: 100%;
-  margin-top: 18px;
-  border-radius: 20px;
-  overflow: hidden;
-  border: 1px solid rgba(23, 50, 77, 0.12);
-  background: #ffffff;
-  box-shadow: 0 12px 26px rgba(15, 23, 42, 0.08);
-}
-
-.yt-activity-map-iframe {
-  width: 100%;
-  height: 280px;
-  border: none;
-  display: block;
-}
-/* ===== MODAL DE ACTIVIDAD ===== */
+/* ===== MODAL ===== */
 .yt-activity-modal-overlay {
   position: fixed;
   inset: 0;
@@ -1308,22 +959,7 @@
   display: block;
 }
 
-
-.yt-page-enter {
-  animation: ytFadeIn 0.35s ease;
-}
-
-@keyframes ytFadeIn {
-  from {
-    opacity: 0;
-    transform: translateY(10px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
+/* ===== BACK BUTTON ===== */
 .yt-back-btn {
   position: absolute;
   top: 20px;
@@ -1346,11 +982,141 @@
   background: #ffffff;
 }
 
-.yt-hero-grid {
-  position: relative;
+.yt-page-enter {
+  animation: ytFadeIn 0.35s ease;
+}
+
+@keyframes ytFadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* ===== RESPONSIVE ===== */
+@media (max-width: 1100px) {
+  .yt-hero-grid,
+  .yt-about-grid,
+  .yt-social-wrapper {
+    grid-template-columns: 1fr;
+  }
+
+  .yt-activity-cards-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .yt-schedule-grid,
+  .yt-regulations-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .yt-leaders-grid,
+  .yt-albums-grid,
+  .yt-gallery-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .yt-hero-image img {
+    height: 420px;
+  }
 }
 
 @media (max-width: 768px) {
+  .yt-hero {
+    padding: 95px 0 50px;
+  }
+
+  .yt-panel {
+    padding: 24px 18px;
+  }
+
+  .yt-tabs-desktop {
+    display: none;
+  }
+
+  .yt-menu-mobile {
+    display: block;
+  }
+
+  .yt-activity-cards-grid,
+  .yt-gallery-grid,
+  .yt-social-grid,
+  .yt-albums-grid,
+  .yt-leaders-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .yt-about-grid,
+  .yt-social-wrapper {
+    grid-template-columns: 1fr;
+  }
+
+  .yt-album-image {
+    height: 200px;
+  }
+
+  .yt-hero-image img {
+    height: 320px;
+  }
+
+  .yt-gallery-item {
+    height: 220px;
+  }
+
+  .yt-leader-image {
+    height: 210px;
+  }
+
+  .yt-tab-content {
+    min-height: auto;
+  }
+
+  .yt-menu-wrapper {
+    margin-bottom: 20px;
+  }
+
+  .yt-menu-btn {
+    width: 52px;
+    height: 52px;
+    border-radius: 16px;
+  }
+
+  .yt-current-tab {
+    font-size: 0.98rem;
+  }
+
+  .yt-dropdown {
+    top: 64px;
+    left: 0;
+    right: 0;
+    min-width: 100%;
+  }
+
+  .yt-activity-modal {
+    grid-template-columns: 1fr;
+  }
+
+  .yt-activity-modal-image img {
+    min-height: 260px;
+    max-height: 300px;
+  }
+
+  .yt-activity-modal-body {
+    padding: 22px 18px 20px;
+  }
+
+  .yt-activity-modal-body h3 {
+    font-size: 1.5rem;
+  }
+
+  .yt-activity-map-iframe {
+    height: 220px;
+  }
+
   .yt-back-btn {
     top: 14px;
     left: 14px;
