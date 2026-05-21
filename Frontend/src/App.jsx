@@ -9,6 +9,7 @@ import Inicio from "./pages/Inicio";
 
 import Organigrama from "./pages/Organigrama";
 import Reglamento from "./pages/Reglamento";
+import Login from "./pages/Login";
 
 function App() {
   return (
@@ -16,7 +17,9 @@ function App() {
       <Navbar />
 
       <Routes>
+
         <Route path="/" element={<Inicio />} />
+        <Route path="/Login" element={<Login />} />
         <Route path="/organigrama" element={<Organigrama />} />
         <Route path="/reglamento" element={<Reglamento />} />
       </Routes>
