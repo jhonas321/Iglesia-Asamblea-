@@ -6,11 +6,7 @@ function Navbar() {
   return (
     <nav className="navbar">
       <div className="brand">
-        <img
-          src="/images/logo.jpg"
-          alt="Logo Iglesia"
-          className="brand-logo"
-        />
+        <img src="/images/logo.jpg" alt="Logo Iglesia" className="brand-logo" />
 
         <div className="brand-text">
           <h1>Asamblea Apostolica</h1>
@@ -22,34 +18,51 @@ function Navbar() {
 
       <ul className="nav-links">
         <li>
-          <HashLink smooth to="/#inicio">Inicio</HashLink>
+          <HashLink smooth to="/#inicio">
+            Inicio
+          </HashLink>
         </li>
 
         <li>
-          <HashLink smooth to="/#nosotros">Nosotros</HashLink>
+          <HashLink smooth to="/#nosotros">
+            Nosotros
+          </HashLink>
         </li>
 
         <li>
-          <HashLink smooth to="/#ministerios">Ministerios</HashLink>
-        </li>
-        
-        <li>
-          <HashLink smooth to="/#organigrama">Organigrama</HashLink>
-        </li>
-
-       
-
-        {/* 👇 PÁGINA */}
-        <li>
-          <HashLink smooth to="/#reglamento">Reglamento</HashLink>
+          <HashLink smooth to="/#ministerios">
+            Ministerios
+          </HashLink>
         </li>
 
         <li>
-          <HashLink smooth to="/#horarios">Horarios</HashLink>
+          <HashLink smooth to="/#organigrama">
+            Organigrama
+          </HashLink>
         </li>
 
         <li>
-          <HashLink smooth to="/#contacto">Contacto</HashLink>
+          <HashLink smooth to="/#reglamento">
+            Reglamento
+          </HashLink>
+        </li>
+
+        <li>
+          <HashLink smooth to="/#horarios">
+            Horarios
+          </HashLink>
+        </li>
+
+        <li>
+          <HashLink smooth to="/#contacto">
+            Contacto
+          </HashLink>
+        </li>
+
+        <li>
+          <Link to="/Login" className="login-nav-btn">
+            Iniciar Sesión
+          </Link>
         </li>
       </ul>
     </nav>

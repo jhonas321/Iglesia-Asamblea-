@@ -159,3 +159,25 @@
     font-size: 0.9rem;
   }
 }
+
+.login-nav-btn {
+  padding: 10px 18px;
+  border-radius: 999px;
+  background: linear-gradient(135deg, #a8bad5, #2f4f7f);
+  color: #ffffff !important;
+  font-weight: 700;
+  text-decoration: none;
+  box-shadow: 0 8px 22px rgba(47, 79, 127, 0.35);
+  border: 1px solid rgba(255, 255, 255, 0.35);
+  transition: all 0.3s ease;
+}
+
+.login-nav-btn:hover {
+  background: linear-gradient(135deg, #6b87aa, #203f63);
+  transform: translateY(-2px);
+  box-shadow: 0 12px 28px rgba(47, 79, 127, 0.5);
+}
+
+.login-nav-btn:active {
+  transform: scale(0.96);
+}

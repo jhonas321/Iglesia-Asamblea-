@@ -11,6 +11,7 @@ import MinJovenes from "./pages/MinJovenes";
 import MinAlabanza from "./pages/MinAlabanza";
 import Organigrama from "./pages/Organigrama";
 import Reglamento from "./pages/Reglamento";
+import Login from "./pages/Login";
 
 function App() {
   return (
@@ -18,7 +19,9 @@ function App() {
       <Navbar />
 
       <Routes>
+
         <Route path="/" element={<Inicio />} />
+        <Route path="/Login" element={<Login />} />
         <Route path="/ministerio-ninos" element={<MinNiños />} />
         <Route path="/ministerio-jovenes" element={<MinJovenes />} />
         <Route path="/ministerio-alabanza" element={<MinAlabanza />} />
