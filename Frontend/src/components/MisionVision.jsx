@@ -2,7 +2,7 @@ import "../styles/mision-vision.css";
 
 function MisionVision() {
   return (
-    <section className="mission">
+    <section id="mision-vision" className="mission">
       <div className="section-bg-decoration decoration-center"></div>
 
       <div className="section-title">

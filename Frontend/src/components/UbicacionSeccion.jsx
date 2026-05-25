@@ -2,7 +2,7 @@ import "../styles/ubicacion-seccion.css";
 
 function UbicacionSeccion() {
   return (
-    <section className="location light-section">
+    <section id="ubicacion" className="location light-section">
       <div className="section-title">
         <h2>Ubicación</h2>
         <p>

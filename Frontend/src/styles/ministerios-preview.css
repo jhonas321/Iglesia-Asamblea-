@@ -1,451 +1,553 @@
 .ministerios-preview {
-    padding: 100px 6%;
-    background: linear-gradient(
-      135deg,
-      #0b1220,
-      #111827,
-      #17253f,
-      #20376d
-    );
-    background-size: 220% 220%;
-    animation: ministeriosBgPan 14s ease-in-out infinite;
-    position: relative;
-    overflow: hidden;
+  padding: 100px 6%;
+  background: linear-gradient(
+    135deg,
+    #0b1220,
+    #111827,
+    #17253f,
+    #20376d
+  );
+  background-size: 220% 220%;
+  animation: ministeriosBgPan 14s ease-in-out infinite;
+  position: relative;
+  overflow: hidden;
+  scroll-margin-top: 100px;
+}
+
+/* LUCES DE FONDO */
+.ministerios-preview::before {
+  content: "";
+  position: absolute;
+  top: -80px;
+  left: -80px;
+  width: 260px;
+  height: 260px;
+  border-radius: 50%;
+  background: rgba(70, 97, 169, 0.25);
+  filter: blur(55px);
+  animation: ministeriosFloatSlow 10s ease-in-out infinite;
+  pointer-events: none;
+}
+
+.ministerios-preview::after {
+  content: "";
+  position: absolute;
+  bottom: -80px;
+  right: -80px;
+  width: 260px;
+  height: 260px;
+  border-radius: 50%;
+  background: rgba(111, 137, 232, 0.22);
+  filter: blur(55px);
+  animation: ministeriosFloatSlow 12s ease-in-out infinite;
+  pointer-events: none;
+}
+
+/* TÍTULO */
+.ministerios-title {
+  text-align: center;
+  margin-bottom: 60px;
+  position: relative;
+  z-index: 2;
+}
+
+.ministerios-title h2 {
+  font-size: 3.2rem;
+  font-weight: 800;
+  color: #ffffff;
+  margin: 0;
+  line-height: 1.2;
+}
+
+.ministerios-line {
+  width: 98px;
+  height: 4px;
+  background: linear-gradient(90deg, #3f62b8, #6f89e8);
+  margin: 18px auto 24px;
+  border-radius: 999px;
+  transition: width 0.35s ease, background 0.35s ease;
+}
+
+.ministerios-title:hover .ministerios-line {
+  width: 140px;
+  background: linear-gradient(90deg, #3f62b8, #6f89e8, #3f62b8);
+}
+
+.ministerios-title p {
+  color: rgba(255, 255, 255, 0.78);
+  line-height: 1.8;
+  font-size: 1.05rem;
+  max-width: 760px;
+  margin: 0 auto;
+}
+
+/* CONTENEDOR */
+.ministerios-wrapper {
+  display: flex;
+  gap: 22px;
+  height: 420px;
+  position: relative;
+  z-index: 2;
+}
+
+/* TARJETA */
+.ministerio-card {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  border-radius: 30px;
+  overflow: hidden;
+  background: #0f172a;
+  cursor: pointer;
+  text-decoration: none;
+  color: inherit;
+  transition: flex 0.6s ease, transform 0.35s ease, box-shadow 0.35s ease;
+  border: 1px solid rgba(111, 137, 232, 0.28);
+  position: relative;
+}
+
+.ministerio-card:hover {
+  flex: 2.3;
+  transform: translateY(-6px);
+  box-shadow:
+    0 26px 52px rgba(0, 0, 0, 0.35),
+    0 12px 26px rgba(63, 98, 184, 0.25);
+}
+
+/* IMAGEN */
+.ministerio-image {
+  flex: 1 1 100%;
+  min-width: 0;
+  position: relative;
+  overflow: hidden;
+}
+
+.ministerio-image img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+  display: block;
+  transition: transform 0.6s ease;
+}
+
+.ministerio-card:hover .ministerio-image img {
+  transform: scale(1.08);
+}
+
+/* OSCURECER IMAGEN */
+.ministerio-overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    180deg,
+    rgba(0, 0, 0, 0.12),
+    rgba(0, 0, 0, 0.76)
+  );
+}
+
+/* TEXTO SOBRE LA IMAGEN */
+.ministerio-image-title {
+  position: absolute;
+  left: 28px;
+  right: 28px;
+  bottom: 28px;
+  z-index: 3;
+  color: white;
+  opacity: 1;
+  visibility: visible;
+  transition: opacity 0.25s ease, visibility 0.25s ease;
+}
+
+.ministerio-image-title span {
+  display: inline-block;
+  background: rgba(63, 98, 184, 0.92);
+  padding: 7px 13px;
+  border-radius: 999px;
+  font-size: 12px;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  margin-bottom: 12px;
+}
+
+.ministerio-image-title h3 {
+  font-size: 1.75rem;
+  line-height: 1.2;
+  margin: 0;
+  max-width: 390px;
+  color: #ffffff;
+  text-shadow: 0 4px 18px rgba(0, 0, 0, 0.55);
+}
+
+.ministerio-image-title p {
+  margin: 10px 0 0;
+  max-width: 420px;
+  color: rgba(255, 255, 255, 0.9);
+  font-size: 0.98rem;
+  line-height: 1.55;
+  text-shadow: 0 3px 14px rgba(0, 0, 0, 0.5);
+}
+
+.ministerio-card:hover .ministerio-image-title {
+  opacity: 0;
+  visibility: hidden;
+}
+
+/* PANEL DE INFORMACIÓN */
+.ministerio-info {
+  flex: 0 0 0;
+  width: 0;
+  min-width: 0;
+  overflow: hidden;
+  background: transparent;
+  border-left: none;
+  position: relative;
+  transition: flex-basis 0.45s ease, background 0.2s ease;
+}
+
+.ministerio-card:hover .ministerio-info {
+  flex-basis: 430px;
+  background: #ffffff;
+  border-left: 1px solid rgba(63, 98, 184, 0.14);
+}
+
+/* QUITAR JASPEADO */
+.ministerio-info::before {
+  content: none;
+}
+
+/* CONTENIDO INTERNO */
+.ministerio-content {
+  position: absolute;
+  inset: 0;
+  padding: 40px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.2s ease;
+}
+
+.ministerio-card:hover .ministerio-content {
+  opacity: 1;
+  visibility: visible;
+  transition-delay: 0.45s;
+}
+
+.ministerio-icon {
+  width: 60px;
+  height: 60px;
+  background: rgba(63, 98, 184, 0.12);
+  color: #3f62b8;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 26px;
+  border-radius: 16px;
+  margin-bottom: 16px;
+  flex-shrink: 0;
+  position: relative;
+  z-index: 1;
+}
+
+/* TEXTO INTERNO */
+.ministerio-content h3 {
+  font-size: 1.85rem;
+  margin: 0 0 14px;
+  color: #17253f;
+  line-height: 1.25;
+  position: relative;
+  z-index: 1;
+}
+
+.ministerio-content h3::after {
+  content: "";
+  display: block;
+  width: 64px;
+  height: 4px;
+  margin-top: 12px;
+  border-radius: 999px;
+  background: linear-gradient(90deg, #3f62b8, #6f89e8);
+}
+
+.ministerio-content p {
+  color: #4f5d78;
+  line-height: 1.7;
+  font-size: 1rem;
+  max-width: 350px;
+  margin: 0 0 22px;
+  position: relative;
+  z-index: 1;
+}
+
+/* BOTÓN */
+.ministerio-content button {
+  width: fit-content;
+  border: none;
+  outline: none;
+  background: linear-gradient(135deg, #3f62b8, #6f89e8);
+  color: white;
+  padding: 12px 18px;
+  border-radius: 14px;
+  font-size: 0.95rem;
+  font-weight: 700;
+  cursor: pointer;
+  box-shadow: 0 12px 24px rgba(63, 98, 184, 0.28);
+  transition: all 0.3s ease;
+  position: relative;
+  z-index: 1;
+}
+
+.ministerio-content button:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 18px 32px rgba(63, 98, 184, 0.38);
+}
+
+/* ANIMACIONES */
+@keyframes ministeriosBgPan {
+  0% {
+    background-position: 0% 50%;
   }
-  
-  /* LUCES DE FONDO */
-  .ministerios-preview::before {
-    content: "";
-    position: absolute;
-    top: -80px;
-    left: -80px;
-    width: 260px;
-    height: 260px;
-    border-radius: 50%;
-    background: rgba(70, 97, 169, 0.25);
-    filter: blur(55px);
-    animation: ministeriosFloatSlow 10s ease-in-out infinite;
-    pointer-events: none;
+
+  50% {
+    background-position: 100% 50%;
   }
-  
+
+  100% {
+    background-position: 0% 50%;
+  }
+}
+
+@keyframes ministeriosFloatSlow {
+  0% {
+    transform: translateY(0px) translateX(0px);
+  }
+
+  50% {
+    transform: translateY(-16px) translateX(8px);
+  }
+
+  100% {
+    transform: translateY(0px) translateX(0px);
+  }
+}
+
+/* TABLET */
+@media (max-width: 992px) {
+  .ministerios-preview {
+    animation: none;
+  }
+
+  .ministerios-preview::before,
   .ministerios-preview::after {
-    content: "";
-    position: absolute;
-    bottom: -80px;
-    right: -80px;
-    width: 260px;
-    height: 260px;
-    border-radius: 50%;
-    background: rgba(111, 137, 232, 0.22);
-    filter: blur(55px);
-    animation: ministeriosFloatSlow 12s ease-in-out infinite;
-    pointer-events: none;
+    animation: none;
+    filter: none;
+    opacity: 0.18;
   }
-  
-  /* TÍTULO */
-  .ministerios-title {
-    text-align: center;
-    margin-bottom: 60px;
-    position: relative;
-    z-index: 2;
-  }
-  
-  .ministerios-title h2 {
-    font-size: 3.2rem;
-    font-weight: 800;
-    color: #ffffff;
-    margin: 0;
-    line-height: 1.2;
-  }
-  
-  .ministerios-line {
-    width: 98px;
-    height: 4px;
-    background: linear-gradient(90deg, #3f62b8, #6f89e8);
-    margin: 18px auto 24px;
-    border-radius: 999px;
-    transition: width 0.35s ease, background 0.35s ease;
-  }
-  
-  .ministerios-title:hover .ministerios-line {
-    width: 140px;
-    background: linear-gradient(90deg, #3f62b8, #6f89e8, #3f62b8);
-  }
-  
-  .ministerios-title p {
-    color: rgba(255, 255, 255, 0.78);
-    line-height: 1.8;
-    font-size: 1.05rem;
-    max-width: 760px;
-    margin: 0 auto;
-  }
-  
-  /* CONTENEDOR */
+
   .ministerios-wrapper {
-    display: flex;
-    gap: 22px;
-    height: 420px;
-    position: relative;
-    z-index: 2;
-  }
-  
-  /* TARJETA */
-  .ministerio-card {
-    flex: 1;
-    min-width: 0;
-    display: flex;
-    border-radius: 30px;
-    overflow: hidden;
-    background: #0f172a;
-    cursor: pointer;
-    text-decoration: none;
-    color: inherit;
-    transition: flex 0.6s ease, transform 0.35s ease, box-shadow 0.35s ease;
-    border: 1px solid rgba(111, 137, 232, 0.28);
-    position: relative;
-  }
-  
-  .ministerio-card:hover {
-    flex: 2.3;
-    transform: translateY(-6px);
-    box-shadow:
-      0 26px 52px rgba(0, 0, 0, 0.35),
-      0 12px 26px rgba(63, 98, 184, 0.25);
-  }
-  
-  /* IMAGEN */
-  .ministerio-image {
-    flex: 1 1 100%;
-    min-width: 0;
-    position: relative;
-    overflow: hidden;
-  }
-  
-  .ministerio-image img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    object-position: center;
-    display: block;
-    transition: transform 0.6s ease;
-  }
-  
-  .ministerio-card:hover .ministerio-image img {
-    transform: scale(1.08);
-  }
-  
-  /* OSCURECER IMAGEN */
-  .ministerio-overlay {
-    position: absolute;
-    inset: 0;
-    background: linear-gradient(
-      180deg,
-      rgba(0, 0, 0, 0.12),
-      rgba(0, 0, 0, 0.76)
-    );
-  }
-  
-  /* TEXTO SOBRE LA IMAGEN */
-  .ministerio-image-title {
-    position: absolute;
-    left: 28px;
-    right: 28px;
-    bottom: 28px;
-    z-index: 3;
-    color: white;
-    opacity: 1;
-    visibility: visible;
-    transition: opacity 0.25s ease, visibility 0.25s ease;
-  }
-  
-  .ministerio-image-title span {
-    display: inline-block;
-    background: rgba(63, 98, 184, 0.92);
-    padding: 7px 13px;
-    border-radius: 999px;
-    font-size: 12px;
-    font-weight: 800;
-    text-transform: uppercase;
-    letter-spacing: 1px;
-    margin-bottom: 12px;
-  }
-  
-  .ministerio-image-title h3 {
-    font-size: 1.75rem;
-    line-height: 1.2;
-    margin: 0;
-    max-width: 390px;
-    color: #ffffff;
-    text-shadow: 0 4px 18px rgba(0, 0, 0, 0.55);
-  }
-  
-  .ministerio-image-title p {
-    margin: 10px 0 0;
-    max-width: 420px;
-    color: rgba(255, 255, 255, 0.9);
-    font-size: 0.98rem;
-    line-height: 1.55;
-    text-shadow: 0 3px 14px rgba(0, 0, 0, 0.5);
-  }
-  
-  .ministerio-card:hover .ministerio-image-title {
-    opacity: 0;
-    visibility: hidden;
-  }
-  
-  /* PANEL DE INFORMACIÓN: OCULTO CUANDO ESTÁ CERRADO */
-  .ministerio-info {
-    flex: 0 0 0;
-    width: 0;
-    min-width: 0;
-    overflow: hidden;
-    background: transparent;
-    border-left: none;
-    position: relative;
-    transition: flex-basis 0.45s ease, background 0.2s ease;
-  }
-  
-  .ministerio-card:hover .ministerio-info {
-    flex-basis: 430px;
-    background: #ffffff;
-    border-left: 1px solid rgba(63, 98, 184, 0.14);
-  }
-  
-  /* QUITAR JASPEADO */
-  .ministerio-info::before {
-    content: none;
-  }
-  
-  /* CONTENIDO INTERNO */
-  .ministerio-content {
-    position: absolute;
-    inset: 0;
-    padding: 40px;
-    display: flex;
     flex-direction: column;
-    justify-content: center;
-    opacity: 0;
-    visibility: hidden;
-    transition: opacity 0.2s ease;
+    height: auto;
   }
-  
+
+  .ministerio-card {
+    flex-direction: column;
+    flex: unset;
+  }
+
+  .ministerio-card:hover {
+    flex: unset;
+    transform: none;
+  }
+
+  .ministerio-card:hover .ministerio-image img {
+    transform: none;
+  }
+
+  .ministerio-image {
+    width: 100%;
+    min-width: 100%;
+    height: 250px;
+    flex: 0 0 250px;
+  }
+
+  .ministerio-info,
+  .ministerio-card:hover .ministerio-info {
+    flex: unset;
+    width: 100%;
+    min-height: auto;
+    flex-basis: auto;
+    background: #ffffff;
+    border-left: none;
+  }
+
+  .ministerio-content,
   .ministerio-card:hover .ministerio-content {
+    position: static;
     opacity: 1;
     visibility: visible;
-    transition-delay: 0.45s;
+    transition: none;
+    padding: 28px 24px;
   }
-  
-  .ministerio-icon {
-    width: 60px;
-    height: 60px;
-    background: rgba(63, 98, 184, 0.12);
-    color: #3f62b8;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 26px;
-    border-radius: 16px;
-    margin-bottom: 16px;
-    flex-shrink: 0;
-    position: relative;
-    z-index: 1;
+
+  .ministerio-image-title {
+    left: 22px;
+    right: 22px;
+    bottom: 22px;
+    opacity: 1;
+    visibility: visible;
   }
-  
-  /* TEXTO INTERNO OSCURO */
-  .ministerio-content h3 {
-    font-size: 1.85rem;
-    margin: 0 0 14px;
-    color: #17253f;
-    line-height: 1.25;
-    position: relative;
-    z-index: 1;
+
+  .ministerio-card:hover .ministerio-image-title {
+    opacity: 1;
+    visibility: visible;
   }
-  
-  .ministerio-content h3::after {
-    content: "";
-    display: block;
-    width: 64px;
-    height: 4px;
-    margin-top: 12px;
-    border-radius: 999px;
-    background: linear-gradient(90deg, #3f62b8, #6f89e8);
+
+  /* ESTA PARTE EVITA QUE SE REPITA PUBLICACIONES / EVENTOS EN CELULAR */
+  .ministerio-image-title h3,
+  .ministerio-image-title p {
+    display: none;
   }
-  
+
+  .ministerio-image-title span {
+    margin-bottom: 0;
+  }
+
   .ministerio-content p {
-    color: #4f5d78;
-    line-height: 1.7;
-    font-size: 1rem;
-    max-width: 350px;
-    margin: 0 0 22px;
-    position: relative;
-    z-index: 1;
+    max-width: 100%;
   }
-  
-  /* BOTÓN */
-  .ministerio-content button {
-    width: fit-content;
-    border: none;
-    outline: none;
-    background: linear-gradient(135deg, #3f62b8, #6f89e8);
-    color: white;
-    padding: 12px 18px;
-    border-radius: 14px;
+}
+
+/* CELULAR */
+@media (max-width: 768px) {
+  .ministerios-preview {
+    padding: 80px 5%;
+    scroll-margin-top: 90px;
+  }
+
+  .ministerios-title {
+    margin-bottom: 40px;
+  }
+
+  .ministerios-title h2 {
+    font-size: 2.4rem;
+  }
+
+  .ministerios-title p {
+    font-size: 0.98rem;
+  }
+
+  .ministerios-line {
+    width: 80px;
+    margin: 16px auto 20px;
+  }
+
+  .ministerios-title:hover .ministerios-line {
+    width: 120px;
+  }
+
+  .ministerios-wrapper {
+    gap: 18px;
+  }
+
+  .ministerio-card {
+    border-radius: 26px;
+  }
+
+  .ministerio-image {
+    height: 230px;
+    flex: 0 0 230px;
+  }
+
+  .ministerio-image-title {
+    left: 22px;
+    right: 22px;
+    bottom: 22px;
+  }
+
+  .ministerio-image-title span {
+    font-size: 11px;
+    padding: 7px 12px;
+  }
+
+  .ministerio-content {
+    padding: 28px 24px;
+  }
+
+  .ministerio-icon {
+    width: 58px;
+    height: 58px;
+    font-size: 25px;
+    border-radius: 15px;
+    margin-bottom: 16px;
+  }
+
+  .ministerio-content h3 {
+    font-size: 1.45rem;
+  }
+
+  .ministerio-content p {
     font-size: 0.95rem;
-    font-weight: 700;
-    cursor: pointer;
-    box-shadow: 0 12px 24px rgba(63, 98, 184, 0.28);
-    transition: all 0.3s ease;
-    position: relative;
-    z-index: 1;
   }
-  
-  .ministerio-content button:hover {
-    transform: translateY(-4px);
-    box-shadow: 0 18px 32px rgba(63, 98, 184, 0.38);
+
+  .ministerio-content button {
+    padding: 11px 17px;
+    font-size: 0.92rem;
   }
-  
-  /* ANIMACIONES */
-  @keyframes ministeriosBgPan {
-    0% {
-      background-position: 0% 50%;
-    }
-  
-    50% {
-      background-position: 100% 50%;
-    }
-  
-    100% {
-      background-position: 0% 50%;
-    }
+}
+
+/* CELULAR PEQUEÑO */
+@media (max-width: 480px) {
+  .ministerios-preview {
+    padding: 70px 5%;
+    scroll-margin-top: 85px;
   }
-  
-  @keyframes ministeriosFloatSlow {
-    0% {
-      transform: translateY(0px) translateX(0px);
-    }
-  
-    50% {
-      transform: translateY(-16px) translateX(8px);
-    }
-  
-    100% {
-      transform: translateY(0px) translateX(0px);
-    }
+
+  .ministerios-preview::before,
+  .ministerios-preview::after {
+    display: none;
   }
-  
-  /* TABLET */
-  @media (max-width: 992px) {
-    .ministerios-wrapper {
-      flex-direction: column;
-      height: auto;
-    }
-  
-    .ministerio-card {
-      flex-direction: column;
-      flex: unset;
-    }
-  
-    .ministerio-card:hover {
-      flex: unset;
-      transform: translateY(-4px);
-    }
-  
-    .ministerio-image {
-      width: 100%;
-      min-width: 100%;
-      height: 250px;
-      flex: 0 0 250px;
-    }
-  
-    .ministerio-info,
-    .ministerio-card:hover .ministerio-info {
-      flex: unset;
-      width: 100%;
-      min-height: auto;
-      flex-basis: auto;
-      background: #ffffff;
-      border-left: none;
-    }
-  
-    .ministerio-content,
-    .ministerio-card:hover .ministerio-content {
-      position: static;
-      opacity: 1;
-      visibility: visible;
-      transition: none;
-      padding: 28px 24px;
-    }
-  
-    .ministerio-image-title {
-      opacity: 1;
-      visibility: visible;
-    }
-  
-    .ministerio-card:hover .ministerio-image-title {
-      opacity: 1;
-      visibility: visible;
-    }
-  
-    .ministerio-content p {
-      max-width: 100%;
-    }
+
+  .ministerios-title h2 {
+    font-size: 2rem;
   }
-  
-  /* CELULAR */
-  @media (max-width: 768px) {
-    .ministerios-preview {
-      padding: 80px 5%;
-    }
-  
-    .ministerios-title {
-      margin-bottom: 40px;
-    }
-  
-    .ministerios-title h2 {
-      font-size: 2.4rem;
-    }
-  
-    .ministerios-title p {
-      font-size: 0.98rem;
-    }
-  
-    .ministerios-line {
-      width: 80px;
-      margin: 16px auto 20px;
-    }
-  
-    .ministerios-title:hover .ministerios-line {
-      width: 120px;
-    }
-  
-    .ministerios-wrapper {
-      gap: 18px;
-    }
-  
-    .ministerio-image {
-      height: 230px;
-      flex: 0 0 230px;
-    }
-  
-    .ministerio-image-title {
-      left: 22px;
-      right: 22px;
-      bottom: 22px;
-    }
-  
-    .ministerio-image-title h3 {
-      font-size: 1.35rem;
-    }
-  
-    .ministerio-image-title p {
-      font-size: 0.9rem;
-    }
-  
-    .ministerio-content h3 {
-      font-size: 1.45rem;
-    }
-  
-    .ministerio-content p {
-      font-size: 0.95rem;
-    }
+
+  .ministerios-title p {
+    font-size: 0.93rem;
+    line-height: 1.65;
   }
+
+  .ministerios-wrapper {
+    gap: 20px;
+  }
+
+  .ministerio-card {
+    border-radius: 24px;
+  }
+
+  .ministerio-image {
+    height: 210px;
+    flex: 0 0 210px;
+  }
+
+  .ministerio-content {
+    padding: 26px 22px 28px;
+  }
+
+  .ministerio-content h3 {
+    font-size: 1.35rem;
+  }
+
+  .ministerio-content p {
+    font-size: 0.92rem;
+    line-height: 1.65;
+  }
+
+  .ministerio-content button {
+    width: 100%;
+    justify-content: center;
+    text-align: center;
+  }
+}

@@ -1,8 +1,18 @@
 import "../styles/login.css";
-import { FaEnvelope, FaLock, FaSignInAlt, FaCrown } from "react-icons/fa";
+import { useState } from "react";
+import {
+  FaEnvelope,
+  FaLock,
+  FaSignInAlt,
+  FaCrown,
+  FaEye,
+  FaEyeSlash,
+} from "react-icons/fa";
 import { Link } from "react-router-dom";
 
 function Login() {
+  const [mostrarPassword, setMostrarPassword] = useState(false);
+
   return (
     <main className="login-page">
       <div className="login-decoration decoration-one"></div>
@@ -42,14 +52,26 @@ function Login() {
             <input type="email" placeholder="Ingresa tu correo" required />
           </div>
 
-          <div className="login-input">
+          <div className="login-input password-input">
             <FaLock />
             <div className="input-line"></div>
+
             <input
-              type="password"
+              type={mostrarPassword ? "text" : "password"}
               placeholder="Ingresa tu contraseña"
               required
             />
+
+            <button
+              type="button"
+              className={`password-toggle ${mostrarPassword ? "active" : ""}`}
+              onClick={() => setMostrarPassword(!mostrarPassword)}
+              aria-label={
+                mostrarPassword ? "Ocultar contraseña" : "Mostrar contraseña"
+              }
+            >
+              {mostrarPassword ? <FaEyeSlash /> : <FaEye />}
+            </button>
           </div>
 
           <div className="login-options">

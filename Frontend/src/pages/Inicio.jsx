@@ -1,7 +1,6 @@
 import "../styles/secciones-generales.css";
 
 import Heroe from "../components/Heroe";
-import SobreNosotros from "../components/SobreNosotros";
 import MisionVision from "../components/MisionVision";
 import HorariosSeccion from "../components/HorariosSeccion";
 import UbicacionSeccion from "../components/UbicacionSeccion";
@@ -13,11 +12,10 @@ function Inicio() {
   return (
     <>
       <Heroe />
-      <SobreNosotros />
+      <HorariosSeccion />
       <MinisteriosPreview />
       <ReglamentoPreview />
       <MisionVision />
-      <HorariosSeccion />
       <UbicacionSeccion />
       <ContactoSeccion />
     </>
