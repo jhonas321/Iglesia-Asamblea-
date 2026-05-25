@@ -3,31 +3,33 @@
   top: 0;
   left: 0;
   width: 100%;
-  z-index: 1000;
+  z-index: 2000;
 
   display: flex;
   justify-content: space-between;
   align-items: center;
 
   padding: 18px 8%;
-  background: rgba(7, 16, 29, 0.55);
-  backdrop-filter: blur(12px);
+  background: rgba(7, 16, 29, 0.58);
+  backdrop-filter: blur(14px);
   border-bottom: 1px solid rgba(255, 255, 255, 0.08);
 }
 
+/* MARCA */
 .brand {
   display: flex;
   align-items: center;
   gap: 14px;
+  z-index: 3002;
 }
 
-.brand-logo{
-  width:55px;
-  height:55px;
-  object-fit:contain;
-  border-radius:12px;
-  padding:6px;
-  background:rgba(255,255,255,0.08);
+.brand-logo {
+  width: 55px;
+  height: 55px;
+  object-fit: contain;
+  border-radius: 12px;
+  padding: 6px;
+  background: rgba(255, 255, 255, 0.08);
 }
 
 .brand-text {
@@ -56,11 +58,12 @@
   font-weight: 700;
 }
 
+/* LINKS DESKTOP */
 .nav-links {
   display: flex;
   align-items: center;
   list-style: none;
-  gap: 28px;
+  gap: 26px;
   margin: 0;
   padding: 0;
 }
@@ -72,6 +75,14 @@
   font-weight: 600;
   transition: color 0.3s ease, opacity 0.3s ease;
   position: relative;
+
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.nav-icon {
+  display: none;
 }
 
 .nav-links li a:hover {
@@ -93,73 +104,7 @@
   width: 100%;
 }
 
-@media (max-width: 992px) {
-  .navbar {
-    flex-direction: column;
-    gap: 16px;
-    padding: 16px 6%;
-  }
-
-  .brand {
-    justify-content: center;
-    text-align: center;
-  }
-
-  .brand-logo {
-    width: 50px;
-    height: 50px;
-  }
-
-  .brand-text h1 {
-    font-size: 1.15rem;
-  }
-
-  .brand-text p {
-    font-size: 0.88rem;
-  }
-
-  .nav-links {
-    flex-wrap: wrap;
-    justify-content: center;
-    gap: 16px;
-  }
-
-  .nav-links li a {
-    font-size: 0.95rem;
-  }
-}
-
-@media (max-width: 600px) {
-  .navbar {
-    padding: 14px 5%;
-  }
-
-  .brand {
-    gap: 10px;
-  }
-
-  .brand-logo {
-    width: 44px;
-    height: 44px;
-  }
-
-  .brand-text h1 {
-    font-size: 1rem;
-  }
-
-  .brand-text p {
-    font-size: 0.8rem;
-  }
-
-  .nav-links {
-    gap: 12px;
-  }
-
-  .nav-links li a {
-    font-size: 0.9rem;
-  }
-}
-
+/* BOTÓN LOGIN */
 .login-nav-btn {
   padding: 10px 18px;
   border-radius: 999px;
@@ -180,4 +125,225 @@
 
 .login-nav-btn:active {
   transform: scale(0.96);
+}
+
+/* BOTÓN HAMBURGUESA */
+.menu-toggle {
+  display: none;
+  width: 46px;
+  height: 46px;
+  border: none;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #d4af37, #b88916);
+  color: #07101d;
+  font-size: 1.35rem;
+  cursor: pointer;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 10px 25px rgba(212, 175, 55, 0.35);
+  z-index: 3002;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.menu-toggle:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 14px 30px rgba(212, 175, 55, 0.45);
+}
+
+.menu-toggle:active {
+  transform: scale(0.94);
+}
+
+/* FONDO OSCURO */
+.menu-overlay {
+  display: none;
+}
+
+/* TABLET */
+@media (max-width: 1100px) {
+  .navbar {
+    padding: 16px 5%;
+  }
+
+  .nav-links {
+    gap: 18px;
+  }
+
+  .nav-links li a {
+    font-size: 0.92rem;
+  }
+
+  .brand-text h1 {
+    font-size: 1.18rem;
+  }
+
+  .brand-text p {
+    font-size: 0.82rem;
+  }
+}
+
+/* CELULAR */
+@media (max-width: 850px) {
+  .navbar {
+    padding: 14px 5%;
+  }
+
+  .brand-logo {
+    width: 48px;
+    height: 48px;
+  }
+
+  .brand-text h1 {
+    font-size: 1rem;
+  }
+
+  .brand-text p {
+    font-size: 0.78rem;
+  }
+
+  .menu-toggle {
+    display: flex;
+  }
+
+  .nav-links {
+    position: fixed;
+    top: 0;
+    right: -100%;
+    width: 82%;
+    max-width: 330px;
+    height: 100vh;
+
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    justify-content: flex-start;
+
+    padding: 110px 22px 30px;
+    gap: 12px;
+
+    background: linear-gradient(
+      180deg,
+      rgba(11, 18, 32, 0.98),
+      rgba(20, 38, 67, 0.98)
+    );
+    backdrop-filter: blur(18px);
+    border-left: 1px solid rgba(255, 255, 255, 0.12);
+    box-shadow: -18px 0 45px rgba(0, 0, 0, 0.35);
+
+    transition: right 0.35s ease;
+    z-index: 3001;
+  }
+
+  .nav-links.active {
+    right: 0;
+  }
+
+  .nav-links li {
+    width: 100%;
+  }
+
+  .nav-links li a {
+    width: 100%;
+    padding: 14px 16px;
+    border-radius: 16px;
+
+    color: #ffffff;
+    font-size: 0.98rem;
+    font-weight: 700;
+
+    background: rgba(255, 255, 255, 0.06);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+
+    display: flex;
+    align-items: center;
+    gap: 12px;
+
+    transition: all 0.3s ease;
+  }
+
+  .nav-links li a:hover {
+    color: #07101d;
+    background: linear-gradient(135deg, #d4af37, #f2d675);
+    transform: translateX(-4px);
+  }
+
+  .nav-links li a::after {
+    display: none;
+  }
+
+  .nav-icon {
+    display: inline-block;
+    font-size: 1.05rem;
+    min-width: 20px;
+  }
+
+  .login-nav-btn {
+    margin-top: 8px;
+    justify-content: center;
+    background: linear-gradient(135deg, #d4af37, #b88916) !important;
+    color: #07101d !important;
+    box-shadow: 0 10px 24px rgba(212, 175, 55, 0.28);
+  }
+
+  .login-nav-btn:hover {
+    background: linear-gradient(135deg, #f2d675, #d4af37) !important;
+    color: #07101d !important;
+  }
+
+  .menu-overlay {
+    display: block;
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.48);
+    opacity: 0;
+    visibility: hidden;
+    transition: all 0.3s ease;
+    z-index: 1500;
+  }
+
+  .menu-overlay.active {
+    opacity: 1;
+    visibility: visible;
+  }
+}
+
+/* CELULAR PEQUEÑO */
+@media (max-width: 480px) {
+  .navbar {
+    padding: 12px 4%;
+  }
+
+  .brand {
+    gap: 10px;
+  }
+
+  .brand-logo {
+    width: 43px;
+    height: 43px;
+    border-radius: 10px;
+  }
+
+  .brand-text h1 {
+    font-size: 0.9rem;
+  }
+
+  .brand-text p {
+    font-size: 0.7rem;
+  }
+
+  .menu-toggle {
+    width: 42px;
+    height: 42px;
+    font-size: 1.2rem;
+  }
+
+  .nav-links {
+    width: 86%;
+    padding: 95px 18px 25px;
+  }
+
+  .nav-links li a {
+    padding: 13px 14px;
+    font-size: 0.93rem;
+  }
 }

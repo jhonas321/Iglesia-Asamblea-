@@ -1,0 +1,1163 @@
+.eventos-page {
+  min-height: 100vh;
+  min-height: 100dvh;
+  background: #f5f8ff;
+}
+
+/* HERO */
+.eventos-hero {
+  min-height: 420px;
+  padding: 130px 5% 90px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(rgba(11, 18, 32, 0.72), rgba(11, 18, 32, 0.78)),
+    url("https://images.unsplash.com/photo-1507692049790-de58290a4334?auto=format&fit=crop&w=1600&q=80");
+  background-size: cover;
+  background-position: center;
+  text-align: center;
+  color: white;
+}
+
+.eventos-hero-content {
+  max-width: 850px;
+}
+
+.eventos-hero-content span {
+  display: inline-block;
+  background: rgba(63, 98, 184, 0.92);
+  padding: 8px 16px;
+  border-radius: 999px;
+  font-size: 13px;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 1.5px;
+  margin-bottom: 18px;
+}
+
+.eventos-hero-content h1 {
+  font-size: clamp(2.4rem, 5vw, 4rem);
+  margin: 0 0 18px;
+  font-weight: 800;
+}
+
+.eventos-hero-content p {
+  max-width: 760px;
+  margin: 0 auto;
+  line-height: 1.8;
+  font-size: 1.08rem;
+  color: rgba(255, 255, 255, 0.88);
+}
+
+/* SECCIÓN */
+.eventos-section {
+  padding: 80px 4%;
+  background: linear-gradient(135deg, #e6edf8, #d7e2f2, #c7d5ea, #b9c9df);
+  background-size: 220% 220%;
+  animation: eventosBgPan 14s ease-in-out infinite;
+  position: relative;
+  overflow: visible;
+}
+
+.eventos-section::before {
+  content: "";
+  position: absolute;
+  top: -80px;
+  left: -80px;
+  width: 260px;
+  height: 260px;
+  border-radius: 50%;
+  background: rgba(70, 97, 169, 0.18);
+  filter: blur(55px);
+  animation: eventosFloatSlow 10s ease-in-out infinite;
+  z-index: 0;
+}
+
+.eventos-section::after {
+  content: "";
+  position: absolute;
+  bottom: -80px;
+  right: -80px;
+  width: 260px;
+  height: 260px;
+  border-radius: 50%;
+  background: rgba(111, 137, 232, 0.18);
+  filter: blur(55px);
+  animation: eventosFloatSlow 12s ease-in-out infinite;
+  z-index: 0;
+}
+
+/* PESTAÑAS */
+.eventos-tabs {
+  max-width: 1440px;
+  margin: 0 auto 32px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 16px;
+  flex-wrap: wrap;
+  position: relative;
+  z-index: 20;
+}
+
+.eventos-tabs button {
+  border: none;
+  outline: none;
+  min-width: 190px;
+  padding: 16px 28px;
+  border-radius: 999px;
+  background: #ffffff;
+  color: #3f4c66;
+  font-size: 1rem;
+  font-weight: 800;
+  cursor: pointer;
+  box-shadow: 0 14px 28px rgba(21, 43, 87, 0.1);
+  transition: background 0.3s ease, color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.eventos-tabs button:hover {
+  transform: none;
+  color: #3f62b8;
+  box-shadow: 0 14px 28px rgba(21, 43, 87, 0.1);
+}
+
+.eventos-tabs button.active {
+  background: linear-gradient(135deg, #3f62b8, #6f89e8);
+  color: #ffffff;
+  box-shadow: 0 18px 36px rgba(63, 98, 184, 0.32);
+}
+
+/* BOTÓN PRINCIPAL DE FILTROS */
+.filter-toggle {
+  display: flex;
+  width: 100%;
+  max-width: 520px;
+  margin: 0 auto 30px;
+  height: 52px;
+  border: none;
+  border-radius: 16px;
+  background: linear-gradient(135deg, #17253f, #3f62b8);
+  color: white;
+  font-size: 0.98rem;
+  font-weight: 800;
+  font-family: inherit;
+  cursor: pointer;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  box-shadow: 0 14px 28px rgba(23, 37, 63, 0.22);
+  position: relative;
+  z-index: 30;
+}
+
+.filter-toggle span {
+  font-size: 0.8rem;
+}
+
+/* OPCIONES DE TIPO DE FILTRO */
+.filter-type-options {
+  display: none;
+  width: 100%;
+  max-width: 620px;
+  margin: 0 auto 40px;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+  position: relative;
+  z-index: 30;
+}
+
+.filter-type-options.filters-open {
+  display: grid;
+  animation: filtrosDown 0.25s ease;
+}
+
+.filter-type-options button {
+  height: 50px;
+  border: none;
+  border-radius: 15px;
+  background: #ffffff;
+  color: #17253f;
+  font-size: 0.95rem;
+  font-weight: 800;
+  font-family: inherit;
+  cursor: pointer;
+  box-shadow: 0 10px 22px rgba(20, 38, 67, 0.12);
+  transition: all 0.3s ease;
+}
+
+.filter-type-options button:hover {
+  transform: translateY(-2px);
+  color: #3f62b8;
+}
+
+.filter-type-options button.active {
+  background: linear-gradient(135deg, #3f62b8, #6f89e8);
+  color: #ffffff;
+}
+
+/* FILTROS */
+.eventos-filters-wrapper {
+  max-width: 720px;
+  margin: 0 auto 45px;
+  position: relative;
+  z-index: 100;
+  display: none;
+  grid-template-columns: 1fr;
+  gap: 22px;
+}
+
+.eventos-filters-wrapper.filters-open {
+  display: grid;
+  animation: filtrosDown 0.25s ease;
+}
+
+.eventos-filter-card {
+  background: #ffffff;
+  border-radius: 24px;
+  padding: 24px;
+  box-shadow: 0 18px 36px rgba(20, 38, 67, 0.1);
+  border: 1px solid rgba(63, 98, 184, 0.12);
+  display: none;
+  flex-direction: column;
+  gap: 18px;
+  position: relative;
+  z-index: 120;
+  overflow: visible;
+}
+
+.eventos-filter-card.filter-active {
+  display: flex;
+  animation: filtrosDown 0.28s ease;
+}
+
+.filter-card-header span {
+  display: inline-block;
+  width: fit-content;
+  background: rgba(63, 98, 184, 0.1);
+  color: #3f62b8;
+  padding: 7px 13px;
+  border-radius: 999px;
+  font-size: 0.75rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.7px;
+  margin-bottom: 12px;
+}
+
+.filter-card-header h3 {
+  margin: 0 0 8px;
+  color: #17253f;
+  font-size: 1.25rem;
+  font-weight: 800;
+}
+
+.filter-card-header p {
+  margin: 0;
+  color: #5d6a80;
+  font-size: 0.92rem;
+  line-height: 1.55;
+}
+
+.search-field,
+.date-field {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.search-field label,
+.date-field label {
+  color: #17253f;
+  font-size: 0.9rem;
+  font-weight: 800;
+}
+
+.search-input-wrapper,
+.date-picker-wrapper {
+  position: relative;
+  width: 100%;
+}
+
+.search-field input,
+.custom-date-input {
+  width: 100%;
+  height: 48px;
+  border: 1px solid rgba(63, 98, 184, 0.22);
+  border-radius: 14px;
+  padding: 0 14px;
+  outline: none;
+  background: #f8fbff;
+  color: #17253f;
+  font-size: 0.95rem;
+  font-weight: 600;
+  font-family: inherit;
+  transition: all 0.3s ease;
+}
+
+.search-field input {
+  padding-right: 44px;
+}
+
+.custom-date-input {
+  padding-right: 82px;
+}
+
+.search-field input::placeholder,
+.custom-date-input::placeholder {
+  color: #7b879c;
+  font-weight: 500;
+}
+
+.search-field input:focus,
+.custom-date-input:focus {
+  border-color: #3f62b8;
+  background: #ffffff;
+  box-shadow: 0 10px 24px rgba(63, 98, 184, 0.15);
+}
+
+/* BOTÓN X DE BORRADO */
+.field-clear-btn {
+  position: absolute;
+  top: 50%;
+  right: 12px;
+  width: 24px;
+  height: 24px;
+  border: none;
+  border-radius: 50%;
+  background: rgba(23, 37, 63, 0.1);
+  color: #17253f;
+  font-size: 1rem;
+  font-weight: 900;
+  line-height: 1;
+  cursor: pointer;
+  transform: translateY(-50%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 15;
+  transition: all 0.25s ease;
+}
+
+.field-clear-btn:hover {
+  background: #17253f;
+  color: #ffffff;
+}
+
+.date-clear-btn {
+  right: 44px;
+}
+
+/* BOTÓN PERSONALIZADO DE FECHA */
+.custom-date-button {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: flex-start !important;
+  text-align: left !important;
+  gap: 12px !important;
+  cursor: pointer !important;
+  appearance: none;
+  -webkit-appearance: none;
+  position: relative;
+}
+
+.custom-date-button span {
+  display: block;
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  color: #7b879c;
+  font-weight: 500;
+  font-size: 0.95rem;
+}
+
+.custom-date-button.has-value span {
+  color: #17253f;
+  font-weight: 600;
+}
+
+.custom-date-button strong {
+  position: absolute;
+  right: 14px;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 1rem;
+  line-height: 1;
+  pointer-events: none;
+}
+
+.date-field .react-datepicker-wrapper,
+.date-field .react-datepicker__input-container {
+  width: 100%;
+}
+
+.date-fields-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 14px;
+}
+
+.filter-actions {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  margin-top: auto;
+}
+
+.filter-btn {
+  height: 48px;
+  border: none;
+  border-radius: 14px;
+  padding: 0 20px;
+  color: #ffffff;
+  font-size: 0.92rem;
+  font-weight: 800;
+  font-family: inherit;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: all 0.3s ease;
+  width: 100%;
+  background: linear-gradient(135deg, #3f62b8, #6f89e8);
+  box-shadow: 0 12px 24px rgba(63, 98, 184, 0.24);
+}
+
+.filter-btn:hover {
+  transform: translateY(-2px);
+}
+
+.filter-btn:active {
+  transform: scale(0.96);
+}
+
+/* CALENDARIO */
+.custom-datepicker-popper,
+.react-datepicker-popper {
+  z-index: 999999 !important;
+}
+
+.react-datepicker {
+  border: none !important;
+  border-radius: 22px !important;
+  overflow: hidden !important;
+  box-shadow: 0 24px 55px rgba(20, 38, 67, 0.32) !important;
+  font-family: inherit !important;
+  background: #ffffff !important;
+}
+
+.react-datepicker__header {
+  background: linear-gradient(135deg, #17253f, #3f62b8) !important;
+  border-bottom: none !important;
+  padding: 18px 0 12px !important;
+}
+
+.react-datepicker__current-month {
+  color: #ffffff !important;
+  font-size: 1rem !important;
+  font-weight: 800 !important;
+  text-transform: capitalize !important;
+}
+
+.react-datepicker__day-names {
+  margin-top: 12px !important;
+}
+
+.react-datepicker__day-name {
+  color: rgba(255, 255, 255, 0.88) !important;
+  font-weight: 800 !important;
+  width: 2.1rem !important;
+  line-height: 2.1rem !important;
+}
+
+.react-datepicker__month {
+  padding: 12px !important;
+  margin: 0 !important;
+}
+
+.react-datepicker__day {
+  width: 2.1rem !important;
+  line-height: 2.1rem !important;
+  border-radius: 50% !important;
+  font-weight: 700 !important;
+  color: #17253f !important;
+  transition: all 0.2s ease !important;
+}
+
+.react-datepicker__day:hover {
+  background: rgba(63, 98, 184, 0.12) !important;
+  color: #3f62b8 !important;
+}
+
+.react-datepicker__day--selected,
+.react-datepicker__day--keyboard-selected {
+  background: linear-gradient(135deg, #3f62b8, #6f89e8) !important;
+  color: #ffffff !important;
+}
+
+.react-datepicker__day--today {
+  border: 2px solid #3f62b8 !important;
+  background: #eef3ff !important;
+  color: #17253f !important;
+  font-weight: 900 !important;
+}
+
+.react-datepicker__day--today:hover {
+  background: #dfe8ff !important;
+  color: #17253f !important;
+}
+
+.react-datepicker__day--today.react-datepicker__day--selected,
+.react-datepicker__day--today.react-datepicker__day--keyboard-selected {
+  background: linear-gradient(135deg, #3f62b8, #6f89e8) !important;
+  color: #ffffff !important;
+  border: 2px solid #17253f !important;
+}
+
+.react-datepicker__day--outside-month {
+  color: #a7b0c2 !important;
+}
+
+.react-datepicker__navigation {
+  top: 16px !important;
+}
+
+.react-datepicker__navigation-icon::before {
+  border-color: #ffffff !important;
+  border-width: 2px 2px 0 0 !important;
+}
+
+.react-datepicker__triangle {
+  display: none !important;
+}
+
+/* MENSAJE VACÍO */
+.eventos-empty {
+  text-align: center;
+  max-width: 600px;
+  margin: 30px auto 60px;
+  padding: 35px 25px;
+  border-radius: 24px;
+  background: #ffffff;
+  box-shadow: 0 18px 36px rgba(20, 38, 67, 0.1);
+  position: relative;
+  z-index: 2;
+}
+
+.eventos-empty h3 {
+  margin: 0 0 10px;
+  color: #17253f;
+  font-size: 1.5rem;
+}
+
+.eventos-empty p {
+  margin: 0;
+  color: #5d6a80;
+  font-size: 1rem;
+}
+
+/* GRID */
+.eventos-grid {
+  max-width: 1500px;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 26px;
+  position: relative;
+  z-index: 1;
+  align-items: stretch;
+}
+
+/* CARD */
+.evento-card {
+  min-height: 440px;
+  background: #ffffff;
+  border-radius: 24px;
+  overflow: hidden;
+  box-shadow: 0 18px 38px rgba(21, 43, 87, 0.12);
+  border: 1px solid rgba(63, 98, 184, 0.12);
+  display: grid;
+  grid-template-columns: 46% 54%;
+  transition: transform 0.38s ease, box-shadow 0.38s ease,
+    border-color 0.38s ease;
+  position: relative;
+  z-index: 1;
+}
+
+.evento-card:hover {
+  transform: translateY(-12px);
+  box-shadow: 0 30px 60px rgba(21, 43, 87, 0.22);
+  border-color: rgba(63, 98, 184, 0.34);
+}
+
+.evento-img {
+  width: 100%;
+  min-height: 440px;
+  overflow: hidden;
+  background: #0b1220;
+}
+
+.evento-img img {
+  width: 100%;
+  height: 100%;
+  min-height: 440px;
+  object-fit: cover;
+  object-position: center;
+  display: block;
+  transition: transform 0.45s ease, filter 0.45s ease;
+}
+
+.evento-card:hover .evento-img img {
+  transform: scale(1.08);
+  filter: brightness(1.05);
+}
+
+.evento-content {
+  position: relative;
+  min-height: 440px;
+  padding: 68px 18px 22px;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  min-width: 0;
+  transition: transform 0.38s ease;
+}
+
+.evento-card:hover .evento-content {
+  transform: translateX(5px);
+}
+
+.evento-estado {
+  position: absolute;
+  top: 18px;
+  right: 18px;
+  display: inline-block;
+  width: fit-content;
+  color: white;
+  padding: 8px 14px;
+  border-radius: 999px;
+  font-size: 0.72rem;
+  font-weight: 800;
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.14);
+  transition: transform 0.35s ease, box-shadow 0.35s ease;
+}
+
+.evento-card:hover .evento-estado {
+  transform: translateY(-3px);
+  box-shadow: 0 14px 26px rgba(0, 0, 0, 0.22);
+}
+
+.estado-proximo {
+  background: linear-gradient(135deg, #3f62b8, #6f89e8);
+}
+
+.estado-enCurso {
+  background: linear-gradient(135deg, #22c55e, #16a34a);
+}
+
+.estado-pasado {
+  background: linear-gradient(135deg, #6b7280, #4b5563);
+}
+
+.evento-ministerio {
+  display: inline-block;
+  width: fit-content;
+  color: #3f62b8;
+  font-weight: 800;
+  font-size: 0.74rem;
+  margin-bottom: 8px;
+  text-transform: uppercase;
+  letter-spacing: 0.6px;
+}
+
+.evento-content h3 {
+  color: #17253f;
+  font-size: 1.1rem;
+  line-height: 1.22;
+  margin: 0 0 11px;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.evento-info {
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+  margin-bottom: 12px;
+}
+
+.evento-info p {
+  margin: 0;
+  color: #3f4c66;
+  font-size: 0.76rem;
+  font-weight: 700;
+  background: #f1f5ff;
+  padding: 7px 9px;
+  border-radius: 10px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.evento-descripcion {
+  color: #556070;
+  line-height: 1.5;
+  font-size: 0.82rem;
+  margin: 0 0 14px;
+  display: -webkit-box;
+  -webkit-line-clamp: 4;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.evento-content button {
+  width: fit-content;
+  border: none;
+  outline: none;
+  background: linear-gradient(135deg, #3f62b8, #6f89e8);
+  color: white;
+  padding: 10px 14px;
+  border-radius: 12px;
+  font-size: 0.8rem;
+  font-weight: 700;
+  cursor: pointer;
+  box-shadow: 0 10px 20px rgba(63, 98, 184, 0.22);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  margin-top: auto;
+}
+
+.evento-card:hover .evento-content button {
+  transform: translateY(-3px);
+  box-shadow: 0 16px 30px rgba(63, 98, 184, 0.34);
+}
+
+/* MODAL */
+.evento-modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(5, 10, 20, 0.76);
+  backdrop-filter: blur(7px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+  z-index: 9999;
+}
+
+.evento-modal {
+  position: relative;
+  width: min(980px, 100%);
+  height: 620px;
+  max-height: 90vh;
+  overflow: hidden;
+  background: #ffffff;
+  border-radius: 28px;
+  box-shadow: 0 28px 70px rgba(0, 0, 0, 0.35);
+  display: grid;
+  grid-template-columns: 45% 55%;
+  animation: eventoModalUp 0.28s ease;
+}
+
+.evento-modal-close {
+  position: absolute;
+  top: 16px;
+  right: 16px;
+  width: 42px;
+  height: 42px;
+  border: none;
+  border-radius: 50%;
+  background: rgba(15, 23, 42, 0.12);
+  color: #17253f;
+  font-size: 1.7rem;
+  font-weight: 800;
+  cursor: pointer;
+  z-index: 5;
+  transition: all 0.25s ease;
+}
+
+.evento-modal-close:hover {
+  background: rgba(15, 23, 42, 0.2);
+  transform: scale(1.06);
+}
+
+.evento-modal-img {
+  position: relative;
+  height: 100%;
+  overflow: hidden;
+  background: #0b1220;
+  border-radius: 28px 0 0 28px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.evento-modal-bg {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  filter: blur(20px);
+  transform: scale(1.18);
+  opacity: 0.55;
+}
+
+.evento-modal-flyer {
+  position: relative;
+  z-index: 1;
+  width: 92%;
+  height: 92%;
+  max-width: 92%;
+  max-height: 92%;
+  object-fit: contain;
+  object-position: center;
+  display: block;
+}
+
+.evento-modal-content {
+  padding: 42px 38px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  overflow-y: auto;
+}
+
+.evento-modal-estado {
+  width: fit-content;
+  color: white;
+  padding: 8px 14px;
+  border-radius: 999px;
+  font-size: 0.82rem;
+  font-weight: 800;
+  margin-bottom: 12px;
+}
+
+.evento-modal-ministerio {
+  color: #3f62b8;
+  font-size: 0.88rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.8px;
+  margin-bottom: 12px;
+}
+
+.evento-modal-content h2 {
+  color: #17253f;
+  font-size: 2rem;
+  line-height: 1.2;
+  margin: 0 0 18px;
+}
+
+.evento-modal-info {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-bottom: 20px;
+}
+
+.evento-modal-info p {
+  margin: 0;
+  color: #3f4c66;
+  font-weight: 700;
+  background: #f1f5ff;
+  padding: 10px 13px;
+  border-radius: 12px;
+}
+
+.evento-modal-descripcion {
+  color: #556070;
+  line-height: 1.8;
+  font-size: 1rem;
+  margin: 0 0 26px;
+}
+
+.evento-modal-btn {
+  margin-top: auto;
+  width: fit-content;
+  border: none;
+  outline: none;
+  background: linear-gradient(135deg, #3f62b8, #6f89e8);
+  color: #ffffff;
+  padding: 13px 22px;
+  border-radius: 14px;
+  font-size: 0.96rem;
+  font-weight: 700;
+  cursor: pointer;
+  box-shadow: 0 12px 24px rgba(63, 98, 184, 0.28);
+  transition: all 0.3s ease;
+}
+
+.evento-modal-btn:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 18px 32px rgba(63, 98, 184, 0.35);
+}
+
+/* ANIMACIONES */
+@keyframes eventosBgPan {
+  0% {
+    background-position: 0% 50%;
+  }
+
+  50% {
+    background-position: 100% 50%;
+  }
+
+  100% {
+    background-position: 0% 50%;
+  }
+}
+
+@keyframes eventosFloatSlow {
+  0% {
+    transform: translateY(0px) translateX(0px);
+  }
+
+  50% {
+    transform: translateY(-16px) translateX(8px);
+  }
+
+  100% {
+    transform: translateY(0px) translateX(0px);
+  }
+}
+
+@keyframes eventoModalUp {
+  from {
+    opacity: 0;
+    transform: translateY(18px) scale(0.98);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+/* TABLET */
+@media (max-width: 1280px) {
+  .eventos-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .eventos-tabs {
+    justify-content: center;
+  }
+}
+
+@media (max-width: 992px) {
+  .eventos-filters-wrapper {
+    max-width: 620px;
+  }
+}
+
+/* CELULAR */
+@media (max-width: 768px) {
+  .eventos-hero {
+    padding: 110px 5% 75px;
+    min-height: 360px;
+  }
+
+  .eventos-section {
+    padding: 75px 5%;
+    animation: none;
+    overflow: visible;
+  }
+
+  .eventos-section::before,
+  .eventos-section::after {
+    display: none;
+  }
+
+  .filter-toggle {
+    max-width: 520px;
+  }
+
+  .filter-type-options {
+    max-width: 520px;
+    margin-bottom: 18px;
+  }
+
+  .filter-type-options button {
+    height: 46px;
+    font-size: 0.9rem;
+  }
+
+  .eventos-filters-wrapper {
+    max-width: 520px;
+    margin-bottom: 32px;
+  }
+
+  .eventos-filter-card {
+    padding: 20px;
+    border-radius: 22px;
+  }
+
+  .date-fields-row {
+    grid-template-columns: 1fr;
+  }
+
+  .filter-actions {
+    width: 100%;
+  }
+
+  .filter-btn {
+    width: 100%;
+  }
+
+  .react-datepicker__portal {
+    background: rgba(5, 10, 20, 0.72) !important;
+    backdrop-filter: blur(8px);
+    z-index: 999999 !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    padding: 20px !important;
+  }
+
+  .react-datepicker__portal .react-datepicker {
+    width: min(340px, 94vw) !important;
+    max-width: 94vw !important;
+    border-radius: 24px !important;
+    overflow: hidden !important;
+  }
+
+  .react-datepicker__portal .react-datepicker__month-container {
+    width: 100% !important;
+  }
+
+  .react-datepicker__portal .react-datepicker__day-name,
+  .react-datepicker__portal .react-datepicker__day {
+    width: 2.35rem !important;
+    line-height: 2.35rem !important;
+  }
+
+  .field-clear-btn {
+    width: 26px;
+    height: 26px;
+  }
+
+  .date-clear-btn {
+    right: 44px;
+  }
+
+  .eventos-empty {
+    margin: 20px auto 40px;
+    padding: 28px 20px;
+  }
+
+  .eventos-empty h3 {
+    font-size: 1.3rem;
+  }
+
+  .eventos-grid {
+    grid-template-columns: 1fr;
+    z-index: 1;
+  }
+
+  .evento-card {
+    min-height: auto;
+    grid-template-columns: 1fr;
+  }
+
+  .evento-card:hover {
+    transform: none;
+  }
+
+  .evento-card:hover .evento-content {
+    transform: none;
+  }
+
+  .evento-card:hover .evento-img img {
+    transform: none;
+    filter: none;
+  }
+
+  .evento-img {
+    min-height: 420px;
+  }
+
+  .evento-img img {
+    min-height: 420px;
+  }
+
+  .evento-content {
+    min-height: auto;
+    padding: 78px 24px 30px;
+  }
+
+  .evento-estado {
+    top: 24px;
+    right: 24px;
+  }
+
+  .evento-info p {
+    white-space: normal;
+  }
+
+  .evento-descripcion {
+    -webkit-line-clamp: 4;
+  }
+
+  .evento-modal {
+    grid-template-columns: 1fr;
+    height: auto;
+    max-height: 90vh;
+    overflow-y: auto;
+  }
+
+  .evento-modal-img {
+    height: 430px;
+    border-radius: 28px 28px 0 0;
+  }
+
+  .evento-modal-content {
+    padding: 28px 22px;
+    overflow: visible;
+  }
+
+  .evento-modal-btn {
+    width: 100%;
+  }
+}
+
+@media (max-width: 480px) {
+  .eventos-hero-content h1 {
+    font-size: 2.2rem;
+  }
+
+  .eventos-tabs {
+    gap: 10px;
+  }
+
+  .eventos-tabs button {
+    width: 100%;
+    min-width: 100%;
+  }
+
+  .eventos-filter-card {
+    border-radius: 20px;
+    padding: 18px;
+  }
+
+  .search-field input,
+  .custom-date-input {
+    height: 46px;
+  }
+
+  .filter-type-options {
+    grid-template-columns: 1fr;
+  }
+}
+
+@keyframes filtrosDown {
+  from {
+    opacity: 0;
+    transform: translateY(-12px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
