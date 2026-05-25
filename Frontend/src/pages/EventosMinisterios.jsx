@@ -1,4 +1,5 @@
 import { forwardRef, useEffect, useState } from "react";
+import { useNavigate, useParams } from "react-router-dom";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import "../styles/eventos-ministerios.css";
@@ -308,6 +309,9 @@ const BotonFecha = forwardRef(({ value, onClick, ejemplo, label }, ref) => (
 BotonFecha.displayName = "BotonFecha";
 
 function EventosMinisterios() {
+  const { id } = useParams();
+  const navigate = useNavigate();
+
   const [eventoSeleccionado, setEventoSeleccionado] = useState(null);
   const [pestanaActiva, setPestanaActiva] = useState("todos");
 
@@ -323,6 +327,16 @@ function EventosMinisterios() {
   const [filtroFechaFinal, setFiltroFechaFinal] = useState("");
 
   const [esMovil, setEsMovil] = useState(false);
+
+  useEffect(() => {
+    if (!id) return;
+
+    const eventoEncontrado = eventos.find((evento) => evento.id === Number(id));
+
+    if (eventoEncontrado) {
+      setEventoSeleccionado(eventoEncontrado);
+    }
+  }, [id]);
 
   useEffect(() => {
     const revisarPantalla = () => {
@@ -457,7 +471,9 @@ function EventosMinisterios() {
     if (!filtroTexto.trim()) return true;
 
     const textoBuscado = normalizarTexto(filtroTexto);
-    const textoEvento = normalizarTexto(`${evento.ministerio} ${evento.titulo}`);
+    const textoEvento = normalizarTexto(
+      `${evento.ministerio} ${evento.titulo}`
+    );
 
     return textoEvento.includes(textoBuscado);
   };
@@ -466,7 +482,9 @@ function EventosMinisterios() {
     const fechaEvento = evento.fechaOrden;
 
     if (filtroFechaInicio && filtroFechaFinal) {
-      return fechaEvento >= filtroFechaInicio && fechaEvento <= filtroFechaFinal;
+      return (
+        fechaEvento >= filtroFechaInicio && fechaEvento <= filtroFechaFinal
+      );
     }
 
     if (filtroFechaInicio) return fechaEvento >= filtroFechaInicio;
@@ -488,6 +506,7 @@ function EventosMinisterios() {
 
   const cerrarModal = () => {
     setEventoSeleccionado(null);
+    navigate("/ministerios/eventos");
   };
 
   const consultarWhatsApp = () => {
@@ -685,9 +704,7 @@ function EventosMinisterios() {
                 <div className="date-picker-wrapper">
                   <DatePicker
                     selected={fechaStringAObjeto(fechaFinal)}
-                    onChange={(date) =>
-                      setFechaFinal(fechaObjetoAString(date))
-                    }
+                    onChange={(date) => setFechaFinal(fechaObjetoAString(date))}
                     dateFormat="dd/MM/yyyy"
                     customInput={
                       <BotonFecha
