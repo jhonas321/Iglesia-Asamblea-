@@ -8,7 +8,6 @@ import ScrollToTop from "./components/ScrollToTop";
 
 import Inicio from "./pages/Inicio";
 import Organigrama from "./pages/Organigrama";
-import Reglamento from "./pages/Reglamento";
 import Login from "./pages/Login";
 
 import EventosMinisterios from "./pages/EventosMinisterios";
@@ -24,7 +23,6 @@ function App() {
         <Route path="/" element={<Inicio />} />
         <Route path="/Login" element={<Login />} />
         <Route path="/organigrama" element={<Organigrama />} />
-        <Route path="/reglamento" element={<Reglamento />} />
 
         <Route path="/ministerios/eventos" element={<EventosMinisterios />} />
         <Route

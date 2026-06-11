@@ -1,198 +1,503 @@
-/* ===== SECCIÓN GENERAL ===== */
+/* =========================
+   CONTACTO
+   MISMO ESTILO QUE HORARIOS
+========================= */
+
 .contact {
   position: relative;
-  padding: 100px 20px;
-  background: linear-gradient(135deg, #f8fbff 0%, #eef4ff 50%, #fdfefe 100%);
+  padding: 110px 20px;
+  background:
+    radial-gradient(circle at top left, rgba(94, 137, 255, 0.22), transparent 32%),
+    radial-gradient(circle at bottom right, rgba(255, 214, 145, 0.24), transparent 34%),
+    linear-gradient(180deg, #eef4ff 0%, #dde8f8 52%, #f3f7ff 100%);
   overflow: hidden;
 }
 
-/* ===== DECORACIONES DE FONDO ===== */
-.section-bg-decoration {
+.contact::before {
+  content: "";
+  position: absolute;
+  inset: 24px;
+  border: 1px solid rgba(255, 255, 255, 0.55);
+  border-radius: 34px;
+  pointer-events: none;
+  z-index: 0;
+}
+
+.contact-bg {
   position: absolute;
   border-radius: 50%;
   filter: blur(70px);
+  opacity: 0.55;
   z-index: 0;
   pointer-events: none;
 }
 
-.decoration-left {
-  top: -100px;
-  left: -90px;
-  width: 280px;
-  height: 280px;
-  background: rgba(102, 126, 234, 0.18);
+.contact-bg-one {
+  width: 270px;
+  height: 270px;
+  top: -80px;
+  left: -70px;
+  background: rgba(70, 118, 255, 0.26);
+  animation: contactFloatAura 10s ease-in-out infinite;
 }
 
-.decoration-right {
-  right: -100px;
+.contact-bg-two {
+  width: 300px;
+  height: 300px;
   bottom: -100px;
-  width: 320px;
-  height: 320px;
-  background: rgba(118, 75, 162, 0.14);
+  right: -70px;
+  background: rgba(255, 193, 94, 0.28);
+  animation: contactFloatAura 12s ease-in-out infinite;
 }
 
-/* ===== TÍTULO ===== */
-.section-title {
+.contact-bg-three {
+  width: 190px;
+  height: 190px;
+  top: 42%;
+  left: 48%;
+  background: rgba(255, 255, 255, 0.65);
+  animation: contactFloatMini 8s ease-in-out infinite;
+}
+
+.contact-container-main {
   position: relative;
   z-index: 1;
-  max-width: 760px;
-  margin: 0 auto 55px;
-  text-align: center;
-}
-
-.section-title h2 {
-  margin: 0 0 14px;
-  font-size: clamp(2rem, 4vw, 3rem);
-  font-weight: 800;
-  letter-spacing: -0.03em;
-  color: #1f2a44;
-  line-height: 1.1;
-}
-
-.section-title p {
+  max-width: 1180px;
   margin: 0 auto;
-  max-width: 620px;
+}
+
+/* =========================
+   TÍTULO
+========================= */
+
+.contact .section-title {
+  max-width: 780px;
+  margin: 0 auto 58px;
+  text-align: center;
+  animation: contactFadeUp 0.8s ease both;
+}
+
+.contact .section-subtitle {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 9px 18px;
+  margin-bottom: 18px;
+  border-radius: 999px;
+  color: #2352a3;
+  background: rgba(255, 255, 255, 0.68);
+  border: 1px solid rgba(70, 118, 255, 0.16);
+  box-shadow: 0 10px 24px rgba(45, 83, 150, 0.08);
+  font-size: 0.88rem;
+  font-weight: 800;
+  letter-spacing: 0.6px;
+  text-transform: uppercase;
+}
+
+.contact .section-title h2 {
+  margin: 0 0 16px;
+  color: #10284f;
+  font-size: clamp(2rem, 4vw, 3.1rem);
+  font-weight: 900;
+  line-height: 1.12;
+  letter-spacing: -1px;
+}
+
+.contact .section-title p {
+  margin: 0 auto;
+  max-width: 680px;
+  color: #4c5f7a;
   font-size: 1.05rem;
   line-height: 1.8;
-  color: #5f6b85;
+  font-weight: 500;
 }
 
-/* ===== CONTENEDOR ===== */
+/* =========================
+   CONTENEDOR
+========================= */
+
 .contact-container {
+  display: grid;
+  grid-template-columns: 1.15fr 0.85fr;
+  gap: 24px;
+  align-items: stretch;
+}
+
+/* =========================
+   TARJETA PRINCIPAL
+========================= */
+
+.contact-info,
+.contact-message-card {
   position: relative;
-  z-index: 1;
-  max-width: 950px;
-  margin: 0 auto;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-}
-
-/* ===== TARJETA DE INFORMACIÓN ===== */
-.contact-info {
-  width: 100%;
-  max-width: 700px;
-  padding: 38px 40px;
-  border-radius: 28px;
-  background: rgba(255, 255, 255, 0.72);
-  backdrop-filter: blur(14px);
-  -webkit-backdrop-filter: blur(14px);
-  border: 1px solid rgba(255, 255, 255, 0.65);
+  border-radius: 30px;
+  background:
+    linear-gradient(145deg, rgba(255, 255, 255, 0.88), rgba(255, 255, 255, 0.64));
+  border: 1px solid rgba(255, 255, 255, 0.75);
   box-shadow:
-    0 20px 50px rgba(62, 84, 140, 0.12),
-    0 8px 20px rgba(62, 84, 140, 0.08),
-    inset 0 1px 0 rgba(255, 255, 255, 0.7);
-  transition: transform 0.35s ease, box-shadow 0.35s ease;
-}
-
-.contact-info:hover {
-  transform: translateY(-6px);
-  box-shadow:
-    0 28px 65px rgba(62, 84, 140, 0.16),
-    0 12px 28px rgba(62, 84, 140, 0.1),
+    0 22px 48px rgba(38, 73, 135, 0.14),
     inset 0 1px 0 rgba(255, 255, 255, 0.8);
+  backdrop-filter: blur(14px);
+  overflow: hidden;
+  animation: contactFadeUp 0.8s ease both;
+  transition:
+    transform 0.35s ease,
+    box-shadow 0.35s ease,
+    border-color 0.35s ease;
 }
 
-.contact-info h3 {
-  margin: 0 0 26px;
-  font-size: 1.45rem;
-  font-weight: 700;
-  color: #243250;
-  line-height: 1.2;
-  position: relative;
-  padding-bottom: 12px;
+.contact-info {
+  padding: 32px;
 }
 
-.contact-info h3::after {
+.contact-message-card {
+  padding: 34px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  animation-delay: 0.12s;
+}
+
+.contact-info::before,
+.contact-message-card::before {
   content: "";
   position: absolute;
-  left: 0;
+  width: 170px;
+  height: 170px;
+  top: -80px;
+  right: -80px;
+  border-radius: 50%;
+  background: rgba(73, 124, 255, 0.12);
+  transition: transform 0.35s ease, background 0.35s ease;
+}
+
+.contact-info::after,
+.contact-message-card::after {
+  content: "";
+  position: absolute;
+  left: 28px;
+  right: 28px;
   bottom: 0;
-  width: 72px;
   height: 4px;
-  border-radius: 999px;
-  background: linear-gradient(90deg, #667eea, #764ba2);
+  border-radius: 999px 999px 0 0;
+  background: linear-gradient(90deg, #315fd6, #efb648);
+  opacity: 0.88;
 }
 
-/* ===== PÁRRAFOS ===== */
-.contact-info p {
-  margin: 0 0 16px;
-  padding: 14px 18px;
-  border-radius: 16px;
-  background: rgba(246, 249, 255, 0.85);
-  border: 1px solid rgba(216, 225, 245, 0.8);
-  color: #4d5a73;
-  font-size: 1rem;
-  line-height: 1.7;
-  box-shadow: 0 6px 18px rgba(90, 110, 160, 0.05);
-  transition: transform 0.25s ease, background 0.25s ease, border-color 0.25s ease;
+.contact-info:hover,
+.contact-message-card:hover {
+  transform: translateY(-8px);
+  border-color: rgba(72, 120, 255, 0.22);
+  box-shadow:
+    0 30px 62px rgba(38, 73, 135, 0.2),
+    inset 0 1px 0 rgba(255, 255, 255, 0.9);
 }
 
-.contact-info p:hover {
-  transform: translateX(4px);
+.contact-info:hover::before,
+.contact-message-card:hover::before {
+  transform: scale(1.22);
+  background: rgba(239, 182, 72, 0.18);
+}
+
+/* =========================
+   HEADER CARD
+========================= */
+
+.contact-header {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  margin-bottom: 30px;
+}
+
+.contact-main-icon,
+.message-icon {
+  width: 72px;
+  height: 72px;
+  flex: 0 0 72px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 24px;
+  background: linear-gradient(145deg, #ffffff, #edf4ff);
+  box-shadow:
+    0 14px 26px rgba(48, 87, 154, 0.13),
+    inset 0 1px 0 rgba(255, 255, 255, 0.9);
+  font-size: 2rem;
+}
+
+.contact-header span,
+.contact-item span {
+  display: inline-block;
+  color: #7a8799;
+  font-size: 0.82rem;
+  font-weight: 900;
+  text-transform: uppercase;
+  letter-spacing: 0.7px;
+}
+
+.contact-header h3 {
+  margin: 8px 0 0;
+  color: #162d55;
+  font-size: 1.45rem;
+  font-weight: 900;
+  line-height: 1.25;
+}
+
+/* =========================
+   LISTA DE CONTACTO
+========================= */
+
+.contact-list {
+  position: relative;
+  z-index: 1;
+  display: grid;
+  gap: 16px;
+}
+
+.contact-item {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 18px;
+  border-radius: 22px;
+  background: rgba(246, 249, 255, 0.78);
+  border: 1px solid rgba(216, 225, 245, 0.78);
+  box-shadow: 0 8px 20px rgba(90, 110, 160, 0.05);
+  transition:
+    transform 0.28s ease,
+    background 0.28s ease,
+    border-color 0.28s ease;
+}
+
+.contact-item:hover {
+  transform: translateX(6px);
   background: rgba(240, 246, 255, 0.95);
   border-color: rgba(176, 195, 235, 0.95);
 }
 
-.contact-info p:last-child {
-  margin-bottom: 0;
+.contact-icon {
+  width: 48px;
+  height: 48px;
+  flex: 0 0 48px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 17px;
+  background: linear-gradient(145deg, #ffffff, #edf4ff);
+  box-shadow:
+    0 10px 20px rgba(48, 87, 154, 0.1),
+    inset 0 1px 0 rgba(255, 255, 255, 0.9);
+  font-size: 1.35rem;
 }
 
-.contact-info strong {
-  color: #22304d;
-  font-weight: 700;
-  margin-right: 6px;
+.contact-item p {
+  margin: 6px 0 0;
+  color: #4c5f7a;
+  font-size: 1rem;
+  line-height: 1.45;
+  font-weight: 600;
 }
 
-/* ===== RESPONSIVE ===== */
+/* =========================
+   TARJETA MENSAJE
+========================= */
+
+.message-icon {
+  position: relative;
+  z-index: 1;
+  margin-bottom: 26px;
+}
+
+.contact-message-card h3 {
+  position: relative;
+  z-index: 1;
+  margin: 0 0 14px;
+  color: #162d55;
+  font-size: 1.45rem;
+  font-weight: 900;
+  line-height: 1.25;
+}
+
+.contact-message-card p {
+  position: relative;
+  z-index: 1;
+  margin: 0 0 28px;
+  color: #5c6b80;
+  font-size: 0.98rem;
+  line-height: 1.75;
+  font-weight: 500;
+}
+
+.contact-button {
+  position: relative;
+  z-index: 1;
+  width: fit-content;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 14px 22px;
+  border-radius: 999px;
+  background: linear-gradient(90deg, #315fd6, #efb648);
+  color: #ffffff;
+  text-decoration: none;
+  font-size: 0.95rem;
+  font-weight: 900;
+  box-shadow: 0 14px 28px rgba(49, 95, 214, 0.22);
+  transition:
+    transform 0.3s ease,
+    box-shadow 0.3s ease;
+}
+
+.contact-button:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 18px 36px rgba(49, 95, 214, 0.3);
+}
+
+/* =========================
+   ANIMACIONES
+========================= */
+
+@keyframes contactFloatAura {
+  0% {
+    transform: translate(0, 0) scale(1);
+  }
+
+  50% {
+    transform: translate(18px, -18px) scale(1.05);
+  }
+
+  100% {
+    transform: translate(0, 0) scale(1);
+  }
+}
+
+@keyframes contactFloatMini {
+  0% {
+    transform: translateY(0);
+  }
+
+  50% {
+    transform: translateY(-16px);
+  }
+
+  100% {
+    transform: translateY(0);
+  }
+}
+
+@keyframes contactFadeUp {
+  from {
+    opacity: 0;
+    transform: translateY(24px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* =========================
+   RESPONSIVE
+========================= */
+
+@media (max-width: 992px) {
+  .contact-container {
+    grid-template-columns: 1fr;
+  }
+
+  .contact-message-card {
+    min-height: auto;
+  }
+}
+
 @media (max-width: 768px) {
   .contact {
-    padding: 80px 16px;
+    padding: 88px 16px;
   }
 
-  .section-title {
-    margin-bottom: 40px;
+  .contact::before {
+    inset: 14px;
+    border-radius: 26px;
   }
 
-  .section-title p {
+  .contact .section-title {
+    margin-bottom: 42px;
+  }
+
+  .contact .section-title p {
     font-size: 0.98rem;
-    line-height: 1.7;
+  }
+
+  .contact-info,
+  .contact-message-card {
+    border-radius: 24px;
   }
 
   .contact-info {
-    padding: 28px 22px;
-    border-radius: 22px;
+    padding: 26px;
   }
 
-  .contact-info h3 {
-    font-size: 1.25rem;
-    margin-bottom: 22px;
+  .contact-message-card {
+    padding: 28px;
   }
 
-  .contact-info p {
-    padding: 12px 14px;
-    font-size: 0.96rem;
+  .contact-header {
+    align-items: flex-start;
   }
 }
 
 @media (max-width: 480px) {
   .contact {
-    padding: 70px 14px;
+    padding: 76px 14px;
   }
 
-  .section-title h2 {
-    font-size: 1.9rem;
+  .contact-info,
+  .contact-message-card {
+    padding: 24px;
   }
 
-  .section-title p {
+  .contact-header {
+    flex-direction: column;
+    gap: 14px;
+  }
+
+  .contact-main-icon,
+  .message-icon {
+    width: 62px;
+    height: 62px;
+    flex-basis: 62px;
+    border-radius: 20px;
+    font-size: 1.75rem;
+  }
+
+  .contact-header h3,
+  .contact-message-card h3 {
+    font-size: 1.25rem;
+  }
+
+  .contact-item {
+    align-items: flex-start;
+    padding: 16px;
+  }
+
+  .contact-icon {
+    width: 44px;
+    height: 44px;
+    flex-basis: 44px;
+    border-radius: 15px;
+    font-size: 1.2rem;
+  }
+
+  .contact-item p,
+  .contact-message-card p {
     font-size: 0.94rem;
   }
 
-  .contact-info {
-    padding: 24px 18px;
-  }
-
-  .contact-info h3::after {
-    width: 58px;
+  .contact-button {
+    width: 100%;
   }
 }

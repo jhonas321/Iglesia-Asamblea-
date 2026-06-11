@@ -77,10 +77,12 @@ function Navbar() {
             </HashLink>
           </li>
 
+          
+
           <li>
-            <HashLink smooth to="/#reglamento" onClick={cerrarMenu}>
-              <FaBook className="nav-icon" />
-              Reglamento
+            <HashLink smooth to="/#ubicacion" onClick={cerrarMenu}>
+              <FaMapMarkerAlt className="nav-icon" />
+              Ubicación
             </HashLink>
           </li>
 
@@ -88,13 +90,6 @@ function Navbar() {
             <HashLink smooth to="/#mision-vision" onClick={cerrarMenu}>
               <FaBullseye className="nav-icon" />
               Misión y Visión
-            </HashLink>
-          </li>
-
-          <li>
-            <HashLink smooth to="/#ubicacion" onClick={cerrarMenu}>
-              <FaMapMarkerAlt className="nav-icon" />
-              Ubicación
             </HashLink>
           </li>
 

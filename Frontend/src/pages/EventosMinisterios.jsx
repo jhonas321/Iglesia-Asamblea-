@@ -523,7 +523,7 @@ function EventosMinisterios() {
     <main className="eventos-page">
       <section className="eventos-hero">
         <div className="eventos-hero-content">
-          <span>Ministerios</span>
+          
           <h1>Eventos Ministeriales</h1>
           <p>
             Consulta las próximas actividades, eventos en curso y actividades ya

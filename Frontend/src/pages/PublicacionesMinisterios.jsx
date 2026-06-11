@@ -4,13 +4,14 @@ import {
   FaCalendarAlt,
   FaClock,
   FaMapMarkerAlt,
-  FaImages,
   FaChurch,
   FaSearch,
   FaTimes,
   FaDownload,
   FaPlay,
   FaExternalLinkAlt,
+  FaChevronLeft,
+  FaChevronRight,
 } from "react-icons/fa";
 import { useEffect, useLayoutEffect, useMemo, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
@@ -27,8 +28,6 @@ const publicaciones = [
     lugar: "Auditorio principal",
     descripcion:
       "Una noche de alabanza, oración y comunión preparada para los jóvenes de la iglesia.",
-    contenido:
-      "La noche de adoración juvenil fue un espacio de encuentro espiritual, música, oración y reflexión bíblica. Los jóvenes compartieron un tiempo especial de unidad, crecimiento en la fe y compañerismo.",
     imagen:
       "https://images.unsplash.com/photo-1492684223066-81342ee5ff30?auto=format&fit=crop&w=1200&q=80",
     fotos: [
@@ -38,6 +37,10 @@ const publicaciones = [
       "https://images.unsplash.com/photo-1517457373958-b7bdd4587205?auto=format&fit=crop&w=1200&q=80",
       "https://images.unsplash.com/photo-1523580494863-6f3031224c94?auto=format&fit=crop&w=1200&q=80",
       "https://images.unsplash.com/photo-1501386761578-eac5c94b800a?auto=format&fit=crop&w=1200&q=80",
+      "/images/vertical.jpeg",
+      "/images/prueba.jpeg",
+      "/images/panorama.jpg",
+      "/images/grande.webp",
     ],
     categoria: "Recuerdo",
     videoTrailer: {
@@ -58,8 +61,6 @@ const publicaciones = [
     lugar: "Plaza principal",
     descripcion:
       "Actividad realizada para compartir un mensaje de esperanza con la comunidad.",
-    contenido:
-      "La campaña de evangelismo permitió compartir palabra de ánimo, oración y acompañamiento espiritual con diferentes personas de la comunidad.",
     imagen:
       "https://images.unsplash.com/photo-1511632765486-a01980e01a18?auto=format&fit=crop&w=1200&q=80",
     fotos: [
@@ -89,8 +90,6 @@ const publicaciones = [
     lugar: "Salón de niños",
     descripcion:
       "Actividad infantil con enseñanza bíblica, canciones, juegos y manualidades.",
-    contenido:
-      "Los niños participaron en una mañana especial preparada por el Ministerio Infantil. Se compartieron historias bíblicas, canciones, juegos, manualidades y oración.",
     imagen:
       "https://images.unsplash.com/photo-1503454537195-1dcabb73ffb9?auto=format&fit=crop&w=1200&q=80",
     fotos: [
@@ -120,8 +119,6 @@ const publicaciones = [
     lugar: "Salón principal",
     descripcion:
       "Un encuentro de oración, enseñanza bíblica y compañerismo entre hermanas.",
-    contenido:
-      "El Ministerio de Damas compartió una tarde de oración, reflexión bíblica y compañerismo para fortalecer la unidad y el servicio.",
     imagen:
       "https://images.unsplash.com/photo-1529156069898-49953e39b3ac?auto=format&fit=crop&w=1200&q=80",
     fotos: [
@@ -151,8 +148,6 @@ const publicaciones = [
     lugar: "Templo principal",
     descripcion:
       "El equipo de alabanza realizó un ensayo general para preparar el servicio especial.",
-    contenido:
-      "El Ministerio de Alabanza llevó adelante un ensayo general para coordinar cantos, instrumentos y cada parte del servicio especial.",
     imagen:
       "https://images.unsplash.com/photo-1516280440614-37939bbacd81?auto=format&fit=crop&w=1200&q=80",
     fotos: [
@@ -182,8 +177,6 @@ const publicaciones = [
     lugar: "Templo principal",
     descripcion:
       "Una noche dedicada a la oración, intercesión y búsqueda espiritual.",
-    contenido:
-      "El Ministerio de Oración organizó una vigilia especial para orar por las familias, jóvenes, ministerios y necesidades de la comunidad.",
     imagen:
       "https://images.unsplash.com/photo-1507692049790-de58290a4334?auto=format&fit=crop&w=1200&q=80",
     fotos: [
@@ -213,8 +206,6 @@ const publicaciones = [
     lugar: "Salón de eventos",
     descripcion:
       "Una cena especial para fortalecer la comunicación y unidad familiar.",
-    contenido:
-      "El Ministerio de Matrimonios preparó una cena especial con reflexión bíblica, dinámicas y un tiempo de conversación.",
     imagen:
       "https://images.unsplash.com/photo-1511795409834-ef04bbd61622?auto=format&fit=crop&w=1200&q=80",
     fotos: [
@@ -244,8 +235,6 @@ const publicaciones = [
     lugar: "Zona central",
     descripcion:
       "Jornada solidaria de entrega de alimentos a familias necesitadas.",
-    contenido:
-      "El Ministerio de Ayuda Social realizó una jornada de servicio entregando alimentos y compartiendo palabras de ánimo con familias de la comunidad.",
     imagen:
       "https://images.unsplash.com/photo-1488521787991-ed7bbaae773c?auto=format&fit=crop&w=1200&q=80",
     fotos: [
@@ -268,22 +257,162 @@ const publicaciones = [
   },
 ];
 
-const filtros = [
-  "Todos",
-  "Jóvenes",
-  "Evangelismo",
-  "Infantil",
-  "Damas",
-  "Alabanza",
-  "Oración",
-  "Matrimonios",
-  "Ayuda Social",
-];
+const meses = {
+  enero: 0,
+  febrero: 1,
+  marzo: 2,
+  abril: 3,
+  mayo: 4,
+  junio: 5,
+  julio: 6,
+  agosto: 7,
+  septiembre: 8,
+  setiembre: 8,
+  octubre: 9,
+  noviembre: 10,
+  diciembre: 11,
+};
+
+const limpiarTexto = (texto) => {
+  return texto
+    .toLowerCase()
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "");
+};
+
+const crearFechaLocal = (anio, mes, dia) => {
+  return new Date(Number(anio), Number(mes), Number(dia), 0, 0, 0, 0);
+};
+
+const crearFechaDesdeTexto = (dia, mesTexto, anio) => {
+  const mes = meses[limpiarTexto(mesTexto)];
+  if (mes === undefined) return null;
+  return crearFechaLocal(anio, mes, dia);
+};
+
+const obtenerRangoFecha = (fechaTexto) => {
+  const fechaLimpia = limpiarTexto(fechaTexto.trim());
+
+  const rango = fechaLimpia.match(
+    /(\d{1,2})\s+al\s+(\d{1,2})\s+([a-zñ]+)\s+(\d{4})/
+  );
+
+  if (rango) {
+    return {
+      inicio: crearFechaDesdeTexto(rango[1], rango[3], rango[4]),
+      fin: crearFechaDesdeTexto(rango[2], rango[3], rango[4]),
+    };
+  }
+
+  const fechaSimple = fechaLimpia.match(/(\d{1,2})\s+([a-zñ]+)\s+(\d{4})/);
+
+  if (fechaSimple) {
+    const fecha = crearFechaDesdeTexto(
+      fechaSimple[1],
+      fechaSimple[2],
+      fechaSimple[3]
+    );
+
+    return { inicio: fecha, fin: fecha };
+  }
+
+  return { inicio: null, fin: null };
+};
+
+const obtenerFechaOrden = (fechaTexto) => {
+  const { fin } = obtenerRangoFecha(fechaTexto);
+  return fin ? fin.getTime() : 0;
+};
+
+const convertirFechaInput = (valor) => {
+  if (!valor) return null;
+  const [anio, mes, dia] = valor.split("-").map(Number);
+  return crearFechaLocal(anio, mes - 1, dia);
+};
+
+const convertirDateAInput = (fecha) => {
+  const anio = fecha.getFullYear();
+  const mes = String(fecha.getMonth() + 1).padStart(2, "0");
+  const dia = String(fecha.getDate()).padStart(2, "0");
+  return `${anio}-${mes}-${dia}`;
+};
+
+const obtenerFechaHoyInput = () => {
+  return convertirDateAInput(new Date());
+};
+
+const fechaCoincideConPublicacion = (fechaInput, fechaPublicacion) => {
+  const fechaSeleccionada = convertirFechaInput(fechaInput);
+  const { inicio, fin } = obtenerRangoFecha(fechaPublicacion);
+
+  if (!fechaSeleccionada || !inicio || !fin) return false;
+
+  return fechaSeleccionada >= inicio && fechaSeleccionada <= fin;
+};
+
+const formatearFechaInput = (valor) => {
+  const fecha = convertirFechaInput(valor);
+
+  if (!fecha) return "Seleccionar fecha";
+
+  return fecha.toLocaleDateString("es-BO", {
+    day: "2-digit",
+    month: "long",
+    year: "numeric",
+  });
+};
+
+const obtenerNombreMes = (fecha) => {
+  return fecha.toLocaleDateString("es-BO", {
+    month: "long",
+    year: "numeric",
+  });
+};
+
+const obtenerDiasCalendario = (fechaBase) => {
+  const anio = fechaBase.getFullYear();
+  const mes = fechaBase.getMonth();
+
+  const primerDiaMes = new Date(anio, mes, 1);
+  const ultimoDiaMes = new Date(anio, mes + 1, 0);
+
+  const diaSemanaInicio =
+    primerDiaMes.getDay() === 0 ? 6 : primerDiaMes.getDay() - 1;
+
+  const dias = [];
+
+  for (let i = diaSemanaInicio; i > 0; i--) {
+    dias.push({
+      fecha: new Date(anio, mes, 1 - i),
+      esMesActual: false,
+    });
+  }
+
+  for (let dia = 1; dia <= ultimoDiaMes.getDate(); dia++) {
+    dias.push({
+      fecha: new Date(anio, mes, dia),
+      esMesActual: true,
+    });
+  }
+
+  while (dias.length % 7 !== 0) {
+    const ultimo = dias[dias.length - 1].fecha;
+    dias.push({
+      fecha: new Date(
+        ultimo.getFullYear(),
+        ultimo.getMonth(),
+        ultimo.getDate() + 1
+      ),
+      esMesActual: false,
+    });
+  }
+
+  return dias;
+};
 
 const crearMiniaturaVideo = (url) => {
   return new Promise((resolve) => {
     const video = document.createElement("video");
-
     let terminado = false;
 
     const finalizar = (resultado) => {
@@ -302,7 +431,6 @@ const crearMiniaturaVideo = (url) => {
     video.addEventListener("loadedmetadata", () => {
       const ancho = video.videoWidth || 0;
       const alto = video.videoHeight || 0;
-
       const orientacion = alto > ancho ? "vertical" : "horizontal";
 
       const segundoCaptura = Number.isFinite(video.duration)
@@ -322,10 +450,8 @@ const crearMiniaturaVideo = (url) => {
             const contexto = canvas.getContext("2d");
             contexto.drawImage(video, 0, 0, ancho, alto);
 
-            const portada = canvas.toDataURL("image/jpeg", 0.85);
-
             finalizar({
-              portada,
+              portada: canvas.toDataURL("image/jpeg", 0.85),
               orientacion,
             });
           } catch (error) {
@@ -357,8 +483,11 @@ function PublicacionesMinisterios() {
     return publicaciones.find((pub) => pub.id === Number(id)) || null;
   }, [id]);
 
-  const [filtroActivo, setFiltroActivo] = useState("Todos");
   const [busqueda, setBusqueda] = useState("");
+  const [fechaBusqueda, setFechaBusqueda] = useState("");
+  const [tipoBusqueda, setTipoBusqueda] = useState(null);
+  const [calendarioAbierto, setCalendarioAbierto] = useState(false);
+  const [mesCalendario, setMesCalendario] = useState(new Date());
   const [fotoActual, setFotoActual] = useState(0);
   const [fotoModal, setFotoModal] = useState(null);
   const [videoModal, setVideoModal] = useState(null);
@@ -391,6 +520,21 @@ function PublicacionesMinisterios() {
   }, [fotoModal, videoModal]);
 
   useEffect(() => {
+    const cerrarConEscape = (e) => {
+      if (e.key === "Escape") {
+        setFotoModal(null);
+        setVideoModal(null);
+      }
+    };
+
+    window.addEventListener("keydown", cerrarConEscape);
+
+    return () => {
+      window.removeEventListener("keydown", cerrarConEscape);
+    };
+  }, []);
+
+  useEffect(() => {
     const videosUnicos = [
       ...new Set(
         publicaciones
@@ -421,30 +565,78 @@ function PublicacionesMinisterios() {
     };
   };
 
+  const publicacionesOrdenadas = useMemo(() => {
+    return [...publicaciones].sort(
+      (a, b) => obtenerFechaOrden(b.fecha) - obtenerFechaOrden(a.fecha)
+    );
+  }, []);
+
   const publicacionesFiltradas = useMemo(() => {
-    const textoBusqueda = busqueda.trim().toLowerCase();
+    const textoBusqueda = limpiarTexto(busqueda.trim());
 
-    return publicaciones.filter((pub) => {
-      const coincideFiltro =
-        filtroActivo === "Todos" || pub.ministerio === filtroActivo;
+    return publicacionesOrdenadas.filter((pub) => {
+      if (tipoBusqueda === "fecha") {
+        if (!fechaBusqueda) return true;
+        return fechaCoincideConPublicacion(fechaBusqueda, pub.fecha);
+      }
 
-      const coincideBusqueda =
-        textoBusqueda === "" ||
-        pub.titulo.toLowerCase().includes(textoBusqueda) ||
-        pub.descripcion.toLowerCase().includes(textoBusqueda) ||
-        pub.contenido.toLowerCase().includes(textoBusqueda) ||
-        pub.ministerio.toLowerCase().includes(textoBusqueda) ||
-        pub.categoria.toLowerCase().includes(textoBusqueda) ||
-        pub.fecha.toLowerCase().includes(textoBusqueda) ||
-        pub.lugar.toLowerCase().includes(textoBusqueda);
+      if (tipoBusqueda === "texto") {
+        const textoCompleto = limpiarTexto(`
+          ${pub.titulo}
+          ${pub.ministerio}
+          ${pub.lugar}
+        `);
 
-      return coincideFiltro && coincideBusqueda;
+        return textoBusqueda === "" || textoCompleto.includes(textoBusqueda);
+      }
+
+      return true;
     });
-  }, [filtroActivo, busqueda]);
+  }, [busqueda, fechaBusqueda, tipoBusqueda, publicacionesOrdenadas]);
 
-  const limpiarFiltros = () => {
-    setBusqueda("");
-    setFiltroActivo("Todos");
+  const alternarBusquedaTexto = () => {
+    setTipoBusqueda((actual) => {
+      if (actual === "texto") {
+        setBusqueda("");
+        return null;
+      }
+
+      setFechaBusqueda("");
+      setCalendarioAbierto(false);
+      return "texto";
+    });
+  };
+
+  const alternarBusquedaFecha = () => {
+    setTipoBusqueda((actual) => {
+      if (actual === "fecha") {
+        setFechaBusqueda("");
+        setCalendarioAbierto(false);
+        return null;
+      }
+
+      setBusqueda("");
+      setCalendarioAbierto(false);
+      return "fecha";
+    });
+  };
+
+  const seleccionarFechaCalendario = (fecha) => {
+    setFechaBusqueda(convertirDateAInput(fecha));
+    setCalendarioAbierto(false);
+  };
+
+  const cambiarMesCalendario = (cantidad) => {
+    setMesCalendario((actual) => {
+      return new Date(actual.getFullYear(), actual.getMonth() + cantidad, 1);
+    });
+  };
+
+  const seleccionarHoy = () => {
+    const hoy = new Date();
+    setMesCalendario(new Date(hoy.getFullYear(), hoy.getMonth(), 1));
+    setFechaBusqueda(obtenerFechaHoyInput());
+    setCalendarioAbierto(false);
   };
 
   const seleccionarPublicacion = (pub) => {
@@ -548,7 +740,6 @@ function PublicacionesMinisterios() {
               ))}
 
               <div className="detalle-slider-overlay">
-                <span>{publicacionSeleccionada.categoria}</span>
                 <h1>{publicacionSeleccionada.titulo}</h1>
                 <p>Ministerio de {publicacionSeleccionada.ministerio}</p>
               </div>
@@ -565,31 +756,12 @@ function PublicacionesMinisterios() {
 
             <div className="galeria-detalle-info">
               <div className="detalle-etiquetas">
-                <span>{publicacionSeleccionada.categoria}</span>
                 <span>
                   <FaChurch /> Ministerio de {publicacionSeleccionada.ministerio}
                 </span>
               </div>
 
               <h2>{publicacionSeleccionada.titulo}</h2>
-
-              <p className="detalle-resumen">
-                {publicacionSeleccionada.descripcion}
-              </p>
-
-              {publicacionSeleccionada.videoCompleto?.url && (
-                <div className="detalle-acciones-media">
-                  <a
-                    className="btn-video-completo"
-                    href={publicacionSeleccionada.videoCompleto.url}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                  >
-                    <FaExternalLinkAlt />
-                    Ver video completo
-                  </a>
-                </div>
-              )}
 
               <div className="detalle-datos">
                 <p>
@@ -603,18 +775,14 @@ function PublicacionesMinisterios() {
                 </p>
               </div>
 
-              <p className="contenido-detalle">
-                {publicacionSeleccionada.contenido}
+              <p className="detalle-descripcion-unica">
+                {publicacionSeleccionada.descripcion}
               </p>
 
               {videoVisual && (
                 <div className="detalle-videos">
                   <div className="detalle-videos-title">
-                    <h2>Videos trailer</h2>
-                    <p>
-                      Mira un resumen corto del evento. El video se reproduce al
-                      abrirlo.
-                    </p>
+                    <h2>Video trailer</h2>
                   </div>
 
                   <div className="videos-trailer-grid">
@@ -634,7 +802,7 @@ function PublicacionesMinisterios() {
                         </div>
 
                         <div className="video-trailer-text">
-                          <h3>Ver resumen del evento</h3>
+                          <h3>Ver trailer</h3>
                         </div>
                       </div>
                     </button>
@@ -642,12 +810,24 @@ function PublicacionesMinisterios() {
                 </div>
               )}
 
+              {publicacionSeleccionada.videoCompleto?.url && (
+                <div className="detalle-acciones-media">
+                  <a
+                    className="btn-video-completo"
+                    href={publicacionSeleccionada.videoCompleto.url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    <FaExternalLinkAlt />
+                    Ver video completo
+                  </a>
+                </div>
+              )}
+
               <div className="detalle-galeria">
                 <div className="detalle-galeria-title">
                   <h2>Más fotos de esta publicación</h2>
-                  <p>
-                    Haz click en una foto para verla en grande y descargarla.
-                  </p>
+                  <p>Haz click en una foto para verla en grande.</p>
                 </div>
 
                 <div className="detalle-fotos-grid">
@@ -733,6 +913,7 @@ function PublicacionesMinisterios() {
                 poster={videoModal.portada}
                 controls
                 playsInline
+                autoPlay
               ></video>
             </div>
           </div>
@@ -755,63 +936,163 @@ function PublicacionesMinisterios() {
       </section>
 
       <section className="galeria-section">
-        <div className="galeria-title">
-          <h2>Momentos compartidos</h2>
-          <p>
-            Busca por título, ministerio, fecha o lugar, y selecciona una
-            publicación para ver la información completa.
-          </p>
-        </div>
+        <div className="galeria-title"></div>
 
         <div className="busqueda-publicaciones">
-          <div className="busqueda-input-box">
-            <FaSearch className="busqueda-icono" />
-
-            <input
-              type="text"
-              placeholder="Buscar publicaciones por título, ministerio, fecha o lugar..."
-              value={busqueda}
-              onChange={(e) => setBusqueda(e.target.value)}
-            />
-
-            {busqueda && (
-              <button
-                type="button"
-                className="btn-limpiar-busqueda"
-                onClick={() => setBusqueda("")}
-                aria-label="Limpiar búsqueda"
-              >
-                <FaTimes />
-              </button>
-            )}
-          </div>
-        </div>
-
-        <div className="filtros-publicaciones">
-          {filtros.map((filtro) => (
+          <div className="selector-busqueda">
             <button
-              key={filtro}
               type="button"
-              className={filtroActivo === filtro ? "activo" : ""}
-              onClick={() => setFiltroActivo(filtro)}
+              className={tipoBusqueda === "texto" ? "activo" : ""}
+              onClick={alternarBusquedaTexto}
             >
-              {filtro}
+              <FaSearch />
+              Buscar por texto
             </button>
-          ))}
-        </div>
 
-        {(busqueda || filtroActivo !== "Todos") && (
-          <div className="resumen-filtros">
-            <p>
-              Mostrando {publicacionesFiltradas.length} publicación
-              {publicacionesFiltradas.length === 1 ? "" : "es"}
-            </p>
-
-            <button type="button" onClick={limpiarFiltros}>
-              Limpiar filtros
+            <button
+              type="button"
+              className={tipoBusqueda === "fecha" ? "activo" : ""}
+              onClick={alternarBusquedaFecha}
+            >
+              <FaCalendarAlt />
+              Buscar por fecha
             </button>
           </div>
-        )}
+
+          {tipoBusqueda === "texto" && (
+            <div className="busqueda-panel-desplegable">
+              <div className="busqueda-texto-card">
+                <div className="fecha-selector-icono">
+                  <FaSearch />
+                </div>
+
+                <div className="busqueda-texto-contenido">
+                  <span>Búsqueda por título, ministerio o lugar</span>
+
+                  <input
+                    type="text"
+                    placeholder="Escribe aquí."
+                    value={busqueda}
+                    onChange={(e) => setBusqueda(e.target.value)}
+                  />
+                </div>
+
+                {busqueda && (
+                  <button
+                    type="button"
+                    className="fecha-selector-limpiar"
+                    onClick={() => setBusqueda("")}
+                    aria-label="Limpiar búsqueda"
+                  >
+                    <FaTimes />
+                  </button>
+                )}
+              </div>
+            </div>
+          )}
+
+          {tipoBusqueda === "fecha" && (
+            <div className="busqueda-panel-desplegable">
+              <div className="calendario-contenedor">
+                <button
+                  type="button"
+                  className={`fecha-selector-card ${
+                    fechaBusqueda ? "con-fecha" : ""
+                  }`}
+                  onClick={() => setCalendarioAbierto((actual) => !actual)}
+                >
+                  <div className="fecha-selector-icono">
+                    <FaCalendarAlt />
+                  </div>
+
+                  <div className="fecha-selector-texto">
+                    <span>Fecha seleccionada</span>
+                    <strong>{formatearFechaInput(fechaBusqueda)}</strong>
+                  </div>
+
+                  {fechaBusqueda ? (
+                    <span
+                      className="fecha-selector-limpiar"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        setFechaBusqueda("");
+                      }}
+                    >
+                      <FaTimes />
+                    </span>
+                  ) : (
+                    <span className="fecha-selector-accion">Elegir</span>
+                  )}
+                </button>
+
+                {calendarioAbierto && (
+                  <div className="calendario-personalizado">
+                    <div className="calendario-header">
+                      <button
+                        type="button"
+                        onClick={() => cambiarMesCalendario(-1)}
+                      >
+                        <FaChevronLeft />
+                      </button>
+
+                      <strong>{obtenerNombreMes(mesCalendario)}</strong>
+
+                      <button
+                        type="button"
+                        onClick={() => cambiarMesCalendario(1)}
+                      >
+                        <FaChevronRight />
+                      </button>
+                    </div>
+
+                    <div className="calendario-dias-semana">
+                      <span>Lun</span>
+                      <span>Mar</span>
+                      <span>Mié</span>
+                      <span>Jue</span>
+                      <span>Vie</span>
+                      <span>Sáb</span>
+                      <span>Dom</span>
+                    </div>
+
+                    <div className="calendario-grid-dias">
+                      {obtenerDiasCalendario(mesCalendario).map(
+                        (diaInfo, index) => {
+                          const valorDia = convertirDateAInput(diaInfo.fecha);
+                          const esSeleccionado = fechaBusqueda === valorDia;
+                          const esHoy = obtenerFechaHoyInput() === valorDia;
+
+                          return (
+                            <button
+                              type="button"
+                              key={index}
+                              className={`
+                                ${!diaInfo.esMesActual ? "otro-mes" : ""}
+                                ${esSeleccionado ? "seleccionado" : ""}
+                                ${esHoy ? "hoy" : ""}
+                              `}
+                              onClick={() =>
+                                seleccionarFechaCalendario(diaInfo.fecha)
+                              }
+                            >
+                              {diaInfo.fecha.getDate()}
+                            </button>
+                          );
+                        }
+                      )}
+                    </div>
+
+                    <div className="calendario-footer">
+                      <button type="button" onClick={seleccionarHoy}>
+                        Hoy
+                      </button>
+                    </div>
+                  </div>
+                )}
+              </div>
+            </div>
+          )}
+        </div>
 
         <div className="galeria-grid">
           {publicacionesFiltradas.map((pub, index) => (
@@ -823,18 +1104,14 @@ function PublicacionesMinisterios() {
               <img src={pub.imagen} alt={pub.titulo} />
 
               <div className="galeria-overlay">
-                <span>
-                  <FaImages /> {pub.categoria}
-                </span>
-
-                <div>
+                <div className="galeria-info-simple">
                   <h3>{pub.titulo}</h3>
-                  <p>{pub.descripcion}</p>
 
                   <div className="galeria-meta">
                     <small>
                       <FaChurch /> {pub.ministerio}
                     </small>
+
                     <small>
                       <FaCalendarAlt /> {pub.fecha}
                     </small>
@@ -848,8 +1125,16 @@ function PublicacionesMinisterios() {
         {publicacionesFiltradas.length === 0 && (
           <div className="sin-publicaciones">
             <h3>No se encontraron publicaciones</h3>
-            <p>Prueba con otro título, ministerio, fecha o lugar.</p>
-            <button type="button" onClick={limpiarFiltros}>
+            <p>Prueba con otro título, ministerio, lugar o fecha.</p>
+            <button
+              type="button"
+              onClick={() => {
+                setBusqueda("");
+                setFechaBusqueda("");
+                setTipoBusqueda(null);
+                setCalendarioAbierto(false);
+              }}
+            >
               Mostrar todas
             </button>
           </div>

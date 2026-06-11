@@ -1,96 +1,287 @@
+/* =========================
+   UBICACIÓN
+   MISMO ESTILO QUE HORARIOS
+========================= */
+
 .location {
   position: relative;
-  padding: 100px 20px;
-  background: linear-gradient(
-    135deg,
-    #f7faff,
-    #eaf1ff,
-    #d9e6fb,
-    #c8d9f5
-  ) !important;
-  background-size: 220% 220%;
-  animation: bgPan 15s ease-in-out infinite;
+  padding: 110px 20px;
+  background:
+    radial-gradient(circle at top left, rgba(94, 137, 255, 0.22), transparent 32%),
+    radial-gradient(circle at bottom right, rgba(255, 214, 145, 0.24), transparent 34%),
+    linear-gradient(180deg, #eef4ff 0%, #dde8f8 52%, #f3f7ff 100%);
   overflow: hidden;
 }
 
 .location::before {
   content: "";
   position: absolute;
-  top: -90px;
-  left: -90px;
-  width: 260px;
-  height: 260px;
-  border-radius: 50%;
-  background: rgba(86, 122, 201, 0.16);
-  filter: blur(55px);
-  animation: floatSlow 10s ease-in-out infinite;
+  inset: 24px;
+  border: 1px solid rgba(255, 255, 255, 0.55);
+  border-radius: 34px;
+  pointer-events: none;
   z-index: 0;
 }
 
-.location::after {
-  content: "";
+.location-bg {
   position: absolute;
-  bottom: -90px;
-  right: -90px;
-  width: 260px;
-  height: 260px;
   border-radius: 50%;
-  background: rgba(214, 185, 120, 0.14);
-  filter: blur(55px);
-  animation: floatSlow 12s ease-in-out infinite;
+  filter: blur(70px);
+  opacity: 0.55;
   z-index: 0;
+  pointer-events: none;
+}
+
+.location-bg-one {
+  width: 270px;
+  height: 270px;
+  top: -80px;
+  left: -70px;
+  background: rgba(70, 118, 255, 0.26);
+  animation: locationFloatAura 10s ease-in-out infinite;
+}
+
+.location-bg-two {
+  width: 300px;
+  height: 300px;
+  bottom: -100px;
+  right: -70px;
+  background: rgba(255, 193, 94, 0.28);
+  animation: locationFloatAura 12s ease-in-out infinite;
+}
+
+.location-bg-three {
+  width: 190px;
+  height: 190px;
+  top: 42%;
+  left: 48%;
+  background: rgba(255, 255, 255, 0.65);
+  animation: locationFloatMini 8s ease-in-out infinite;
+}
+
+.location-container {
+  position: relative;
+  z-index: 1;
+  max-width: 1180px;
+  margin: 0 auto;
 }
 
 .location .section-title {
-  position: relative;
-  z-index: 2;
+  max-width: 780px;
+  margin: 0 auto 58px;
+  text-align: center;
+  animation: locationFadeUp 0.8s ease both;
+}
+
+.location .section-subtitle {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 9px 18px;
+  margin-bottom: 18px;
+  border-radius: 999px;
+  color: #2352a3;
+  background: rgba(255, 255, 255, 0.68);
+  border: 1px solid rgba(70, 118, 255, 0.16);
+  box-shadow: 0 10px 24px rgba(45, 83, 150, 0.08);
+  font-size: 0.88rem;
+  font-weight: 800;
+  letter-spacing: 0.6px;
+  text-transform: uppercase;
 }
 
 .location .section-title h2 {
-  color: var(--text-dark);
+  margin: 0 0 16px;
+  color: #10284f;
+  font-size: clamp(2rem, 4vw, 3.1rem);
+  font-weight: 900;
+  line-height: 1.12;
+  letter-spacing: -1px;
 }
 
 .location .section-title p {
-  color: #4b5b76;
+  margin: 0 auto;
+  max-width: 680px;
+  color: #4c5f7a;
+  font-size: 1.05rem;
+  line-height: 1.8;
+  font-weight: 500;
 }
 
-.map-container {
-  width: 100%;
-  max-width: 1100px;
-  margin: 10px auto 0;
-  height: 440px;
-  border-radius: 28px;
-  overflow: hidden;
-  background: rgba(255, 255, 255, 0.82) !important;
-  backdrop-filter: blur(10px);
+/* =========================
+   CONTENIDO
+========================= */
+
+.location-content {
+  display: grid;
+  grid-template-columns: 330px 1fr;
+  gap: 24px;
+  align-items: stretch;
+}
+
+.location-info-card {
+  position: relative;
+  min-height: 440px;
+  padding: 28px;
+  border-radius: 30px;
+  background:
+    linear-gradient(145deg, rgba(255, 255, 255, 0.88), rgba(255, 255, 255, 0.64));
   border: 1px solid rgba(255, 255, 255, 0.75);
-  box-shadow: 0 18px 40px rgba(21, 43, 87, 0.14);
-  transition: transform 0.35s ease, box-shadow 0.35s ease;
+  box-shadow:
+    0 22px 48px rgba(38, 73, 135, 0.14),
+    inset 0 1px 0 rgba(255, 255, 255, 0.8);
+  backdrop-filter: blur(14px);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  animation: locationFadeUp 0.8s ease both;
+}
+
+.location-info-card::before {
+  content: "";
+  position: absolute;
+  width: 170px;
+  height: 170px;
+  top: -80px;
+  right: -80px;
+  border-radius: 50%;
+  background: rgba(73, 124, 255, 0.12);
+  transition: transform 0.35s ease, background 0.35s ease;
+}
+
+.location-info-card::after {
+  content: "";
+  position: absolute;
+  left: 28px;
+  right: 28px;
+  bottom: 0;
+  height: 4px;
+  border-radius: 999px 999px 0 0;
+  background: linear-gradient(90deg, #315fd6, #efb648);
+  opacity: 0.88;
+}
+
+.location-info-card:hover::before {
+  transform: scale(1.22);
+  background: rgba(239, 182, 72, 0.18);
+}
+
+.location-icon {
+  position: relative;
+  z-index: 1;
+  width: 72px;
+  height: 72px;
+  margin-bottom: 26px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 24px;
+  background: linear-gradient(145deg, #ffffff, #edf4ff);
+  box-shadow:
+    0 14px 26px rgba(48, 87, 154, 0.13),
+    inset 0 1px 0 rgba(255, 255, 255, 0.9);
+  font-size: 2.1rem;
+}
+
+.location-info-card span {
+  position: relative;
+  z-index: 1;
+  display: inline-block;
+  margin-bottom: 10px;
+  color: #7a8799;
+  font-size: 0.82rem;
+  font-weight: 900;
+  text-transform: uppercase;
+  letter-spacing: 0.7px;
+}
+
+.location-info-card h3 {
+  position: relative;
+  z-index: 1;
+  margin: 0 0 14px;
+  color: #162d55;
+  font-size: 1.45rem;
+  font-weight: 900;
+  line-height: 1.25;
+}
+
+.location-info-card p {
+  position: relative;
+  z-index: 1;
+  margin: 0;
+  color: #5c6b80;
+  font-size: 0.98rem;
+  line-height: 1.65;
+  font-weight: 500;
+}
+
+/* =========================
+   MAPA
+========================= */
+
+.map-container {
   position: relative;
   z-index: 2;
+  width: 100%;
+  height: 440px;
+  border-radius: 30px;
+  overflow: hidden;
+  background:
+    linear-gradient(145deg, rgba(255, 255, 255, 0.88), rgba(255, 255, 255, 0.64));
+  border: 1px solid rgba(255, 255, 255, 0.75);
+  box-shadow:
+    0 22px 48px rgba(38, 73, 135, 0.14),
+    inset 0 1px 0 rgba(255, 255, 255, 0.8);
+  backdrop-filter: blur(14px);
+  transition:
+    transform 0.35s ease,
+    box-shadow 0.35s ease,
+    border-color 0.35s ease;
+  animation: locationFadeUp 0.8s ease both;
+  animation-delay: 0.12s;
 }
 
 .map-container::before {
   content: "";
   position: absolute;
   inset: 0;
-  border-radius: 28px;
+  border-radius: 30px;
   padding: 1px;
   background: linear-gradient(
     135deg,
-    rgba(86, 122, 201, 0.35),
-    rgba(255, 255, 255, 0.14),
-    rgba(214, 185, 120, 0.2)
+    rgba(49, 95, 214, 0.35),
+    rgba(255, 255, 255, 0.12),
+    rgba(239, 182, 72, 0.28)
   );
-  -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  -webkit-mask:
+    linear-gradient(#fff 0 0) content-box,
+    linear-gradient(#fff 0 0);
   -webkit-mask-composite: xor;
   mask-composite: exclude;
   pointer-events: none;
+  z-index: 2;
+}
+
+.map-container::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    180deg,
+    rgba(16, 40, 79, 0.02),
+    rgba(16, 40, 79, 0.08)
+  );
+  pointer-events: none;
+  z-index: 1;
 }
 
 .map-container:hover {
-  transform: translateY(-5px) scale(1.005);
-  box-shadow: 0 24px 48px rgba(21, 43, 87, 0.18);
+  transform: translateY(-8px);
+  border-color: rgba(72, 120, 255, 0.22);
+  box-shadow:
+    0 30px 62px rgba(38, 73, 135, 0.2),
+    inset 0 1px 0 rgba(255, 255, 255, 0.9);
 }
 
 .map-container iframe {
@@ -100,51 +291,125 @@
   display: block;
 }
 
-/* Animaciones */
-@keyframes bgPan {
+/* =========================
+   ANIMACIONES
+========================= */
+
+@keyframes locationFloatAura {
   0% {
-    background-position: 0% 50%;
+    transform: translate(0, 0) scale(1);
   }
+
   50% {
-    background-position: 100% 50%;
+    transform: translate(18px, -18px) scale(1.05);
   }
+
   100% {
-    background-position: 0% 50%;
+    transform: translate(0, 0) scale(1);
   }
 }
 
-@keyframes floatSlow {
+@keyframes locationFloatMini {
   0% {
-    transform: translateY(0px) translateX(0px);
+    transform: translateY(0);
   }
+
   50% {
-    transform: translateY(-14px) translateX(8px);
+    transform: translateY(-16px);
   }
+
   100% {
-    transform: translateY(0px) translateX(0px);
+    transform: translateY(0);
   }
 }
+
+@keyframes locationFadeUp {
+  from {
+    opacity: 0;
+    transform: translateY(24px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* =========================
+   RESPONSIVE
+========================= */
 
 @media (max-width: 992px) {
-  .location {
-    padding: 80px 16px;
+  .location-content {
+    grid-template-columns: 1fr;
+  }
+
+  .location-info-card {
+    min-height: auto;
   }
 
   .map-container {
-    height: 360px;
+    height: 390px;
   }
 }
 
 @media (max-width: 768px) {
+  .location {
+    padding: 88px 16px;
+  }
+
+  .location::before {
+    inset: 14px;
+    border-radius: 26px;
+  }
+
+  .location .section-title {
+    margin-bottom: 42px;
+  }
+
+  .location .section-title p {
+    font-size: 0.98rem;
+  }
+
+  .location-info-card,
   .map-container {
-    height: 320px;
+    border-radius: 24px;
+  }
+
+  .map-container {
+    height: 340px;
+  }
+
+  .map-container::before {
     border-radius: 24px;
   }
 }
 
 @media (max-width: 480px) {
-  .map-container {
-    height: 280px;
+  .location {
+    padding: 76px 14px;
+  }
+
+  .location-info-card {
+    padding: 24px;
+  }
+
+  .location-icon {
+    width: 62px;
+    height: 62px;
     border-radius: 20px;
+    font-size: 1.8rem;
+  }
+
+  .location-info-card h3 {
+    font-size: 1.25rem;
+  }
+
+  .location-info-card p {
+    font-size: 0.94rem;
+  }
+
+  .map-container {
+    height: 300px;
   }
 }

@@ -16,7 +16,7 @@ function Footer() {
       <div className="footer-container">
         <div className="footer-col">
           <h3>Asamblea Apostolica</h3>
-          <p>
+          <p className="footer-description">
             Iglesia cristiana dedicada a predicar la palabra de Dios,
             fortalecer la fe y servir a nuestra comunidad.
           </p>
@@ -24,6 +24,8 @@ function Footer() {
 
         <div className="footer-col">
           <h4>Horarios</h4>
+          <p>Lunes - Culto de Enseñanza 19:00</p>
+          <p>Viernes - Culto General 19:30</p>
           <p>Sábado - Reunión de Jóvenes 19:30</p>
           <p>Domingo - Culto General 19:00</p>
         </div>
@@ -31,20 +33,28 @@ function Footer() {
         <div className="footer-col">
           <h4>Contacto</h4>
 
-          <p>
-            <FaMapMarkerAlt className="contact-icon" />
-            Cochabamba, Bolivia
-          </p>
+          <div className="footer-contact-list">
+            <div className="footer-contact-item">
+              <span className="footer-contact-circle">
+                <FaMapMarkerAlt />
+              </span>
+              <span>Cochabamba, Bolivia</span>
+            </div>
 
-          <p>
-            <FaPhone className="contact-icon" />
-            +591 70000000
-          </p>
+            <div className="footer-contact-item">
+              <span className="footer-contact-circle">
+                <FaPhone />
+              </span>
+              <span>+591 70000000</span>
+            </div>
 
-          <p>
-            <FaEnvelope className="contact-icon" />
-            contacto@asamblea.com
-          </p>
+            <div className="footer-contact-item">
+              <span className="footer-contact-circle">
+                <FaEnvelope />
+              </span>
+              <span>contacto@asamblea.com</span>
+            </div>
+          </div>
         </div>
 
         <div className="footer-col">
@@ -86,7 +96,7 @@ function Footer() {
               </span>
               <span className="social-text">Instagram</span>
             </a>
-            
+
             <a
               href="#"
               target="_blank"
