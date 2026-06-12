@@ -1,4 +1,4 @@
-import "../styles/publicaciones.css";
+import "../../styles/publicaciones.css";
 import {
   FaArrowLeft,
   FaCalendarAlt,

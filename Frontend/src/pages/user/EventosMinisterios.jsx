@@ -2,7 +2,7 @@ import { forwardRef, useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
-import "../styles/eventos-ministerios.css";
+import "../../styles/eventos-ministerios.css";
 
 const eventos = [
   {

@@ -1,4 +1,4 @@
-import "../styles/organigrama.css";
+import "../../styles/organigrama.css";
 
 function Organigrama() {
   const secciones = [

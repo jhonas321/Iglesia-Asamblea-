@@ -6,12 +6,12 @@ import Footer from "./components/Footer";
 import WhatsAppButton from "./components/WhatsAppButton";
 import ScrollToTop from "./components/ScrollToTop";
 
-import Inicio from "./pages/Inicio";
-import Organigrama from "./pages/Organigrama";
-import Login from "./pages/Login";
+import Inicio from "./pages/user/Inicio";
+import Organigrama from "./pages/user/Organigrama";
+import Login from "./pages/user/Login";
 
-import EventosMinisterios from "./pages/EventosMinisterios";
-import PublicacionesMinisterios from "./pages/PublicacionesMinisterios";
+import EventosMinisterios from "./pages/user/EventosMinisterios";
+import PublicacionesMinisterios from "./pages/user/PublicacionesMinisterios";
 
 function App() {
   return (
