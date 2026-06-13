@@ -15,23 +15,28 @@ function Heroe() {
   const heroImages = [hero1, hero2, hero3, hero4];
 
   const eventosDestacados = useMemo(() => {
-    return eventos
-      .filter(
-        (evento) => evento.estado === "enCurso" || evento.estado === "proximo"
-      )
-      .sort((a, b) => new Date(a.fechaOrden) - new Date(b.fechaOrden))
-      .slice(0, 5);
+    const eventosEnCurso = eventos
+      .filter((evento) => evento.estado === "enCurso")
+      .sort((a, b) => new Date(a.fechaOrden) - new Date(b.fechaOrden));
+
+    const eventosProximos = eventos
+      .filter((evento) => evento.estado === "proximo")
+      .sort((a, b) => new Date(a.fechaOrden) - new Date(b.fechaOrden));
+
+    return [...eventosEnCurso, ...eventosProximos];
   }, []);
 
-  const fondosHero =
-    eventosDestacados.length > 0
-      ? eventosDestacados.map((evento) => evento.imagen)
-      : heroImages;
+  const hayEventosDestacados = eventosDestacados.length > 0;
+
+  const fondosHero = hayEventosDestacados
+    ? eventosDestacados.map((evento) => evento.imagen)
+    : heroImages;
 
   const [heroIndex, setHeroIndex] = useState(0);
 
-  const eventoActivo =
-    eventosDestacados.length > 0 ? eventosDestacados[heroIndex] : null;
+  const eventoActivo = hayEventosDestacados
+    ? eventosDestacados[heroIndex]
+    : null;
 
   useEffect(() => {
     if (fondosHero.length <= 1) return;
@@ -50,7 +55,7 @@ function Heroe() {
   };
 
   const cambiarAnterior = () => {
-    if (eventosDestacados.length <= 1) return;
+    if (!hayEventosDestacados || eventosDestacados.length <= 1) return;
 
     setHeroIndex((prev) =>
       prev === 0 ? eventosDestacados.length - 1 : prev - 1
@@ -58,7 +63,7 @@ function Heroe() {
   };
 
   const cambiarSiguiente = () => {
-    if (eventosDestacados.length <= 1) return;
+    if (!hayEventosDestacados || eventosDestacados.length <= 1) return;
 
     setHeroIndex((prev) =>
       prev === eventosDestacados.length - 1 ? 0 : prev + 1
@@ -67,6 +72,10 @@ function Heroe() {
 
   const irDetalleEvento = (eventoId) => {
     navigate(`/ministerios/eventos/${eventoId}`);
+  };
+
+  const irEventosPasados = () => {
+    navigate("/ministerios/eventos");
   };
 
   const obtenerClaseTarjeta = (index) => {
@@ -80,6 +89,10 @@ function Heroe() {
     if (diferencia === total - 1) return "card-prev";
 
     return "card-hidden";
+  };
+
+  const obtenerImagenSinEventos = (posicion) => {
+    return fondosHero[(heroIndex + posicion) % fondosHero.length];
   };
 
   return (
@@ -127,81 +140,148 @@ function Heroe() {
           </div>
         </div>
 
-        {eventoActivo && (
-          <aside className="hero-event-stack">
-            <div className="event-stack-label">
-              <span>Eventos destacados</span>
-            </div>
+        <aside className="hero-event-stack">
+          <div className="event-stack-label">
+            <span>Eventos destacados</span>
+          </div>
 
-            <div className="event-stack-wrapper">
-              <button
-                type="button"
-                className="event-stack-arrow event-arrow-left"
-                onClick={cambiarAnterior}
-                aria-label="Evento anterior"
-              >
-                ‹
-              </button>
+          {eventoActivo ? (
+            <>
+              <div className="event-stack-wrapper">
+                <button
+                  type="button"
+                  className="event-stack-arrow event-arrow-left"
+                  onClick={cambiarAnterior}
+                  aria-label="Evento anterior"
+                >
+                  ‹
+                </button>
 
-              <div className="event-cards-area">
-                {eventosDestacados.map((evento, index) => (
-                  <article
-                    key={evento.id}
-                    className={`event-stack-card ${obtenerClaseTarjeta(index)}`}
-                    onClick={() => irDetalleEvento(evento.id)}
-                  >
-                    <img src={evento.imagen} alt={evento.titulo} />
+                <div className="event-cards-area">
+                  {eventosDestacados.map((evento, index) => (
+                    <article
+                      key={evento.id}
+                      className={`event-stack-card ${obtenerClaseTarjeta(
+                        index
+                      )}`}
+                      onClick={() => irDetalleEvento(evento.id)}
+                    >
+                      <img src={evento.imagen} alt={evento.titulo} />
 
-                    <div className="event-stack-overlay"></div>
+                      <div className="event-stack-overlay"></div>
 
-                    <div className="event-stack-content">
-                      <span className={`event-status status-${evento.estado}`}>
-                        {textoEstado(evento.estado)}
-                      </span>
+                      <div className="event-stack-content">
+                        <span className={`event-status status-${evento.estado}`}>
+                          {textoEstado(evento.estado)}
+                        </span>
 
-                      <small>{evento.ministerio}</small>
+                        <small>{evento.ministerio}</small>
 
-                      <h3>{evento.titulo}</h3>
+                        <h3>{evento.titulo}</h3>
 
-                      <p>📅 {evento.fecha}</p>
+                        <p>📅 {evento.fecha}</p>
 
-                      {index === heroIndex && (
-                        <Link
-                          to={`/ministerios/eventos/${evento.id}`}
-                          className="event-stack-btn"
-                          onClick={(e) => e.stopPropagation()}
-                        >
-                          Ver detalles
-                        </Link>
-                      )}
-                    </div>
-                  </article>
-                ))}
+                        {index === heroIndex && (
+                          <Link
+                            to={`/ministerios/eventos/${evento.id}`}
+                            className="event-stack-btn"
+                            onClick={(e) => e.stopPropagation()}
+                          >
+                            Ver detalles
+                          </Link>
+                        )}
+                      </div>
+                    </article>
+                  ))}
+                </div>
+
+                <button
+                  type="button"
+                  className="event-stack-arrow event-arrow-right"
+                  onClick={cambiarSiguiente}
+                  aria-label="Siguiente evento"
+                >
+                  ›
+                </button>
               </div>
 
-              <button
-                type="button"
-                className="event-stack-arrow event-arrow-right"
-                onClick={cambiarSiguiente}
-                aria-label="Siguiente evento"
-              >
-                ›
-              </button>
-            </div>
-
-            <div className="event-stack-dots">
-              {eventosDestacados.map((_, index) => (
+              <div className="event-stack-dots">
                 <button
-                  key={index}
                   type="button"
-                  className={heroIndex === index ? "active" : ""}
-                  onClick={() => setHeroIndex(index)}
-                  aria-label={`Ver evento destacado ${index + 1}`}
+                  onClick={cambiarAnterior}
+                  aria-label="Evento anterior"
                 ></button>
-              ))}
+
+                <button
+                  type="button"
+                  className="active"
+                  aria-label="Evento actual"
+                ></button>
+
+                <button
+                  type="button"
+                  onClick={cambiarSiguiente}
+                  aria-label="Siguiente evento"
+                ></button>
+              </div>
+            </>
+          ) : (
+            <div className="event-cards-area">
+              <article className="event-stack-card card-active event-empty-card">
+                <img
+                  src={obtenerImagenSinEventos(0)}
+                  alt="No hay eventos activos"
+                />
+
+                <div className="event-stack-overlay"></div>
+
+                <div className="event-stack-content">
+                  <span className="event-status status-empty">
+                    Sin eventos
+                  </span>
+
+                  <small>Eventos destacados</small>
+
+                  <h3>No hay eventos en curso ni próximos</h3>
+
+                  <p>Por el momento no tenemos actividades publicadas.</p>
+
+                  <button
+                    type="button"
+                    className="event-stack-btn event-empty-btn"
+                    onClick={irEventosPasados}
+                  >
+                    Ver eventos pasados
+                  </button>
+                </div>
+              </article>
+
+              <article className="event-stack-card card-next event-empty-ghost">
+                <img
+                  src={obtenerImagenSinEventos(1)}
+                  alt=""
+                  aria-hidden="true"
+                />
+              </article>
+
+              <article className="event-stack-card card-back event-empty-ghost">
+                <img
+                  src={obtenerImagenSinEventos(2)}
+                  alt=""
+                  aria-hidden="true"
+                />
+              </article>
+
+              <article className="event-stack-card card-prev event-empty-ghost">
+                <img
+                  src={obtenerImagenSinEventos(3)}
+                  alt=""
+                  aria-hidden="true"
+                />
+              </article>
             </div>
-          </aside>
-        )}
+          )}
+        </aside>
       </div>
     </header>
   );

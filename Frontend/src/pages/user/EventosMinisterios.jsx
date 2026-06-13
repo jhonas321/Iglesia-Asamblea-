@@ -1,7 +1,15 @@
-import { forwardRef, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import DatePicker from "react-datepicker";
-import "react-datepicker/dist/react-datepicker.css";
+import {
+  FaCalendarAlt,
+  FaClock,
+  FaMapMarkerAlt,
+  FaSearch,
+  FaChevronUp,
+  FaChevronDown,
+  FaWhatsapp,
+} from "react-icons/fa";
+import CalendarioPersonalizado from "../../components/CalendarioPersonalizado";
 import "../../styles/eventos-ministerios.css";
 
 const eventos = [
@@ -291,23 +299,6 @@ const eventos = [
   },
 ];
 
-const BotonFecha = forwardRef(({ value, onClick, ejemplo, label }, ref) => (
-  <button
-    type="button"
-    className={`custom-date-input custom-date-button ${
-      value && value.trim() !== "" ? "has-value" : ""
-    }`}
-    onClick={onClick}
-    ref={ref}
-    aria-label={label}
-  >
-    <span>{value && value.trim() !== "" ? value : ejemplo}</span>
-    <strong>📅</strong>
-  </button>
-));
-
-BotonFecha.displayName = "BotonFecha";
-
 function EventosMinisterios() {
   const { id } = useParams();
   const navigate = useNavigate();
@@ -326,8 +317,6 @@ function EventosMinisterios() {
   const [filtroFechaInicio, setFiltroFechaInicio] = useState("");
   const [filtroFechaFinal, setFiltroFechaFinal] = useState("");
 
-  const [esMovil, setEsMovil] = useState(false);
-
   useEffect(() => {
     if (!id) return;
 
@@ -337,19 +326,6 @@ function EventosMinisterios() {
       setEventoSeleccionado(eventoEncontrado);
     }
   }, [id]);
-
-  useEffect(() => {
-    const revisarPantalla = () => {
-      setEsMovil(window.innerWidth <= 768);
-    };
-
-    revisarPantalla();
-    window.addEventListener("resize", revisarPantalla);
-
-    return () => {
-      window.removeEventListener("resize", revisarPantalla);
-    };
-  }, []);
 
   const textoEstado = (estado) => {
     if (estado === "enCurso") return "En curso";
@@ -363,21 +339,6 @@ function EventosMinisterios() {
       .normalize("NFD")
       .replace(/[\u0300-\u036f]/g, "")
       .trim();
-  };
-
-  const fechaStringAObjeto = (fecha) => {
-    if (!fecha) return null;
-    return new Date(`${fecha}T00:00:00`);
-  };
-
-  const fechaObjetoAString = (fecha) => {
-    if (!fecha) return "";
-
-    const year = fecha.getFullYear();
-    const month = String(fecha.getMonth() + 1).padStart(2, "0");
-    const day = String(fecha.getDate()).padStart(2, "0");
-
-    return `${year}-${month}-${day}`;
   };
 
   const limpiarFiltroTexto = () => {
@@ -482,9 +443,7 @@ function EventosMinisterios() {
     const fechaEvento = evento.fechaOrden;
 
     if (filtroFechaInicio && filtroFechaFinal) {
-      return (
-        fechaEvento >= filtroFechaInicio && fechaEvento <= filtroFechaFinal
-      );
+      return fechaEvento >= filtroFechaInicio && fechaEvento <= filtroFechaFinal;
     }
 
     if (filtroFechaInicio) return fechaEvento >= filtroFechaInicio;
@@ -523,7 +482,6 @@ function EventosMinisterios() {
     <main className="eventos-page">
       <section className="eventos-hero">
         <div className="eventos-hero-content">
-          
           <h1>Eventos Ministeriales</h1>
           <p>
             Consulta las próximas actividades, eventos en curso y actividades ya
@@ -568,7 +526,12 @@ function EventosMinisterios() {
         </div>
 
         <button type="button" className="filter-toggle" onClick={abrirFiltros}>
-          Busqueda <span>{filtrosAbiertos ? "▲" : "▼"}</span>
+          <span>Búsqueda</span>
+          {filtrosAbiertos ? (
+            <FaChevronUp className="filter-toggle-icon" aria-hidden="true" />
+          ) : (
+            <FaChevronDown className="filter-toggle-icon" aria-hidden="true" />
+          )}
         </button>
 
         <div
@@ -581,6 +544,7 @@ function EventosMinisterios() {
             className={tipoFiltroActivo === "busqueda" ? "active" : ""}
             onClick={() => seleccionarTipoFiltro("busqueda")}
           >
+            <FaSearch className="filter-option-icon" aria-hidden="true" />
             Buscar evento
           </button>
 
@@ -589,6 +553,7 @@ function EventosMinisterios() {
             className={tipoFiltroActivo === "fechas" ? "active" : ""}
             onClick={() => seleccionarTipoFiltro("fechas")}
           >
+            <FaCalendarAlt className="filter-option-icon" aria-hidden="true" />
             Filtrar fechas
           </button>
         </div>
@@ -653,11 +618,6 @@ function EventosMinisterios() {
           >
             <div className="filter-card-header">
               <span>Filtrar fechas</span>
-              <h3>Por rango de fechas</h3>
-              <p>
-                Selecciona una fecha inicial y una fecha final para ver eventos
-                dentro de ese periodo.
-              </p>
             </div>
 
             <div className="date-fields-row">
@@ -665,24 +625,11 @@ function EventosMinisterios() {
                 <label>Fecha inicial</label>
 
                 <div className="date-picker-wrapper">
-                  <DatePicker
-                    selected={fechaStringAObjeto(fechaInicio)}
-                    onChange={(date) =>
-                      setFechaInicio(fechaObjetoAString(date))
-                    }
-                    dateFormat="dd/MM/yyyy"
-                    customInput={
-                      <BotonFecha
-                        ejemplo="Ej: 20/05/2026"
-                        label="Seleccionar fecha inicial"
-                      />
-                    }
-                    popperClassName="custom-datepicker-popper"
-                    calendarClassName="custom-datepicker-calendar"
-                    popperPlacement="bottom-start"
-                    withPortal={esMovil}
-                    shouldCloseOnSelect
-                    showPopperArrow={false}
+                  <CalendarioPersonalizado
+                    valor={fechaInicio}
+                    onChange={setFechaInicio}
+                    ejemplo="Ej: 20/05/2026"
+                    label="Seleccionar fecha inicial"
                   />
 
                   {(fechaInicio || filtroFechaInicio) && (
@@ -702,22 +649,11 @@ function EventosMinisterios() {
                 <label>Fecha final</label>
 
                 <div className="date-picker-wrapper">
-                  <DatePicker
-                    selected={fechaStringAObjeto(fechaFinal)}
-                    onChange={(date) => setFechaFinal(fechaObjetoAString(date))}
-                    dateFormat="dd/MM/yyyy"
-                    customInput={
-                      <BotonFecha
-                        ejemplo="Ej: 30/05/2026"
-                        label="Seleccionar fecha final"
-                      />
-                    }
-                    popperClassName="custom-datepicker-popper"
-                    calendarClassName="custom-datepicker-calendar"
-                    popperPlacement="bottom-start"
-                    withPortal={esMovil}
-                    shouldCloseOnSelect
-                    showPopperArrow={false}
+                  <CalendarioPersonalizado
+                    valor={fechaFinal}
+                    onChange={setFechaFinal}
+                    ejemplo="Ej: 30/05/2026"
+                    label="Seleccionar fecha final"
                   />
 
                   {(fechaFinal || filtroFechaFinal) && (
@@ -773,9 +709,18 @@ function EventosMinisterios() {
                 <h3>{evento.titulo}</h3>
 
                 <div className="evento-info">
-                  <p>📅 {evento.fecha}</p>
-                  <p>🕒 {evento.hora}</p>
-                  <p>📍 {evento.lugar}</p>
+                  <p>
+                    <FaCalendarAlt className="evento-info-icon" />
+                    {evento.fecha}
+                  </p>
+                  <p>
+                    <FaClock className="evento-info-icon" />
+                    {evento.hora}
+                  </p>
+                  <p>
+                    <FaMapMarkerAlt className="evento-info-icon" />
+                    {evento.lugar}
+                  </p>
                 </div>
 
                 <p className="evento-descripcion">{evento.descripcion}</p>
@@ -799,6 +744,7 @@ function EventosMinisterios() {
               type="button"
               className="evento-modal-close"
               onClick={cerrarModal}
+              aria-label="Cerrar modal"
             >
               ×
             </button>
@@ -832,9 +778,18 @@ function EventosMinisterios() {
               <h2>{eventoSeleccionado.titulo}</h2>
 
               <div className="evento-modal-info">
-                <p>📅 {eventoSeleccionado.fecha}</p>
-                <p>🕒 {eventoSeleccionado.hora}</p>
-                <p>📍 {eventoSeleccionado.lugar}</p>
+                <p>
+                  <FaCalendarAlt className="evento-info-icon" />
+                  {eventoSeleccionado.fecha}
+                </p>
+                <p>
+                  <FaClock className="evento-info-icon" />
+                  {eventoSeleccionado.hora}
+                </p>
+                <p>
+                  <FaMapMarkerAlt className="evento-info-icon" />
+                  {eventoSeleccionado.lugar}
+                </p>
               </div>
 
               <p className="evento-modal-descripcion">
@@ -846,6 +801,7 @@ function EventosMinisterios() {
                 className="evento-modal-btn"
                 onClick={consultarWhatsApp}
               >
+                <FaWhatsapp className="evento-modal-btn-icon" />
                 Consultar por WhatsApp
               </button>
             </div>
