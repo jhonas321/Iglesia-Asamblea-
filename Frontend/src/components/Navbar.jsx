@@ -8,7 +8,6 @@ import {
   FaHome,
   FaClock,
   FaUsers,
-  FaBook,
   FaBullseye,
   FaMapMarkerAlt,
   FaEnvelope,
@@ -27,7 +26,18 @@ function Navbar() {
     <>
       <nav className="navbar">
         <div className="brand">
-          <img src="/images/logo.jpg" alt="Logo Iglesia" className="brand-logo" />
+          <HashLink
+            smooth
+            to="/#inicio"
+            onClick={cerrarMenu}
+            className="brand-logo-link"
+          >
+            <img
+              src="/images/logo.jpg"
+              alt="Logo Iglesia"
+              className="brand-logo"
+            />
+          </HashLink>
 
           <div className="brand-text">
             <h1>Asamblea Apostólica</h1>
@@ -77,8 +87,6 @@ function Navbar() {
             </HashLink>
           </li>
 
-          
-
           <li>
             <HashLink smooth to="/#ubicacion" onClick={cerrarMenu}>
               <FaMapMarkerAlt className="nav-icon" />
@@ -94,7 +102,16 @@ function Navbar() {
           </li>
 
           <li>
-            <HashLink smooth to="/#contacto" onClick={cerrarMenu}>
+            <HashLink
+              smooth
+              to="/#contacto"
+              onClick={cerrarMenu}
+              scroll={(el) => {
+                const y =
+                  el.getBoundingClientRect().top + window.pageYOffset - 90;
+                window.scrollTo({ top: y, behavior: "smooth" });
+              }}
+            >
               <FaEnvelope className="nav-icon" />
               Contacto
             </HashLink>

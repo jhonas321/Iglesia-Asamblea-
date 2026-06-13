@@ -319,6 +319,11 @@
   box-shadow: 0 8px 20px rgba(66, 103, 178, 0.35);
 }
 
+.status-empty {
+  background: #64748b;
+  box-shadow: 0 8px 20px rgba(100, 116, 139, 0.35);
+}
+
 .event-stack-content small {
   display: block;
   color: #dbeafe;
@@ -363,6 +368,82 @@
   transform: translateY(-2px);
   background: #4267b2;
   color: #ffffff;
+}
+
+/* TARJETA VACÍA CON MISMO DISEÑO */
+.event-empty-card {
+  cursor: default;
+}
+
+.event-empty-card img {
+  filter: brightness(0.65) saturate(0.9);
+}
+
+.event-empty-card:hover {
+  filter: none;
+}
+
+.event-empty-card .event-stack-content h3 {
+  font-size: clamp(1.45rem, 2.3vw, 2.05rem);
+}
+
+.event-empty-card .event-stack-content p {
+  line-height: 1.45;
+}
+
+.event-empty-btn {
+  border: none;
+  cursor: pointer;
+  font-family: inherit;
+}
+
+/* TARJETAS VACÍAS DE ATRÁS CON IMÁGENES */
+.event-empty-ghost {
+  pointer-events: none;
+  cursor: default;
+}
+
+.event-empty-ghost img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  filter: brightness(0.52) saturate(0.85);
+}
+
+.event-empty-ghost::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  background:
+    radial-gradient(
+      circle at 50% 20%,
+      rgba(255, 255, 255, 0.16),
+      transparent 35%
+    ),
+    linear-gradient(
+      180deg,
+      rgba(5, 10, 20, 0.08),
+      rgba(5, 10, 20, 0.88)
+    );
+}
+
+.event-empty-ghost::after {
+  content: "";
+  position: absolute;
+  z-index: 3;
+  left: 26px;
+  right: 26px;
+  bottom: 28px;
+  height: 72px;
+  border-radius: 18px;
+  background:
+    linear-gradient(
+      90deg,
+      rgba(255, 255, 255, 0.2),
+      rgba(255, 255, 255, 0.06)
+    );
+  opacity: 0.45;
 }
 
 /* POSICIONES DE TARJETAS */
@@ -440,12 +521,14 @@
   right: -8px;
 }
 
+/* SOLO 3 LÍNEAS ABAJO */
 .event-stack-dots {
   position: relative;
   z-index: 8;
   margin-top: 22px;
   display: flex;
   justify-content: center;
+  align-items: center;
   gap: 9px;
 }
 
@@ -461,6 +544,10 @@
 
 .event-stack-dots button.active {
   width: 42px;
+  background: #ffffff;
+}
+
+.event-stack-dots button:hover {
   background: #ffffff;
 }
 
@@ -568,6 +655,10 @@
     font-size: 0.88rem;
   }
 
+  .event-empty-card .event-stack-content h3 {
+    font-size: 1.35rem;
+  }
+
   .card-next {
     transform: translateX(16px) translateY(18px) rotate(5deg) scale(0.95);
   }
@@ -620,6 +711,10 @@
 
   .event-stack-content h3 {
     font-size: 1.28rem;
+  }
+
+  .event-empty-card .event-stack-content h3 {
+    font-size: 1.18rem;
   }
 
   .event-status {

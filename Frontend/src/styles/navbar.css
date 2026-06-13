@@ -21,6 +21,9 @@
   align-items: center;
   gap: 14px;
   z-index: 3002;
+    text-decoration: none;
+    color: inherit;
+  
 }
 
 .brand-logo {
@@ -347,3 +350,5 @@
     font-size: 0.93rem;
   }
 }
+
+

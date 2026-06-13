@@ -1,3 +1,4 @@
+import { MapPin } from "lucide-react";
 import "../styles/ubicacion-seccion.css";
 
 function UbicacionSeccion() {
@@ -9,7 +10,6 @@ function UbicacionSeccion() {
 
       <div className="location-container">
         <div className="section-title">
-
           <h2>Ubicación</h2>
 
           <p>
@@ -20,7 +20,9 @@ function UbicacionSeccion() {
 
         <div className="location-content">
           <div className="location-info-card">
-            <div className="location-icon">📍</div>
+            <div className="location-icon">
+              <MapPin size={34} strokeWidth={2.4} />
+            </div>
 
             <div>
               <span>Estamos en</span>
@@ -35,6 +37,7 @@ function UbicacionSeccion() {
               loading="lazy"
               title="Ubicación Iglesia"
               referrerPolicy="no-referrer-when-downgrade"
+              allowFullScreen
             ></iframe>
           </div>
         </div>

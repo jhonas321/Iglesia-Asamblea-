@@ -1,4 +1,5 @@
 import { Link } from "react-router-dom";
+import { Camera, CalendarDays } from "lucide-react";
 import "../styles/ministerios-preview.css";
 
 function MinisteriosPreview() {
@@ -7,6 +8,7 @@ function MinisteriosPreview() {
       <div className="ministerios-title">
         <h2>Ministerios</h2>
         <div className="ministerios-line"></div>
+
         <p>
           En esta sección encontrarás publicaciones, recuerdos, eventos y
           actividades programadas dentro de los ministerios de la iglesia.
@@ -20,11 +22,13 @@ function MinisteriosPreview() {
               src="/images/banner.avif"
               alt="Publicaciones de ministerios cristianos"
             />
+
             <div className="ministerio-overlay"></div>
 
             <div className="ministerio-image-title">
               <span>Ministerios</span>
               <h3>Publicaciones</h3>
+
               <p>
                 Fotos, videos, testimonios y recuerdos de actividades
                 realizadas.
@@ -34,7 +38,9 @@ function MinisteriosPreview() {
 
           <div className="ministerio-info">
             <div className="ministerio-content">
-              <div className="ministerio-icon">📸</div>
+              <div className="ministerio-icon">
+                <Camera size={34} strokeWidth={2.4} />
+              </div>
 
               <h3>Publicaciones</h3>
 
@@ -55,11 +61,13 @@ function MinisteriosPreview() {
               src="/images/avisos.avif"
               alt="Eventos cristianos de la iglesia"
             />
+
             <div className="ministerio-overlay"></div>
 
             <div className="ministerio-image-title">
               <span>Ministerios</span>
               <h3>Eventos</h3>
+
               <p>
                 Próximas reuniones, actividades, cultos especiales y fechas
                 importantes.
@@ -69,7 +77,9 @@ function MinisteriosPreview() {
 
           <div className="ministerio-info">
             <div className="ministerio-content">
-              <div className="ministerio-icon">📅</div>
+              <div className="ministerio-icon">
+                <CalendarDays size={34} strokeWidth={2.4} />
+              </div>
 
               <h3>Eventos</h3>
 

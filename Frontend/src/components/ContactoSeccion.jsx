@@ -1,3 +1,4 @@
+import { Church, HandHeart, MapPin, Phone, PhoneCall } from "lucide-react";
 import "../styles/contacto-seccion.css";
 
 function ContactoSeccion() {
@@ -9,7 +10,6 @@ function ContactoSeccion() {
 
       <div className="contact-container-main">
         <div className="section-title">
-
           <h2>Contáctanos</h2>
 
           <p>
@@ -21,7 +21,9 @@ function ContactoSeccion() {
         <div className="contact-container">
           <div className="contact-info">
             <div className="contact-header">
-              <div className="contact-main-icon">☎️</div>
+              <div className="contact-main-icon">
+                <PhoneCall size={34} strokeWidth={2.4} />
+              </div>
 
               <div>
                 <span>Información de la iglesia</span>
@@ -31,7 +33,9 @@ function ContactoSeccion() {
 
             <div className="contact-list">
               <div className="contact-item">
-                <div className="contact-icon">⛪</div>
+                <div className="contact-icon">
+                  <Church size={24} strokeWidth={2.3} />
+                </div>
 
                 <div>
                   <span>Nombre</span>
@@ -40,7 +44,9 @@ function ContactoSeccion() {
               </div>
 
               <div className="contact-item">
-                <div className="contact-icon">📍</div>
+                <div className="contact-icon">
+                  <MapPin size={24} strokeWidth={2.3} />
+                </div>
 
                 <div>
                   <span>Dirección</span>
@@ -49,7 +55,9 @@ function ContactoSeccion() {
               </div>
 
               <div className="contact-item">
-                <div className="contact-icon">📞</div>
+                <div className="contact-icon">
+                  <Phone size={24} strokeWidth={2.3} />
+                </div>
 
                 <div>
                   <span>Teléfono</span>
@@ -60,7 +68,9 @@ function ContactoSeccion() {
           </div>
 
           <div className="contact-message-card">
-            <div className="message-icon">🤝</div>
+            <div className="message-icon">
+              <HandHeart size={38} strokeWidth={2.3} />
+            </div>
 
             <h3>Queremos conocerte</h3>
 
@@ -69,8 +79,6 @@ function ContactoSeccion() {
               Estamos listos para recibirte con cariño y compartir un tiempo de
               bendición.
             </p>
-
-            
           </div>
         </div>
       </div>
