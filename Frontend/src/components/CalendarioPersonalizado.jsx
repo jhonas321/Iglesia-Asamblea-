@@ -93,13 +93,29 @@ const obtenerDiasCalendario = (fechaBase) => {
   return dias;
 };
 
-function CalendarioPersonalizado({ valor, onChange, ejemplo, label }) {
+function CalendarioPersonalizado({
+  valor,
+  onChange,
+  ejemplo,
+  label,
+  abierto,
+  onAbrir,
+  onCerrar,
+}) {
   const fechaInicial = convertirFechaInput(valor) || new Date();
 
-  const [calendarioAbierto, setCalendarioAbierto] = useState(false);
+  const [calendarioInternoAbierto, setCalendarioInternoAbierto] =
+    useState(false);
+
   const [mesCalendario, setMesCalendario] = useState(
     new Date(fechaInicial.getFullYear(), fechaInicial.getMonth(), 1)
   );
+
+  const estaControlado = typeof abierto === "boolean";
+
+  const calendarioAbierto = estaControlado
+    ? abierto
+    : calendarioInternoAbierto;
 
   const cambiarMesCalendario = (cantidad) => {
     setMesCalendario((actual) => {
@@ -107,9 +123,31 @@ function CalendarioPersonalizado({ valor, onChange, ejemplo, label }) {
     });
   };
 
+  const abrirOCerrarCalendario = () => {
+    if (estaControlado) {
+      if (calendarioAbierto) {
+        onCerrar();
+      } else {
+        onAbrir();
+      }
+
+      return;
+    }
+
+    setCalendarioInternoAbierto((actual) => !actual);
+  };
+
+  const cerrarCalendario = () => {
+    if (estaControlado) {
+      onCerrar();
+    } else {
+      setCalendarioInternoAbierto(false);
+    }
+  };
+
   const seleccionarFecha = (fecha) => {
     onChange(convertirDateAInput(fecha));
-    setCalendarioAbierto(false);
+    cerrarCalendario();
   };
 
   const seleccionarHoy = () => {
@@ -117,7 +155,7 @@ function CalendarioPersonalizado({ valor, onChange, ejemplo, label }) {
 
     setMesCalendario(new Date(hoy.getFullYear(), hoy.getMonth(), 1));
     onChange(obtenerFechaHoyInput());
-    setCalendarioAbierto(false);
+    cerrarCalendario();
   };
 
   return (
@@ -127,7 +165,7 @@ function CalendarioPersonalizado({ valor, onChange, ejemplo, label }) {
         className={`custom-date-input custom-date-button ${
           valor ? "has-value" : ""
         }`}
-        onClick={() => setCalendarioAbierto((actual) => !actual)}
+        onClick={abrirOCerrarCalendario}
         aria-label={label}
       >
         <span>{valor ? formatearFechaInput(valor) : ejemplo}</span>

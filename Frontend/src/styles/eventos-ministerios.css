@@ -273,6 +273,16 @@
   width: 100%;
 }
 
+.date-picker-wrapper {
+  z-index: 200;
+}
+
+.date-picker-wrapper .calendario-reutilizable {
+  width: 100%;
+  position: relative;
+}
+
+/* INPUTS */
 .search-field input,
 .custom-date-input {
   width: 100%;
@@ -293,8 +303,11 @@
   padding-right: 44px;
 }
 
-.custom-date-input {
-  padding-right: 82px;
+/* IMPORTANTE: espacio para X + ícono */
+.date-picker-wrapper .custom-date-input,
+.date-picker-wrapper .custom-date-button {
+  width: 100%;
+  padding-right: 82px !important;
 }
 
 .search-field input::placeholder,
@@ -310,7 +323,7 @@
   box-shadow: 0 10px 24px rgba(63, 98, 184, 0.15);
 }
 
-/* BOTÓN X */
+/* BOTÓN X GENERAL */
 .field-clear-btn {
   position: absolute;
   top: 50%;
@@ -319,7 +332,7 @@
   height: 24px;
   border: none;
   border-radius: 50%;
-  background: rgba(23, 37, 63, 0.1);
+  background: rgba(23, 37, 63, 0.12);
   color: #17253f;
   font-size: 1rem;
   font-weight: 900;
@@ -329,7 +342,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  z-index: 15;
+  z-index: 80;
   transition: all 0.25s ease;
 }
 
@@ -338,8 +351,34 @@
   color: #ffffff;
 }
 
-.date-clear-btn {
-  right: 44px;
+/* BOTÓN X DE FECHAS */
+.date-picker-wrapper .date-clear-btn {
+  position: absolute;
+  top: 50%;
+  right: 43px;
+  transform: translateY(-50%);
+  width: 24px;
+  height: 24px;
+  border: none;
+  border-radius: 50%;
+  background: rgba(23, 37, 63, 0.12);
+  color: #17253f;
+  font-size: 1rem;
+  font-weight: 900;
+  line-height: 1;
+  cursor: pointer;
+  z-index: 500;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 1;
+  visibility: visible;
+  pointer-events: auto;
+}
+
+.date-picker-wrapper .date-clear-btn:hover {
+  background: #17253f;
+  color: #ffffff;
 }
 
 /* BOTÓN DE FECHA */
@@ -353,6 +392,7 @@
   appearance: none;
   -webkit-appearance: none;
   position: relative;
+  z-index: 1;
 }
 
 .custom-date-button span {
@@ -370,6 +410,8 @@
   font-weight: 600;
 }
 
+/* ÍCONO CALENDARIO */
+.date-picker-wrapper .date-input-icon,
 .date-input-icon {
   position: absolute;
   right: 16px;
@@ -378,6 +420,12 @@
   font-size: 0.95rem;
   color: #3f62b8;
   pointer-events: none;
+  z-index: 20;
+}
+
+/* POPUP DEL CALENDARIO */
+.date-picker-wrapper .calendario-popup {
+  z-index: 1000;
 }
 
 .date-fields-row {
@@ -993,5 +1041,19 @@
 
   .filter-type-options {
     grid-template-columns: 1fr;
+  }
+
+  .date-picker-wrapper .custom-date-input,
+  .date-picker-wrapper .custom-date-button {
+    padding-right: 82px !important;
+  }
+
+  .date-picker-wrapper .date-clear-btn {
+    right: 42px;
+  }
+
+  .date-picker-wrapper .date-input-icon,
+  .date-input-icon {
+    right: 16px;
   }
 }

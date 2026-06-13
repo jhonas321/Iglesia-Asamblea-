@@ -59,53 +59,6 @@ const eventos = [
     estado: "enCurso",
   },
   {
-    id: 4,
-    titulo: "Ensayos de alabanza",
-    ministerio: "Ministerio de Alabanza",
-    fecha: "23 al 27 Mayo 2026",
-    fechaOrden: "2026-05-23",
-    hora: "19:00",
-    lugar: "Auditorio de la iglesia",
-    descripcion:
-      "Ensayos generales para preparar las participaciones musicales de los cultos.",
-    detalles:
-      "El ministerio de alabanza se reúne para preparar cantos, tiempos de adoración y coordinación del equipo musical.",
-    imagen: "/images/traje.jpeg",
-    estado: "enCurso",
-  },
-  {
-    id: 5,
-    titulo: "Escuela bíblica para niños",
-    ministerio: "Ministerio de Niños",
-    fecha: "24 al 30 Mayo 2026",
-    fechaOrden: "2026-05-24",
-    hora: "10:00",
-    lugar: "Aula infantil",
-    descripcion:
-      "Clases bíblicas y actividades participativas para niños de la iglesia.",
-    detalles:
-      "Los niños participan en enseñanzas bíblicas, canciones, dinámicas, juegos y actividades preparadas por sus maestros.",
-    imagen:
-      "https://images.unsplash.com/photo-1509099836639-18ba1795216d?auto=format&fit=crop&w=1000&q=80",
-    estado: "enCurso",
-  },
-  {
-    id: 6,
-    titulo: "Apoyo social comunitario",
-    ministerio: "Ministerio de Servicio",
-    fecha: "24 al 28 Mayo 2026",
-    fechaOrden: "2026-05-24",
-    hora: "15:00",
-    lugar: "Zona comunitaria",
-    descripcion:
-      "Actividad de apoyo y servicio dirigida a familias de la comunidad.",
-    detalles:
-      "El ministerio de servicio acompaña a familias con apoyo, oración y actividades de ayuda comunitaria.",
-    imagen:
-      "https://images.unsplash.com/photo-1488521787991-ed7bbaae773c?auto=format&fit=crop&w=1000&q=80",
-    estado: "enCurso",
-  },
-  {
     id: 7,
     titulo: "Conferencia de jóvenes",
     ministerio: "Ministerio de Jóvenes",
@@ -151,54 +104,6 @@ const eventos = [
       "El encuentro de matrimonios busca brindar enseñanza, reflexión y acompañamiento espiritual para las familias.",
     imagen:
       "https://images.unsplash.com/photo-1511895426328-dc8714191300?auto=format&fit=crop&w=1000&q=80",
-    estado: "proximo",
-  },
-  {
-    id: 10,
-    titulo: "Retiro espiritual juvenil",
-    ministerio: "Ministerio de Jóvenes",
-    fecha: "12 Junio 2026",
-    fechaOrden: "2026-06-12",
-    hora: "08:00",
-    lugar: "Centro de retiros",
-    descripcion:
-      "Jornada de reflexión, adoración y convivencia para jóvenes de la iglesia.",
-    detalles:
-      "El retiro juvenil será un espacio para compartir, orar, aprender y fortalecer la relación con Dios.",
-    imagen:
-      "https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?auto=format&fit=crop&w=1000&q=80",
-    estado: "proximo",
-  },
-  {
-    id: 11,
-    titulo: "Capacitación de servidores",
-    ministerio: "Ministerios Generales",
-    fecha: "18 Junio 2026",
-    fechaOrden: "2026-06-18",
-    hora: "18:00",
-    lugar: "Aula de capacitación",
-    descripcion:
-      "Capacitación dirigida a líderes, maestros y servidores de diferentes áreas.",
-    detalles:
-      "La capacitación busca fortalecer el servicio cristiano, la organización y el compromiso dentro de la iglesia.",
-    imagen:
-      "https://images.unsplash.com/photo-1521737604893-d14cc237f11d?auto=format&fit=crop&w=1000&q=80",
-    estado: "proximo",
-  },
-  {
-    id: 12,
-    titulo: "Culto de acción de gracias",
-    ministerio: "Iglesia General",
-    fecha: "25 Junio 2026",
-    fechaOrden: "2026-06-25",
-    hora: "19:00",
-    lugar: "Templo principal",
-    descripcion:
-      "Culto especial para agradecer a Dios por sus bendiciones y fidelidad.",
-    detalles:
-      "Toda la congregación está invitada a participar en este tiempo de gratitud, adoración y testimonio.",
-    imagen:
-      "https://images.unsplash.com/photo-1517457373958-b7bdd4587205?auto=format&fit=crop&w=1000&q=80",
     estado: "proximo",
   },
   {
@@ -249,54 +154,6 @@ const eventos = [
       "https://images.unsplash.com/photo-1503454537195-1dcabb73ffb9?auto=format&fit=crop&w=1000&q=80",
     estado: "pasado",
   },
-  {
-    id: 16,
-    titulo: "Vigilia de oración",
-    ministerio: "Ministerio de Oración",
-    fecha: "20 Abril 2026",
-    fechaOrden: "2026-04-20",
-    hora: "21:00",
-    lugar: "Templo principal",
-    descripcion:
-      "Tiempo de oración, adoración e intercesión junto a la congregación.",
-    detalles:
-      "La vigilia permitió compartir un tiempo profundo de oración, adoración y búsqueda espiritual como iglesia.",
-    imagen:
-      "https://images.unsplash.com/photo-1523803326055-9729b9e02e5a?auto=format&fit=crop&w=1000&q=80",
-    estado: "pasado",
-  },
-  {
-    id: 17,
-    titulo: "Reunión de damas",
-    ministerio: "Ministerio de Damas",
-    fecha: "14 Abril 2026",
-    fechaOrden: "2026-04-14",
-    hora: "17:00",
-    lugar: "Salón de reuniones",
-    descripcion:
-      "Encuentro de enseñanza, oración y compañerismo para mujeres de la iglesia.",
-    detalles:
-      "La reunión de damas fue un espacio de enseñanza, reflexión, oración y comunión entre hermanas.",
-    imagen:
-      "https://images.unsplash.com/photo-1529156069898-49953e39b3ac?auto=format&fit=crop&w=1000&q=80",
-    estado: "pasado",
-  },
-  {
-    id: 18,
-    titulo: "Jornada de limpieza comunitaria",
-    ministerio: "Ministerio de Servicio",
-    fecha: "08 Abril 2026",
-    fechaOrden: "2026-04-08",
-    hora: "09:00",
-    lugar: "Alrededores de la iglesia",
-    descripcion:
-      "Actividad de servicio comunitario realizada por miembros de la iglesia.",
-    detalles:
-      "La jornada permitió servir a la comunidad mediante limpieza, organización y trabajo en equipo.",
-    imagen:
-      "https://images.unsplash.com/photo-1559027615-cd4628902d4a?auto=format&fit=crop&w=1000&q=80",
-    estado: "pasado",
-  },
 ];
 
 function EventosMinisterios() {
@@ -312,6 +169,8 @@ function EventosMinisterios() {
   const [busquedaTexto, setBusquedaTexto] = useState("");
   const [fechaInicio, setFechaInicio] = useState("");
   const [fechaFinal, setFechaFinal] = useState("");
+
+  const [calendarioAbierto, setCalendarioAbierto] = useState("");
 
   const [filtroTexto, setFiltroTexto] = useState("");
   const [filtroFechaInicio, setFiltroFechaInicio] = useState("");
@@ -346,14 +205,26 @@ function EventosMinisterios() {
     setFiltroTexto("");
   };
 
-  const limpiarFechaInicio = () => {
+  const limpiarFechaInicio = (e) => {
+    if (e) e.stopPropagation();
+
     setFechaInicio("");
     setFiltroFechaInicio("");
+
+    if (calendarioAbierto === "inicio") {
+      setCalendarioAbierto("");
+    }
   };
 
-  const limpiarFechaFinal = () => {
+  const limpiarFechaFinal = (e) => {
+    if (e) e.stopPropagation();
+
     setFechaFinal("");
     setFiltroFechaFinal("");
+
+    if (calendarioAbierto === "final") {
+      setCalendarioAbierto("");
+    }
   };
 
   const limpiarFiltrosSinCerrar = () => {
@@ -363,6 +234,7 @@ function EventosMinisterios() {
     setFiltroTexto("");
     setFiltroFechaInicio("");
     setFiltroFechaFinal("");
+    setCalendarioAbierto("");
   };
 
   const limpiarFiltros = () => {
@@ -393,6 +265,7 @@ function EventosMinisterios() {
   const aplicarFiltroFechas = () => {
     setFiltroFechaInicio(fechaInicio);
     setFiltroFechaFinal(fechaFinal);
+    setCalendarioAbierto("");
   };
 
   const ordenarEventos = (lista) => {
@@ -630,9 +503,16 @@ function EventosMinisterios() {
                     onChange={setFechaInicio}
                     ejemplo="Ej: 20/05/2026"
                     label="Seleccionar fecha inicial"
+                    abierto={calendarioAbierto === "inicio"}
+                    onAbrir={() =>
+                      setCalendarioAbierto(
+                        calendarioAbierto === "inicio" ? "" : "inicio"
+                      )
+                    }
+                    onCerrar={() => setCalendarioAbierto("")}
                   />
 
-                  {(fechaInicio || filtroFechaInicio) && (
+                  {fechaInicio && (
                     <button
                       type="button"
                       className="field-clear-btn date-clear-btn"
@@ -654,9 +534,16 @@ function EventosMinisterios() {
                     onChange={setFechaFinal}
                     ejemplo="Ej: 30/05/2026"
                     label="Seleccionar fecha final"
+                    abierto={calendarioAbierto === "final"}
+                    onAbrir={() =>
+                      setCalendarioAbierto(
+                        calendarioAbierto === "final" ? "" : "final"
+                      )
+                    }
+                    onCerrar={() => setCalendarioAbierto("")}
                   />
 
-                  {(fechaFinal || filtroFechaFinal) && (
+                  {fechaFinal && (
                     <button
                       type="button"
                       className="field-clear-btn date-clear-btn"
