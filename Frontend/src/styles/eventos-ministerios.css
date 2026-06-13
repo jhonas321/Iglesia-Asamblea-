@@ -168,7 +168,7 @@
   font-family: inherit;
   cursor: pointer;
   box-shadow: 0 10px 22px rgba(20, 38, 67, 0.12);
-  transition: all 0.3s ease;
+  transition: background 0.3s ease, color 0.3s ease, box-shadow 0.3s ease;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -176,8 +176,8 @@
 }
 
 .filter-type-options button:hover {
-  transform: translateY(-2px);
   color: #3f62b8;
+  transform: none;
 }
 
 .filter-type-options button.active {
@@ -207,17 +207,20 @@
 }
 
 .eventos-filter-card {
+  width: 100%;
+  height: 236px;
   background: #ffffff;
-  border-radius: 24px;
-  padding: 24px;
-  box-shadow: 0 18px 36px rgba(20, 38, 67, 0.1);
-  border: 1px solid rgba(63, 98, 184, 0.12);
+  border-radius: 28px;
+  padding: 28px 30px 26px;
+  box-shadow: 0 18px 38px rgba(20, 38, 67, 0.12);
+  border: 1px solid rgba(63, 98, 184, 0.1);
   display: none;
   flex-direction: column;
-  gap: 18px;
+  gap: 12px;
   position: relative;
   z-index: 120;
   overflow: visible;
+  box-sizing: border-box;
 }
 
 .eventos-filter-card.filter-active {
@@ -225,46 +228,55 @@
   animation: filtrosDown 0.28s ease;
 }
 
-.filter-card-header span {
-  display: inline-block;
-  width: fit-content;
-  background: rgba(63, 98, 184, 0.1);
-  color: #3f62b8;
-  padding: 7px 13px;
-  border-radius: 999px;
-  font-size: 0.75rem;
-  font-weight: 800;
-  text-transform: uppercase;
-  letter-spacing: 0.7px;
-  margin-bottom: 12px;
-}
-
-.filter-card-header h3 {
-  margin: 0 0 8px;
-  color: #17253f;
-  font-size: 1.25rem;
-  font-weight: 800;
-}
-
-.filter-card-header p {
+.filter-card-header {
+  min-height: 24px;
+  display: flex;
+  align-items: flex-start;
   margin: 0;
-  color: #5d6a80;
-  font-size: 0.92rem;
-  line-height: 1.55;
 }
 
+.filter-card-header span {
+  display: inline-flex;
+  align-items: center;
+  width: fit-content;
+  min-height: 24px;
+  background: #eef3ff;
+  color: #3659b5;
+  padding: 6px 13px;
+  border-radius: 999px;
+  font-size: 0.78rem;
+  font-weight: 900;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  line-height: 1;
+  margin: 0;
+  box-sizing: border-box;
+}
+
+.filter-card-header h3,
+.filter-card-header p {
+  display: none;
+}
+
+/* CAMPOS */
 .search-field,
 .date-field {
   display: flex;
   flex-direction: column;
-  gap: 8px;
+  gap: 10px;
+  margin: 0;
 }
 
 .search-field label,
 .date-field label {
+  display: block;
+  height: 18px;
   color: #17253f;
-  font-size: 0.9rem;
-  font-weight: 800;
+  font-size: 0.98rem;
+  font-weight: 900;
+  line-height: 1.2;
+  margin: 0;
+  padding: 0;
 }
 
 .search-input-wrapper,
@@ -273,8 +285,42 @@
   width: 100%;
 }
 
+.date-fields-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px 18px;
+  overflow: visible !important;
+  position: relative;
+  margin: 0;
+}
+
+.date-field {
+  position: relative;
+  overflow: visible !important;
+  z-index: 1;
+}
+
+.date-field.calendario-padre-activo {
+  z-index: 999999 !important;
+}
+
 .date-picker-wrapper {
-  z-index: 200;
+  position: relative;
+  overflow: visible !important;
+  z-index: 1;
+}
+
+.date-picker-wrapper.calendario-wrapper-activo {
+  z-index: 999999 !important;
+}
+
+.date-picker-wrapper.calendario-wrapper-activo .calendario-reutilizable {
+  position: relative !important;
+  z-index: 999999 !important;
+}
+
+.date-picker-wrapper.calendario-wrapper-activo .calendario-popup {
+  z-index: 999999 !important;
 }
 
 .date-picker-wrapper .calendario-reutilizable {
@@ -282,45 +328,48 @@
   position: relative;
 }
 
-/* INPUTS */
+/* INPUT TEXTO Y FECHA IGUALES */
 .search-field input,
-.custom-date-input {
+.custom-date-input,
+.custom-date-button {
   width: 100%;
   height: 48px;
-  border: 1px solid rgba(63, 98, 184, 0.22);
+  min-height: 48px;
+  border: 1px solid rgba(63, 98, 184, 0.28);
   border-radius: 14px;
-  padding: 0 14px;
   outline: none;
   background: #f8fbff;
   color: #17253f;
   font-size: 0.95rem;
   font-weight: 600;
   font-family: inherit;
-  transition: all 0.3s ease;
+  box-sizing: border-box;
+  box-shadow: none;
+  transition: background 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
 }
 
 .search-field input {
-  padding-right: 44px;
+  padding: 0 48px 0 14px;
+  line-height: 48px;
 }
 
-/* IMPORTANTE: espacio para X + ícono */
 .date-picker-wrapper .custom-date-input,
 .date-picker-wrapper .custom-date-button {
-  width: 100%;
-  padding-right: 82px !important;
+  padding: 0 82px 0 14px !important;
 }
 
 .search-field input::placeholder,
-.custom-date-button span {
+.custom-date-button:not(.has-value) span {
   color: #7b879c;
   font-weight: 500;
 }
 
 .search-field input:focus,
-.custom-date-input:focus {
-  border-color: #3f62b8;
+.custom-date-input:focus,
+.custom-date-button:hover {
+  border-color: rgba(63, 98, 184, 0.5);
   background: #ffffff;
-  box-shadow: 0 10px 24px rgba(63, 98, 184, 0.15);
+  box-shadow: 0 10px 22px rgba(63, 98, 184, 0.12);
 }
 
 /* BOTÓN X GENERAL */
@@ -343,7 +392,8 @@
   align-items: center;
   justify-content: center;
   z-index: 80;
-  transition: all 0.25s ease;
+  transition: background 0.25s ease, color 0.25s ease;
+  padding: 0;
 }
 
 .field-clear-btn:hover {
@@ -357,13 +407,13 @@
   top: 50%;
   right: 43px;
   transform: translateY(-50%);
-  width: 24px;
-  height: 24px;
+  width: 26px;
+  height: 26px;
   border: none;
   border-radius: 50%;
-  background: rgba(23, 37, 63, 0.12);
+  background: #d9dee9;
   color: #17253f;
-  font-size: 1rem;
+  font-size: 18px;
   font-weight: 900;
   line-height: 1;
   cursor: pointer;
@@ -374,6 +424,7 @@
   opacity: 1;
   visibility: visible;
   pointer-events: auto;
+  padding: 0;
 }
 
 .date-picker-wrapper .date-clear-btn:hover {
@@ -387,11 +438,10 @@
   align-items: center !important;
   justify-content: flex-start !important;
   text-align: left !important;
-  gap: 12px !important;
   cursor: pointer !important;
+  position: relative;
   appearance: none;
   -webkit-appearance: none;
-  position: relative;
   z-index: 1;
 }
 
@@ -402,7 +452,10 @@
   overflow: hidden;
   white-space: nowrap;
   text-overflow: ellipsis;
+  color: #17253f;
+  font-weight: 600;
   font-size: 0.95rem;
+  line-height: 1;
 }
 
 .custom-date-button.has-value span {
@@ -425,15 +478,10 @@
 
 /* POPUP DEL CALENDARIO */
 .date-picker-wrapper .calendario-popup {
-  z-index: 1000;
+  z-index: 999999 !important;
 }
 
-.date-fields-row {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 14px;
-}
-
+/* BOTÓN BUSCAR/FILTRAR */
 .filter-actions {
   display: flex;
   gap: 10px;
@@ -442,24 +490,25 @@
 }
 
 .filter-btn {
+  width: 100%;
   height: 48px;
   border: none;
   border-radius: 14px;
   padding: 0 20px;
   color: #ffffff;
-  font-size: 0.92rem;
-  font-weight: 800;
+  font-size: 0.95rem;
+  font-weight: 900;
   font-family: inherit;
   cursor: pointer;
   white-space: nowrap;
-  transition: all 0.3s ease;
-  width: 100%;
   background: linear-gradient(135deg, #3f62b8, #6f89e8);
-  box-shadow: 0 12px 24px rgba(63, 98, 184, 0.24);
+  box-shadow: 0 12px 26px rgba(63, 98, 184, 0.28);
+  transition: box-shadow 0.25s ease, background 0.25s ease;
 }
 
 .filter-btn:hover {
-  transform: translateY(-2px);
+  transform: none;
+  box-shadow: 0 16px 32px rgba(63, 98, 184, 0.36);
 }
 
 /* VACÍO */
@@ -651,21 +700,21 @@
   width: fit-content;
   border: none;
   outline: none;
-  background: linear-gradient(135deg, #3f62b8, #6f89e8);
+  background: linear-gradient(135deg, #7c3aed, #a78bfa);
   color: white;
   padding: 10px 14px;
   border-radius: 12px;
   font-size: 0.8rem;
   font-weight: 700;
   cursor: pointer;
-  box-shadow: 0 10px 20px rgba(63, 98, 184, 0.22);
+  box-shadow: 0 10px 20px rgba(124, 58, 237, 0.22);
   transition: transform 0.3s ease, box-shadow 0.3s ease;
   margin-top: auto;
 }
 
 .evento-content button:hover {
   transform: translateY(-3px);
-  box-shadow: 0 16px 30px rgba(63, 98, 184, 0.34);
+  box-shadow: 0 16px 30px rgba(124, 58, 237, 0.34);
 }
 
 /* MODAL */
@@ -944,12 +993,22 @@
   }
 
   .eventos-filter-card {
-    padding: 20px;
-    border-radius: 22px;
+    width: 100%;
+    height: auto;
+    min-height: 292px;
+    padding: 22px 18px;
+    border-radius: 24px;
+    overflow: visible !important;
   }
 
   .date-fields-row {
     grid-template-columns: 1fr;
+    gap: 12px;
+    overflow: visible !important;
+  }
+
+  .filter-actions {
+    margin-top: 18px;
   }
 
   .eventos-grid {
@@ -1032,15 +1091,18 @@
   .eventos-filter-card {
     border-radius: 20px;
     padding: 18px;
-  }
-
-  .search-field input,
-  .custom-date-input {
-    height: 46px;
+    overflow: visible !important;
   }
 
   .filter-type-options {
     grid-template-columns: 1fr;
+  }
+
+  .search-field input,
+  .custom-date-input,
+  .custom-date-button {
+    height: 48px;
+    min-height: 48px;
   }
 
   .date-picker-wrapper .custom-date-input,

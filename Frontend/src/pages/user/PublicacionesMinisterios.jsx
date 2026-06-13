@@ -10,11 +10,10 @@ import {
   FaDownload,
   FaPlay,
   FaExternalLinkAlt,
-  FaChevronLeft,
-  FaChevronRight,
 } from "react-icons/fa";
 import { useEffect, useLayoutEffect, useMemo, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
+import CalendarioPersonalizado from "../../components/CalendarioPersonalizado";
 
 const videoPrueba = "/videos/download.mp4";
 
@@ -286,7 +285,9 @@ const crearFechaLocal = (anio, mes, dia) => {
 
 const crearFechaDesdeTexto = (dia, mesTexto, anio) => {
   const mes = meses[limpiarTexto(mesTexto)];
+
   if (mes === undefined) return null;
+
   return crearFechaLocal(anio, mes, dia);
 };
 
@@ -313,32 +314,30 @@ const obtenerRangoFecha = (fechaTexto) => {
       fechaSimple[3]
     );
 
-    return { inicio: fecha, fin: fecha };
+    return {
+      inicio: fecha,
+      fin: fecha,
+    };
   }
 
-  return { inicio: null, fin: null };
+  return {
+    inicio: null,
+    fin: null,
+  };
 };
 
 const obtenerFechaOrden = (fechaTexto) => {
   const { fin } = obtenerRangoFecha(fechaTexto);
+
   return fin ? fin.getTime() : 0;
 };
 
 const convertirFechaInput = (valor) => {
   if (!valor) return null;
+
   const [anio, mes, dia] = valor.split("-").map(Number);
+
   return crearFechaLocal(anio, mes - 1, dia);
-};
-
-const convertirDateAInput = (fecha) => {
-  const anio = fecha.getFullYear();
-  const mes = String(fecha.getMonth() + 1).padStart(2, "0");
-  const dia = String(fecha.getDate()).padStart(2, "0");
-  return `${anio}-${mes}-${dia}`;
-};
-
-const obtenerFechaHoyInput = () => {
-  return convertirDateAInput(new Date());
 };
 
 const fechaCoincideConRangoBusqueda = (
@@ -365,77 +364,6 @@ const fechaCoincideConRangoBusqueda = (
   return inicio <= fechaFinFiltro && fin >= fechaInicioFiltro;
 };
 
-const formatearFechaInput = (valor) => {
-  const fecha = convertirFechaInput(valor);
-
-  if (!fecha) return "Seleccionar fecha";
-
-  return fecha.toLocaleDateString("es-BO", {
-    day: "2-digit",
-    month: "long",
-    year: "numeric",
-  });
-};
-const formatearFechaCortaInput = (valor) => {
-  const fecha = convertirFechaInput(valor);
-
-  if (!fecha) return "Ej: 20/05/2026";
-
-  const dia = String(fecha.getDate()).padStart(2, "0");
-  const mes = String(fecha.getMonth() + 1).padStart(2, "0");
-  const anio = fecha.getFullYear();
-
-  return `${dia}/${mes}/${anio}`;
-};
-
-const obtenerNombreMes = (fecha) => {
-  return fecha.toLocaleDateString("es-BO", {
-    month: "long",
-    year: "numeric",
-  });
-};
-
-const obtenerDiasCalendario = (fechaBase) => {
-  const anio = fechaBase.getFullYear();
-  const mes = fechaBase.getMonth();
-
-  const primerDiaMes = new Date(anio, mes, 1);
-  const ultimoDiaMes = new Date(anio, mes + 1, 0);
-
-  const diaSemanaInicio =
-    primerDiaMes.getDay() === 0 ? 6 : primerDiaMes.getDay() - 1;
-
-  const dias = [];
-
-  for (let i = diaSemanaInicio; i > 0; i--) {
-    dias.push({
-      fecha: new Date(anio, mes, 1 - i),
-      esMesActual: false,
-    });
-  }
-
-  for (let dia = 1; dia <= ultimoDiaMes.getDate(); dia++) {
-    dias.push({
-      fecha: new Date(anio, mes, dia),
-      esMesActual: true,
-    });
-  }
-
-  while (dias.length % 7 !== 0) {
-    const ultimo = dias[dias.length - 1].fecha;
-    dias.push({
-      fecha: new Date(
-        ultimo.getFullYear(),
-        ultimo.getMonth(),
-        ultimo.getDate() + 1
-      ),
-      esMesActual: false,
-    });
-  }
-
-  return dias;
-};
-
 const crearMiniaturaVideo = (url) => {
   return new Promise((resolve) => {
     const video = document.createElement("video");
@@ -443,6 +371,7 @@ const crearMiniaturaVideo = (url) => {
 
     const finalizar = (resultado) => {
       if (terminado) return;
+
       terminado = true;
       video.removeAttribute("src");
       video.load();
@@ -506,16 +435,20 @@ function PublicacionesMinisterios() {
 
   const publicacionSeleccionada = useMemo(() => {
     if (!id) return null;
+
     return publicaciones.find((pub) => pub.id === Number(id)) || null;
   }, [id]);
 
   const [busqueda, setBusqueda] = useState("");
+  const [filtroTexto, setFiltroTexto] = useState("");
   const [fechaInicioBusqueda, setFechaInicioBusqueda] = useState("");
   const [fechaFinBusqueda, setFechaFinBusqueda] = useState("");
+
+  const [filtroFechaInicio, setFiltroFechaInicio] = useState("");
+  const [filtroFechaFin, setFiltroFechaFin] = useState("");
+
   const [tipoBusqueda, setTipoBusqueda] = useState(null);
-  const [calendarioAbierto, setCalendarioAbierto] = useState(false);
-  const [mesCalendario, setMesCalendario] = useState(new Date());
-  const [campoFechaActivo, setCampoFechaActivo] = useState(null);
+  const [calendarioAbierto, setCalendarioAbierto] = useState("");
   const [fotoActual, setFotoActual] = useState(0);
   const [fotoModal, setFotoModal] = useState(null);
   const [videoModal, setVideoModal] = useState(null);
@@ -600,13 +533,13 @@ function PublicacionesMinisterios() {
   }, []);
 
   const publicacionesFiltradas = useMemo(() => {
-    const textoBusqueda = limpiarTexto(busqueda.trim());
+    const textoBusqueda = limpiarTexto(filtroTexto.trim());
 
     return publicacionesOrdenadas.filter((pub) => {
       if (tipoBusqueda === "fecha") {
         return fechaCoincideConRangoBusqueda(
-          fechaInicioBusqueda,
-          fechaFinBusqueda,
+          filtroFechaInicio,
+          filtroFechaFin,
           pub.fecha
         );
       }
@@ -624,9 +557,9 @@ function PublicacionesMinisterios() {
       return true;
     });
   }, [
-    busqueda,
-    fechaInicioBusqueda,
-    fechaFinBusqueda,
+    filtroTexto,
+    filtroFechaInicio,
+    filtroFechaFin,
     tipoBusqueda,
     publicacionesOrdenadas,
   ]);
@@ -635,13 +568,16 @@ function PublicacionesMinisterios() {
     setTipoBusqueda((actual) => {
       if (actual === "texto") {
         setBusqueda("");
+        setFiltroTexto("");
         return null;
       }
 
       setFechaInicioBusqueda("");
       setFechaFinBusqueda("");
-      setCampoFechaActivo(null);
-      setCalendarioAbierto(false);
+      setFiltroFechaInicio("");
+      setFiltroFechaFin("");
+      setCalendarioAbierto("");
+
       return "texto";
     });
   };
@@ -651,110 +587,64 @@ function PublicacionesMinisterios() {
       if (actual === "fecha") {
         setFechaInicioBusqueda("");
         setFechaFinBusqueda("");
-        setCampoFechaActivo(null);
-        setCalendarioAbierto(false);
+        setFiltroFechaInicio("");
+        setFiltroFechaFin("");
+        setCalendarioAbierto("");
+
         return null;
       }
 
       setBusqueda("");
-      setCampoFechaActivo(null);
-      setCalendarioAbierto(false);
+      setFiltroTexto("");
+      setCalendarioAbierto("");
+
       return "fecha";
     });
   };
 
-  const abrirCalendarioPara = (campo) => {
-    if (calendarioAbierto && campoFechaActivo === campo) {
-      setCalendarioAbierto(false);
-      setCampoFechaActivo(null);
-      return;
-    }
-
-    setCampoFechaActivo(campo);
-    setCalendarioAbierto(true);
+  const aplicarBusquedaTexto = () => {
+    setFiltroTexto(busqueda);
   };
 
-  const seleccionarFechaParametro = (fecha) => {
-    const fechaSeleccionada = convertirDateAInput(fecha);
-
-    if (campoFechaActivo === "inicio") {
-      setFechaInicioBusqueda(fechaSeleccionada);
-
-      if (
-        fechaFinBusqueda &&
-        convertirFechaInput(fechaSeleccionada) >
-          convertirFechaInput(fechaFinBusqueda)
-      ) {
-        setFechaFinBusqueda("");
-      }
-    }
-
-    if (campoFechaActivo === "fin") {
-      setFechaFinBusqueda(fechaSeleccionada);
-    }
-
-    const hoy = new Date();
-    setMesCalendario(new Date(hoy.getFullYear(), hoy.getMonth(), 1));
-
-    setCampoFechaActivo(null);
-    setCalendarioAbierto(false);
+  const limpiarBusquedaTexto = () => {
+    setBusqueda("");
+    setFiltroTexto("");
   };
 
-  const cambiarMesCalendario = (cantidad) => {
-    setMesCalendario((actual) => {
-      return new Date(actual.getFullYear(), actual.getMonth() + cantidad, 1);
-    });
+  const aplicarFiltroFechas = () => {
+    setFiltroFechaInicio(fechaInicioBusqueda);
+    setFiltroFechaFin(fechaFinBusqueda);
+    setCalendarioAbierto("");
   };
-  const renderizarCalendario = () => {
-    return (
-      <div className="calendario-personalizado">
-        <div className="calendario-header">
-          <button type="button" onClick={() => cambiarMesCalendario(-1)}>
-            <FaChevronLeft />
-          </button>
 
-          <strong>{obtenerNombreMes(mesCalendario)}</strong>
+  const limpiarFechaInicioBusqueda = (e) => {
+    e.stopPropagation();
 
-          <button type="button" onClick={() => cambiarMesCalendario(1)}>
-            <FaChevronRight />
-          </button>
-        </div>
+    setFechaInicioBusqueda("");
 
-        <div className="calendario-dias-semana">
-          <span>Lun</span>
-          <span>Mar</span>
-          <span>Mié</span>
-          <span>Jue</span>
-          <span>Vie</span>
-          <span>Sáb</span>
-          <span>Dom</span>
-        </div>
+    if (!fechaFinBusqueda) {
+      setFiltroFechaInicio("");
+      setFiltroFechaFin("");
+    }
 
-        <div className="calendario-grid-dias">
-          {obtenerDiasCalendario(mesCalendario).map((diaInfo, index) => {
-            const valorDia = convertirDateAInput(diaInfo.fecha);
-            const esInicio = fechaInicioBusqueda === valorDia;
-            const esFin = fechaFinBusqueda === valorDia;
-            const esHoy = obtenerFechaHoyInput() === valorDia;
+    if (calendarioAbierto === "inicio") {
+      setCalendarioAbierto("");
+    }
+  };
 
-            return (
-              <button
-                type="button"
-                key={index}
-                className={`
-                ${!diaInfo.esMesActual ? "otro-mes" : ""}
-                ${esInicio || esFin ? "seleccionado" : ""}
-                ${esHoy ? "hoy" : ""}
-              `}
-                onClick={() => seleccionarFechaParametro(diaInfo.fecha)}
-              >
-                {diaInfo.fecha.getDate()}
-              </button>
-            );
-          })}
-        </div>
-      </div>
-    );
+  const limpiarFechaFinBusqueda = (e) => {
+    e.stopPropagation();
+
+    setFechaFinBusqueda("");
+
+    if (!fechaInicioBusqueda) {
+      setFiltroFechaInicio("");
+      setFiltroFechaFin("");
+    }
+
+    if (calendarioAbierto === "fin") {
+      setCalendarioAbierto("");
+    }
   };
 
   const seleccionarPublicacion = (pub) => {
@@ -1045,7 +935,6 @@ function PublicacionesMinisterios() {
     <main className="publicaciones-page">
       <section className="publicaciones-hero">
         <div className="publicaciones-hero-content">
-          {/* <span>Ministerios</span> */}
           <h1>Galería de publicaciones</h1>
           <p>
             Explora fotografías, recuerdos y momentos importantes de las
@@ -1065,7 +954,7 @@ function PublicacionesMinisterios() {
               onClick={alternarBusquedaTexto}
             >
               <FaSearch />
-              Buscar por texto
+              Buscar publicaciones
             </button>
 
             <button
@@ -1080,131 +969,158 @@ function PublicacionesMinisterios() {
 
           {tipoBusqueda === "texto" && (
             <div className="busqueda-panel-desplegable">
-              <div className="busqueda-texto-card">
-                <div className="fecha-selector-icono">
-                  <FaSearch />
+              <div className="busqueda-texto-formato-evento">
+                <div className="busqueda-card-header">
+                  <span>BUSCAR PUBLICACIONES</span>
                 </div>
 
-                <div className="busqueda-texto-contenido">
-                  <span>Búsqueda por título, ministerio o lugar</span>
+                <div className="busqueda-campo-texto">
+                  <label>Título, ministerio o lugar</label>
 
-                  <input
-                    type="text"
-                    placeholder="Escribe aquí."
-                    value={busqueda}
-                    onChange={(e) => setBusqueda(e.target.value)}
-                  />
+                  <div className="busqueda-input-wrapper">
+                    <input
+                      type="text"
+                      placeholder="Ej: Jóvenes, Evangelismo, noche de adoración..."
+                      value={busqueda}
+                      onChange={(e) => {
+                        setBusqueda(e.target.value);
+                        setFiltroTexto(e.target.value);
+                      }}
+                    />
+
+                    {busqueda && (
+                      <button
+                        type="button"
+                        className="field-clear-btn texto-clear-btn"
+                        onClick={limpiarBusquedaTexto}
+                        aria-label="Limpiar búsqueda"
+                      >
+                        ×
+                      </button>
+                    )}
+                  </div>
                 </div>
 
-                {busqueda && (
+                <div className="acciones-busqueda">
                   <button
                     type="button"
-                    className="fecha-selector-limpiar"
-                    onClick={() => setBusqueda("")}
-                    aria-label="Limpiar búsqueda"
+                    className="btn-aplicar-busqueda"
+                    onClick={aplicarBusquedaTexto}
                   >
-                    <FaTimes />
+                    Buscar publicaciones
                   </button>
-                )}
+                </div>
               </div>
             </div>
           )}
 
           {tipoBusqueda === "fecha" && (
             <div className="busqueda-panel-desplegable">
-              <div className="busqueda-rango-fechas">
-                <div className="fecha-parametro-wrapper">
-                  <div className="fecha-titulo">
-                    <span>Fecha inicial</span>
-                  </div>
-                  <button
-                    type="button"
-                    className={`fecha-parametro-card ${
-                      campoFechaActivo === "inicio" ? "activo" : ""
-                    }`}
-                    onClick={() => abrirCalendarioPara("inicio")}
-                  >
-                    <div className="fecha-parametro-contenido">
-                      <strong>
-                        {formatearFechaCortaInput(fechaInicioBusqueda)}
-                      </strong>
-                    </div>
-
-                    <div className="fecha-selector-icono">
-                      <FaCalendarAlt />
-                    </div>
-
-                    {fechaInicioBusqueda && (
-                      <span
-                        className="fecha-selector-limpiar"
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          setFechaInicioBusqueda("");
-
-                          const hoy = new Date();
-                          setMesCalendario(
-                            new Date(hoy.getFullYear(), hoy.getMonth(), 1)
-                          );
-
-                          setCampoFechaActivo(null);
-                          setCalendarioAbierto(false);
-                        }}
-                      >
-                        <FaTimes />
-                      </span>
-                    )}
-                  </button>
-
-                  {calendarioAbierto &&
-                    campoFechaActivo === "inicio" &&
-                    renderizarCalendario()}
+              <div className="busqueda-fecha-formato-evento">
+                <div className="busqueda-card-header">
+                  <span>BUSCAR POR FECHA</span>
                 </div>
 
-                <div className="fecha-parametro-wrapper">
-                  <div className="fecha-titulo">
-                    <span>Fecha final</span>
+                <div className="busqueda-rango-fechas">
+                  <div
+                    className={`fecha-parametro-wrapper ${
+                      calendarioAbierto === "inicio"
+                        ? "calendario-padre-activo"
+                        : ""
+                    }`}
+                  >
+                    <div className="fecha-titulo">
+                      <span>Fecha inicial</span>
+                    </div>
+
+                    <div
+                      className={`date-picker-wrapper publicaciones-date-wrapper ${
+                        calendarioAbierto === "inicio"
+                          ? "calendario-wrapper-activo"
+                          : ""
+                      }`}
+                    >
+                      <CalendarioPersonalizado
+                        valor={fechaInicioBusqueda}
+                        onChange={setFechaInicioBusqueda}
+                        ejemplo="Ej: 20/05/2026"
+                        label="Seleccionar fecha inicial"
+                        abierto={calendarioAbierto === "inicio"}
+                        onAbrir={() =>
+                          setCalendarioAbierto(
+                            calendarioAbierto === "inicio" ? "" : "inicio"
+                          )
+                        }
+                        onCerrar={() => setCalendarioAbierto("")}
+                      />
+
+                      {fechaInicioBusqueda && (
+                        <button
+                          type="button"
+                          className="field-clear-btn date-clear-btn"
+                          onClick={limpiarFechaInicioBusqueda}
+                          aria-label="Borrar fecha inicial"
+                        >
+                          ×
+                        </button>
+                      )}
+                    </div>
                   </div>
+
+                  <div
+                    className={`fecha-parametro-wrapper ${
+                      calendarioAbierto === "fin"
+                        ? "calendario-padre-activo"
+                        : ""
+                    }`}
+                  >
+                    <div className="fecha-titulo">
+                      <span>Fecha final</span>
+                    </div>
+
+                    <div
+                      className={`date-picker-wrapper publicaciones-date-wrapper ${
+                        calendarioAbierto === "fin"
+                          ? "calendario-wrapper-activo"
+                          : ""
+                      }`}
+                    >
+                      <CalendarioPersonalizado
+                        valor={fechaFinBusqueda}
+                        onChange={setFechaFinBusqueda}
+                        ejemplo="Ej: 30/05/2026"
+                        label="Seleccionar fecha final"
+                        abierto={calendarioAbierto === "fin"}
+                        onAbrir={() =>
+                          setCalendarioAbierto(
+                            calendarioAbierto === "fin" ? "" : "fin"
+                          )
+                        }
+                        onCerrar={() => setCalendarioAbierto("")}
+                      />
+
+                      {fechaFinBusqueda && (
+                        <button
+                          type="button"
+                          className="field-clear-btn date-clear-btn"
+                          onClick={limpiarFechaFinBusqueda}
+                          aria-label="Borrar fecha final"
+                        >
+                          ×
+                        </button>
+                      )}
+                    </div>
+                  </div>
+                </div>
+
+                <div className="acciones-busqueda">
                   <button
                     type="button"
-                    className={`fecha-parametro-card ${
-                      campoFechaActivo === "fin" ? "activo" : ""
-                    }`}
-                    onClick={() => abrirCalendarioPara("fin")}
+                    className="btn-aplicar-busqueda"
+                    onClick={aplicarFiltroFechas}
                   >
-                    <div className="fecha-parametro-contenido">
-                      <strong>
-                        {formatearFechaCortaInput(fechaFinBusqueda)}
-                      </strong>
-                    </div>
-
-                    <div className="fecha-selector-icono">
-                      <FaCalendarAlt />
-                    </div>
-
-                    {fechaFinBusqueda && (
-                      <span
-                        className="fecha-selector-limpiar"
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          setFechaFinBusqueda("");
-
-                          const hoy = new Date();
-                          setMesCalendario(
-                            new Date(hoy.getFullYear(), hoy.getMonth(), 1)
-                          );
-
-                          setCampoFechaActivo(null);
-                          setCalendarioAbierto(false);
-                        }}
-                      >
-                        <FaTimes />
-                      </span>
-                    )}
+                    Buscar por fecha
                   </button>
-
-                  {calendarioAbierto &&
-                    campoFechaActivo === "fin" &&
-                    renderizarCalendario()}
                 </div>
               </div>
             </div>
@@ -1247,11 +1163,13 @@ function PublicacionesMinisterios() {
               type="button"
               onClick={() => {
                 setBusqueda("");
+                setFiltroTexto("");
                 setFechaInicioBusqueda("");
                 setFechaFinBusqueda("");
+                setFiltroFechaInicio("");
+                setFiltroFechaFin("");
                 setTipoBusqueda(null);
-                setCampoFechaActivo(null);
-                setCalendarioAbierto(false);
+                setCalendarioAbierto("");
               }}
             >
               Mostrar todas

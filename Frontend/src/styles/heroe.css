@@ -397,24 +397,22 @@
   font-family: inherit;
 }
 
-/* TARJETAS VACÍAS DE ATRÁS CON IMÁGENES */
+/* TARJETAS VACÍAS DE ATRÁS */
 .event-empty-ghost {
   pointer-events: none;
   cursor: default;
-}
-
-.event-empty-ghost img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  filter: brightness(0.52) saturate(0.85);
+  background:
+    linear-gradient(
+      180deg,
+      rgba(66, 103, 178, 0.45),
+      rgba(6, 16, 31, 0.95)
+    );
 }
 
 .event-empty-ghost::before {
   content: "";
   position: absolute;
   inset: 0;
-  z-index: 2;
   background:
     radial-gradient(
       circle at 50% 20%,
@@ -431,7 +429,6 @@
 .event-empty-ghost::after {
   content: "";
   position: absolute;
-  z-index: 3;
   left: 26px;
   right: 26px;
   bottom: 28px;

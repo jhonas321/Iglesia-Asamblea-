@@ -268,6 +268,21 @@ function EventosMinisterios() {
     setCalendarioAbierto("");
   };
 
+  const manejarCambioBusquedaTexto = (valor) => {
+    setBusquedaTexto(valor);
+    setFiltroTexto(valor);
+  };
+
+  const manejarCambioFechaInicio = (valor) => {
+    setFechaInicio(valor);
+    setFiltroFechaInicio(valor);
+  };
+
+  const manejarCambioFechaFinal = (valor) => {
+    setFechaFinal(valor);
+    setFiltroFechaFinal(valor);
+  };
+
   const ordenarEventos = (lista) => {
     if (pestanaActiva === "todos") {
       const prioridadEstado = {
@@ -418,7 +433,7 @@ function EventosMinisterios() {
             onClick={() => seleccionarTipoFiltro("busqueda")}
           >
             <FaSearch className="filter-option-icon" aria-hidden="true" />
-            Buscar evento
+            Buscar eventos
           </button>
 
           <button
@@ -427,7 +442,7 @@ function EventosMinisterios() {
             onClick={() => seleccionarTipoFiltro("fechas")}
           >
             <FaCalendarAlt className="filter-option-icon" aria-hidden="true" />
-            Filtrar fechas
+            Buscar por fecha
           </button>
         </div>
 
@@ -442,11 +457,7 @@ function EventosMinisterios() {
             }`}
           >
             <div className="filter-card-header">
-              <span>Buscar evento</span>
-              <h3>Por ministerio o título</h3>
-              <p>
-                Puedes escribir el nombre del ministerio o el nombre del evento.
-              </p>
+              <span>Buscar eventos</span>
             </div>
 
             <div className="search-field">
@@ -456,7 +467,7 @@ function EventosMinisterios() {
                 <input
                   type="text"
                   value={busquedaTexto}
-                  onChange={(e) => setBusquedaTexto(e.target.value)}
+                  onChange={(e) => manejarCambioBusquedaTexto(e.target.value)}
                   placeholder="Ej: Ministerios Generales, Evangelismo, Semana de oración..."
                 />
 
@@ -479,7 +490,7 @@ function EventosMinisterios() {
                 className="filter-btn"
                 onClick={aplicarBusquedaTexto}
               >
-                Filtrar búsqueda
+                Buscar eventos
               </button>
             </div>
           </div>
@@ -490,17 +501,29 @@ function EventosMinisterios() {
             }`}
           >
             <div className="filter-card-header">
-              <span>Filtrar fechas</span>
+              <span>Buscar por fecha</span>
             </div>
 
             <div className="date-fields-row">
-              <div className="date-field">
+              <div
+                className={`date-field ${
+                  calendarioAbierto === "inicio"
+                    ? "calendario-padre-activo"
+                    : ""
+                }`}
+              >
                 <label>Fecha inicial</label>
 
-                <div className="date-picker-wrapper">
+                <div
+                  className={`date-picker-wrapper ${
+                    calendarioAbierto === "inicio"
+                      ? "calendario-wrapper-activo"
+                      : ""
+                  }`}
+                >
                   <CalendarioPersonalizado
                     valor={fechaInicio}
-                    onChange={setFechaInicio}
+                    onChange={manejarCambioFechaInicio}
                     ejemplo="Ej: 20/05/2026"
                     label="Seleccionar fecha inicial"
                     abierto={calendarioAbierto === "inicio"}
@@ -525,13 +548,25 @@ function EventosMinisterios() {
                 </div>
               </div>
 
-              <div className="date-field">
+              <div
+                className={`date-field ${
+                  calendarioAbierto === "final"
+                    ? "calendario-padre-activo"
+                    : ""
+                }`}
+              >
                 <label>Fecha final</label>
 
-                <div className="date-picker-wrapper">
+                <div
+                  className={`date-picker-wrapper ${
+                    calendarioAbierto === "final"
+                      ? "calendario-wrapper-activo"
+                      : ""
+                  }`}
+                >
                   <CalendarioPersonalizado
                     valor={fechaFinal}
-                    onChange={setFechaFinal}
+                    onChange={manejarCambioFechaFinal}
                     ejemplo="Ej: 30/05/2026"
                     label="Seleccionar fecha final"
                     abierto={calendarioAbierto === "final"}
@@ -563,7 +598,7 @@ function EventosMinisterios() {
                 className="filter-btn"
                 onClick={aplicarFiltroFechas}
               >
-                Filtrar fechas
+                Buscar por fecha
               </button>
             </div>
           </div>

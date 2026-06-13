@@ -8,7 +8,7 @@
 /* HERO - MISMO FORMATO QUE EVENTOS */
 .publicaciones-hero {
   min-height: 390px;
-  padding: 65px 5% 58px;
+  padding: 115px 5% 58px;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -135,7 +135,7 @@
 /* BÚSQUEDA */
 .busqueda-publicaciones {
   max-width: 720px;
-  margin: 0 auto 24px;
+  margin: 0 auto 34px;
   position: relative;
 }
 
@@ -154,8 +154,8 @@
   border: 1px solid rgba(63, 98, 184, 0.22);
   outline: none;
   min-width: 190px;
-  height: 50px;
-  padding: 0 22px;
+  height: 52px;
+  padding: 0 24px;
   border-radius: 999px;
   background: linear-gradient(135deg, #eef4ff, #dbe7ff);
   color: #244a96;
@@ -164,328 +164,325 @@
   font-family: inherit;
   cursor: pointer;
   box-shadow: 0 14px 28px rgba(21, 43, 87, 0.12);
-  transition: transform 0.25s ease, background 0.3s ease, color 0.3s ease,
-    box-shadow 0.3s ease;
+  transition: background 0.3s ease, color 0.3s ease, box-shadow 0.3s ease;
   display: inline-flex;
   align-items: center;
   justify-content: center;
   gap: 9px;
+  line-height: 1;
+  box-sizing: border-box;
+}
+
+.selector-busqueda button svg {
+  width: 15px;
+  height: 15px;
+  flex-shrink: 0;
 }
 
 .selector-busqueda button:hover {
   color: #ffffff;
   background: linear-gradient(135deg, #4f6fc4, #7d96ee);
   box-shadow: 0 16px 32px rgba(63, 98, 184, 0.24);
-  transform: translateY(-2px);
+  transform: none;
 }
 
 .selector-busqueda button.activo {
   background: linear-gradient(135deg, #3f62b8, #6f89e8);
   color: #ffffff;
   box-shadow: 0 18px 36px rgba(63, 98, 184, 0.35);
-  transform: translateY(-2px);
+  transform: none;
 }
 
+/* CUADRO DESPLEGABLE GENERAL */
 .busqueda-panel-desplegable {
+  width: 100%;
+  height: 236px;
+  padding: 28px 30px 26px;
+  border-radius: 28px;
   background: #ffffff;
-  border-radius: 24px;
-  padding: 14px;
-  box-shadow: 0 18px 36px rgba(20, 38, 67, 0.1);
-  border: 1px solid rgba(63, 98, 184, 0.12);
+  border: 1px solid rgba(63, 98, 184, 0.1);
+  box-shadow: 0 18px 38px rgba(20, 38, 67, 0.12);
   animation: filtrosDown 0.28s ease;
   position: relative;
   z-index: 250;
   overflow: visible;
+  box-sizing: border-box;
 }
 
-/* BUSCAR POR TEXTO */
-.busqueda-texto-card {
+/* =========================================================
+   FORMATO GENERAL IGUAL PARA TEXTO Y FECHA
+========================================================= */
+
+.busqueda-texto-formato-evento,
+.busqueda-fecha-formato-evento {
   width: 100%;
-  min-height: 58px;
-  border: 1px solid rgba(63, 98, 184, 0.22);
-  border-radius: 16px;
-  background: #f8fbff;
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  padding: 10px 13px;
-  transition: all 0.3s ease;
-}
-
-.busqueda-texto-card:focus-within {
-  border-color: #3f62b8;
-  background: #ffffff;
-  box-shadow: 0 10px 24px rgba(63, 98, 184, 0.15);
-}
-
-.busqueda-texto-contenido {
+  height: 100%;
   display: flex;
   flex-direction: column;
-  gap: 2px;
-  flex: 1;
-  min-width: 0;
+  gap: 12px;
 }
 
-.busqueda-texto-contenido span {
-  color: #5d6a80;
+.busqueda-card-header {
+  min-height: 24px;
+  display: flex;
+  align-items: flex-start;
+  margin: 0;
+}
+
+.busqueda-card-header span {
+  display: inline-flex;
+  align-items: center;
+  width: fit-content;
+  min-height: 24px;
+  background: #eef3ff;
+  color: #3659b5;
+  padding: 6px 13px;
+  border-radius: 999px;
   font-size: 0.78rem;
-  font-weight: 700;
+  font-weight: 900;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  line-height: 1;
+  margin: 0;
+  box-sizing: border-box;
 }
 
-.busqueda-texto-contenido input {
-  width: 100%;
-  border: none;
-  outline: none;
-  background: transparent;
+/* LABELS */
+.busqueda-campo-texto {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin: 0;
+}
+
+.busqueda-campo-texto label,
+.fecha-titulo span {
+  display: block;
+  height: 18px;
   color: #17253f;
-  font-size: 0.96rem;
+  font-size: 0.98rem;
+  font-weight: 900;
+  line-height: 1.2;
+  margin: 0;
+  padding: 0;
+}
+
+/* CONTENEDORES DE INPUT */
+.busqueda-input-wrapper,
+.date-picker-wrapper,
+.publicaciones-date-wrapper {
+  position: relative;
+  width: 100%;
+}
+
+/* INPUT TEXTO Y BOTÓN FECHA IGUALES */
+.busqueda-input-wrapper input,
+.publicaciones-date-wrapper .custom-date-input,
+.publicaciones-date-wrapper .custom-date-button {
+  width: 100%;
+  height: 48px;
+  min-height: 48px;
+  border: 1px solid rgba(63, 98, 184, 0.28);
+  border-radius: 14px;
+  background: #f8fbff;
+  color: #17253f;
+  font-size: 0.95rem;
   font-weight: 600;
   font-family: inherit;
+  box-shadow: none;
+  outline: none;
+  box-sizing: border-box;
+  transition: background 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
 }
 
-.busqueda-texto-contenido input::placeholder {
+.busqueda-input-wrapper input {
+  padding: 0 48px 0 14px;
+  line-height: 48px;
+}
+
+.publicaciones-date-wrapper .custom-date-input,
+.publicaciones-date-wrapper .custom-date-button {
+  padding: 0 82px 0 14px !important;
+}
+
+.busqueda-input-wrapper input::placeholder,
+.publicaciones-date-wrapper .custom-date-button:not(.has-value) span {
   color: #7b879c;
   font-weight: 500;
 }
 
-/* BUSCAR POR FECHA
-.calendario-contenedor {
+.busqueda-input-wrapper input:focus,
+.publicaciones-date-wrapper .custom-date-button:hover,
+.publicaciones-date-wrapper .custom-date-input:focus {
+  background: #ffffff;
+  border-color: rgba(63, 98, 184, 0.5);
+  box-shadow: 0 10px 22px rgba(63, 98, 184, 0.12);
+}
+
+/* TEXTO INTERNO DEL BOTÓN FECHA */
+.publicaciones-date-wrapper .custom-date-button {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: flex-start !important;
+  text-align: left !important;
+  cursor: pointer !important;
   position: relative;
+  appearance: none;
+  -webkit-appearance: none;
+}
+
+.publicaciones-date-wrapper .custom-date-button span {
+  display: block;
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  color: #17253f;
+  font-weight: 600;
+  font-size: 0.95rem;
+  line-height: 1;
+}
+
+/* BUSCAR POR FECHA */
+.busqueda-rango-fechas {
+  width: 100%;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px 18px;
+  align-items: start;
+  margin: 0;
+}
+
+.fecha-parametro-wrapper {
+  position: relative;
+  width: 100%;
+}
+
+.fecha-titulo {
+  display: block;
+  height: 18px;
+  margin: 0 0 10px;
+  padding: 0;
+}
+
+/* CONTENEDOR DEL CALENDARIO REUTILIZABLE */
+.publicaciones-date-wrapper {
   z-index: 300;
 }
 
-.fecha-selector-card {
-  position: relative;
+.publicaciones-date-wrapper .calendario-reutilizable {
   width: 100%;
-  min-height: 58px;
-  border: 1px solid rgba(63, 98, 184, 0.22);
-  border-radius: 16px;
-  background: #f8fbff;
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  padding: 10px 13px;
-  cursor: pointer;
-  text-align: left;
-  font-family: inherit;
-  transition: all 0.3s ease;
+  position: relative;
 }
 
-.fecha-selector-card:hover {
-  border-color: #3f62b8;
-  background: #ffffff;
-  box-shadow: 0 10px 24px rgba(63, 98, 184, 0.15);
-}
-
-.fecha-selector-card.con-fecha {
-  border-color: rgba(63, 98, 184, 0.34);
-  background: #ffffff;
-}
-
-.fecha-selector-icono {
-  width: 38px;
-  height: 38px;
-  border-radius: 14px;
-  background: linear-gradient(135deg, #3f62b8, #6f89e8);
-  color: #ffffff;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  flex-shrink: 0;
-}
-
-.fecha-selector-texto {
-  display: flex;
-  flex-direction: column;
-  gap: 2px;
-  flex: 1;
-  min-width: 0;
-}
-
-.fecha-selector-texto span {
-  color: #5d6a80;
-  font-size: 0.78rem;
-  font-weight: 700;
-}
-
-.fecha-selector-texto strong {
-  color: #3f4c66;
-  font-size: 0.96rem;
-  font-weight: 600;
-  text-transform: capitalize;
-}
-
-.fecha-selector-accion {
-  background: #17253f;
-  color: white;
-  padding: 8px 13px;
-  border-radius: 999px;
-  font-size: 0.78rem;
-  font-weight: 800;
-  white-space: nowrap;
-} */
-
-.fecha-selector-icono {
-  width: 34px;
-  height: 34px;
-  border-radius: 10px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  flex-shrink: 0;
-
-  color: #3f62b8;
-  background: transparent;
-  font-size: 20px;
-}
-
-.fecha-selector-limpiar {
-  width: 30px;
-  height: 30px;
-  border: none;
-  border-radius: 50%;
-  background: rgba(23, 37, 63, 0.1);
-  color: #17253f;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  flex-shrink: 0;
-  cursor: pointer;
-  font-size: 0.85rem;
-  box-shadow: none;
-  transition: all 0.25s ease;
-}
-
-.fecha-selector-limpiar:hover {
-  background: #17253f;
-  color: #ffffff;
-}
-
-/* CALENDARIO PERSONALIZADO */
-.calendario-personalizado {
+/* BOTÓN X GENERAL */
+.field-clear-btn {
   position: absolute;
-  left: 0;
-  top: calc(100% + 12px);
-  z-index: 9999;
-  width: min(330px, 100%);
-  background: #ffffff;
-  border-radius: 22px;
-  padding: 0 0 14px;
-  box-shadow: 0 24px 55px rgba(20, 38, 67, 0.32);
+  top: 50%;
+  right: 12px;
+  width: 24px;
+  height: 24px;
   border: none;
-  overflow: hidden;
-  animation: aparecerCalendario 0.2s ease;
-}
-
-.calendario-header {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 18px 16px 12px;
-  background: linear-gradient(135deg, #17253f, #3f62b8);
-}
-
-.calendario-header strong {
-  color: #ffffff;
+  border-radius: 50%;
+  background: rgba(23, 37, 63, 0.12);
+  color: #17253f;
   font-size: 1rem;
-  font-weight: 800;
-  text-transform: capitalize;
-}
-
-.calendario-header button {
-  width: 32px;
-  height: 32px;
-  border: none;
-  border-radius: 12px;
-  background: rgba(255, 255, 255, 0.14);
-  color: #ffffff;
+  font-weight: 900;
+  line-height: 1;
   cursor: pointer;
+  transform: translateY(-50%);
   display: flex;
   align-items: center;
   justify-content: center;
+  z-index: 80;
+  transition: background 0.25s ease, color 0.25s ease;
+  padding: 0;
 }
 
-.calendario-header button:hover {
-  background: rgba(255, 255, 255, 0.24);
+.field-clear-btn:hover {
+  background: #17253f;
+  color: #ffffff;
 }
 
-.calendario-dias-semana,
-.calendario-grid-dias {
-  display: grid;
-  grid-template-columns: repeat(7, 1fr);
+.busqueda-input-wrapper .texto-clear-btn {
+  right: 12px;
+  z-index: 500;
 }
 
-.calendario-dias-semana {
-  padding: 10px 12px 0;
-  background: linear-gradient(135deg, #17253f, #3f62b8);
-}
-
-.calendario-dias-semana span {
-  text-align: center;
-  color: rgba(255, 255, 255, 0.88);
-  font-size: 0.7rem;
-  font-weight: 800;
-  line-height: 2rem;
-}
-
-.calendario-grid-dias {
-  padding: 12px;
-  gap: 4px;
-}
-
-.calendario-grid-dias button {
-  height: 34px;
+/* X AL LADO DEL ÍCONO DEL CALENDARIO */
+.publicaciones-date-wrapper .date-clear-btn {
+  position: absolute;
+  top: 50%;
+  right: 43px;
+  transform: translateY(-50%);
+  width: 26px;
+  height: 26px;
   border: none;
   border-radius: 50%;
-  background: transparent;
+  background: #d9dee9;
   color: #17253f;
-  font-weight: 700;
-  cursor: pointer;
-  transition: all 0.2s ease;
-}
-
-.calendario-grid-dias button:hover {
-  background: rgba(63, 98, 184, 0.12);
-  color: #3f62b8;
-}
-
-.calendario-grid-dias button.otro-mes {
-  color: #a7b0c2;
-}
-
-.calendario-grid-dias button.hoy {
-  border: 2px solid #3f62b8;
-  background: #eef3ff;
-  color: #17253f;
+  font-size: 18px;
   font-weight: 900;
-}
-
-.calendario-grid-dias button.seleccionado {
-  background: linear-gradient(135deg, #3f62b8, #6f89e8);
-  color: white;
-  box-shadow: 0 8px 18px rgba(63, 98, 184, 0.3);
-}
-
-.calendario-footer {
+  line-height: 1;
+  cursor: pointer;
+  z-index: 500;
   display: flex;
-  justify-content: flex-start;
-  gap: 10px;
-  padding: 0 14px;
+  align-items: center;
+  justify-content: center;
+  opacity: 1;
+  visibility: visible;
+  pointer-events: auto;
+  padding: 0;
 }
 
-.calendario-footer button {
+.publicaciones-date-wrapper .date-clear-btn:hover {
+  background: #17253f;
+  color: #ffffff;
+}
+
+/* ÍCONO CALENDARIO */
+.publicaciones-date-wrapper .date-input-icon {
+  position: absolute;
+  right: 16px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: #3f62b8;
+  font-size: 0.95rem;
+  pointer-events: none;
+  z-index: 20;
+}
+
+/* POPUP DEL COMPONENTE CALENDARIO */
+.publicaciones-date-wrapper .calendario-popup {
+  z-index: 9999;
+}
+
+/* BOTÓN FILTRAR / BUSCAR */
+.acciones-busqueda {
+  display: flex;
+  justify-content: center;
+  margin-top: auto;
+}
+
+.btn-aplicar-busqueda {
+  width: 100%;
+  height: 48px;
   border: none;
   border-radius: 14px;
-  padding: 9px 14px;
-  background: #eef3ff;
-  color: #3157a4;
-  font-weight: 800;
+  background: linear-gradient(135deg, #3f62b8, #6f89e8);
+  color: #ffffff;
+  font-size: 0.95rem;
+  font-weight: 900;
+  font-family: inherit;
   cursor: pointer;
+  box-shadow: 0 12px 26px rgba(63, 98, 184, 0.28);
+  transition: box-shadow 0.25s ease, background 0.25s ease;
 }
 
-.calendario-footer button:hover {
-  background: #17253f;
-  color: white;
+.btn-aplicar-busqueda:hover {
+  transform: none;
+  box-shadow: 0 16px 32px rgba(63, 98, 184, 0.36);
 }
 
 /* MOSAICO */
@@ -598,12 +595,12 @@
   align-items: center;
   gap: 10px;
   margin-bottom: 28px;
-  transition: background 0.25s ease, transform 0.25s ease;
+  transition: background 0.25s ease;
 }
 
 .btn-volver:hover {
   background: #3f62b8;
-  transform: translateY(-2px);
+  transform: none;
 }
 
 /* CARD DETALLE */
@@ -876,7 +873,7 @@
   display: inline-flex;
   align-items: center;
   gap: 9px;
-  transition: transform 0.25s ease, background 0.25s ease;
+  transition: background 0.25s ease;
   background: #eef3ff;
   color: #3157a4;
 }
@@ -884,7 +881,7 @@
 .btn-video-completo:hover {
   background: #17253f;
   color: white;
-  transform: translateY(-2px);
+  transform: none;
 }
 
 /* MÁS FOTOS */
@@ -922,12 +919,12 @@
   cursor: pointer;
   background: #111827;
   box-shadow: 0 12px 26px rgba(15, 23, 42, 0.12);
-  transition: transform 0.25s ease, opacity 0.25s ease;
+  transition: opacity 0.25s ease;
 }
 
 .detalle-foto:hover {
   opacity: 0.9;
-  transform: translateY(-4px);
+  transform: none;
 }
 
 .detalle-foto img {
@@ -969,11 +966,6 @@
   background: rgba(5, 10, 20, 0.38);
 }
 
-/* 
-  MODAL CORREGIDO:
-  Mantiene bordes redondeados, pero el cuadro se ajusta a la imagen.
-  La imagen se ve completa, tanto vertical como horizontal.
-*/
 .foto-modal-contenido {
   position: relative;
   z-index: 3;
@@ -1300,47 +1292,60 @@
     justify-content: center;
   }
 
-  .busqueda-panel-desplegable {
-    padding: 12px;
-    border-radius: 20px;
-  }
-
-  .busqueda-texto-card,
-  .fecha-selector-card {
-    min-height: 56px;
-    padding: 9px 12px;
-    border-radius: 16px;
-  }
-
-  .fecha-selector-icono {
-    width: 34px;
-    height: 34px;
-    border-radius: 10px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    flex-shrink: 0;
-
-    color: #3f62b8;
-    background: transparent;
-    font-size: 20px;
-  }
-
-  .fecha-selector-texto strong,
-  .busqueda-texto-contenido input {
-    font-size: 0.92rem;
-  }
-
-  .fecha-selector-accion {
-    display: none;
-  }
-
-  .calendario-personalizado {
+  .busqueda-publicaciones {
+    max-width: 520px;
+    margin: 0 auto 34px;
     position: relative;
-    top: auto;
-    margin-top: 12px;
+  }
+
+  .busqueda-panel-desplegable {
     width: 100%;
-    left: 0;
+    height: auto;
+    min-height: 292px;
+    padding: 22px 18px;
+    border-radius: 24px;
+    background: #ffffff;
+    border: 1px solid rgba(63, 98, 184, 0.1);
+    box-shadow: 0 18px 38px rgba(20, 38, 67, 0.12);
+    animation: filtrosDown 0.28s ease;
+    position: relative;
+    z-index: 250;
+    overflow: visible;
+    box-sizing: border-box;
+  }
+
+  .busqueda-texto-formato-evento,
+  .busqueda-fecha-formato-evento {
+    height: auto;
+    gap: 12px;
+  }
+
+  .busqueda-card-header {
+    min-height: 24px;
+  }
+
+  .busqueda-rango-fechas {
+    grid-template-columns: 1fr;
+    gap: 12px;
+  }
+
+  .busqueda-input-wrapper input,
+  .publicaciones-date-wrapper .custom-date-input,
+  .publicaciones-date-wrapper .custom-date-button {
+    height: 48px;
+    min-height: 48px;
+  }
+
+  .busqueda-input-wrapper input {
+    line-height: 48px;
+  }
+
+  .acciones-busqueda {
+    margin-top: 18px;
+  }
+
+  .btn-aplicar-busqueda {
+    width: 100%;
   }
 
   .galeria-grid {
@@ -1471,9 +1476,7 @@
   .video-trailer-card {
     height: 185px;
   }
-}
 
-@media (max-width: 480px) {
   .foto-modal,
   .video-modal {
     padding: 16px 12px 82px;
@@ -1490,155 +1493,68 @@
     max-height: 64vh;
     border-radius: 16px;
   }
+
+  .publicaciones-date-wrapper .date-clear-btn {
+    right: 42px;
+  }
+
+  .publicaciones-date-wrapper .date-input-icon {
+    right: 16px;
+  }
 }
 
-/* RANGO DE FECHAS */
-.busqueda-publicaciones {
-  max-width: 900px;
-  margin: 0 auto 34px;
-}
-
-.busqueda-panel-desplegable {
-  width: 100%;
-  padding: 30px;
-  border-radius: 28px;
-  background: #ffffff;
-  border: 1px solid rgba(63, 98, 184, 0.12);
-  box-shadow: 0 20px 45px rgba(20, 38, 67, 0.12);
+/* CORRECCIÓN DEFINITIVA: CAPAS DEL CALENDARIO EN PUBLICACIONES */
+.busqueda-panel-desplegable,
+.busqueda-rango-fechas,
+.fecha-parametro-wrapper,
+.publicaciones-date-wrapper {
+  overflow: visible !important;
 }
 
 .busqueda-rango-fechas {
-  width: 100%;
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 18px;
-  align-items: start;
+  position: relative !important;
 }
 
 .fecha-parametro-wrapper {
-  position: relative;
-  width: 100%;
+  position: relative !important;
+  z-index: 1;
 }
 
-.fecha-parametro-card {
-  width: 100%;
-  min-height: 52px;
-  border: 1px solid rgba(63, 98, 184, 0.25);
-  border-radius: 14px;
-  background: #f8fbff;
-  display: flex;
-  align-items: center;
-  gap: 9px;
-  padding: 9px 12px;
-  cursor: pointer;
-  text-align: left;
-  font-family: inherit;
-  box-shadow: none;
-  transition: all 0.25s ease;
+.fecha-parametro-wrapper.calendario-padre-activo {
+  z-index: 999999 !important;
 }
 
-.fecha-parametro-card:hover,
-.fecha-parametro-card.activo {
-  background: #ffffff;
-  border-color: rgba(63, 98, 184, 0.5);
-  box-shadow: 0 10px 24px rgba(63, 98, 184, 0.12);
+.publicaciones-date-wrapper {
+  position: relative !important;
+  z-index: 1;
 }
 
-.fecha-parametro-contenido {
-  flex: 1;
-  min-width: 0;
+.publicaciones-date-wrapper.calendario-wrapper-activo {
+  z-index: 999999 !important;
 }
 
-.fecha-parametro-contenido span {
-  display: block;
-  margin-bottom: 2px;
-  color: #17253f;
-  font-size: 0.82rem;
-  font-weight: 900;
+.publicaciones-date-wrapper.calendario-wrapper-activo .calendario-reutilizable {
+  position: relative !important;
+  z-index: 999999 !important;
 }
 
-.fecha-parametro-contenido strong {
-  color: #74809a;
-  font-size: 0.92rem;
-  font-weight: 400;
-  text-transform: none;
-}
-.fecha-titulo {
-  display: block;
-  margin-bottom: 2px;
-  color: #17253f;
-  font-size: 14px;
-  font-weight: 900;
-}
-
-.fecha-parametro-wrapper .calendario-personalizado {
-  left: 0;
-  top: calc(100% + 12px);
-  width: min(320px, 100%);
+.publicaciones-date-wrapper.calendario-wrapper-activo .calendario-popup {
+  z-index: 999999 !important;
 }
 
 @media (max-width: 768px) {
-  .busqueda-publicaciones {
-    max-width: 100%;
+  .busqueda-panel-desplegable,
+  .busqueda-rango-fechas,
+  .fecha-parametro-wrapper,
+  .publicaciones-date-wrapper {
+    overflow: visible !important;
   }
 
-  .busqueda-panel-desplegable {
-    padding: 18px;
-    border-radius: 22px;
-  }
-
-  .busqueda-rango-fechas {
-    grid-template-columns: 1fr;
-    gap: 14px;
-  }
-
-  .fecha-parametro-card {
-    min-height: 58px;
-    padding: 11px 14px;
-  }
-
-  .fecha-parametro-wrapper .calendario-personalizado {
-    position: relative;
-    top: auto;
-    left: 0;
-    margin-top: 12px;
-    width: 100%;
-  }
-}
-
-.acciones-busqueda {
-  display: flex;
-  justify-content: flex-end;
-  margin-top: 16px;
-}
-
-.btn-aplicar-busqueda {
-  border: none;
-  min-width: 118px;
-  height: 42px;
-  padding: 0 22px;
-  border-radius: 999px;
-  background: linear-gradient(135deg, #3f62b8, #6f89e8);
-  color: #ffffff;
-  font-size: 0.9rem;
-  font-weight: 900;
-  font-family: inherit;
-  cursor: pointer;
-  box-shadow: 0 12px 26px rgba(63, 98, 184, 0.28);
-  transition: transform 0.25s ease, box-shadow 0.25s ease;
-}
-
-.btn-aplicar-busqueda:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 16px 32px rgba(63, 98, 184, 0.36);
-}
-
-@media (max-width: 768px) {
-  .acciones-busqueda {
-    justify-content: stretch;
-  }
-
-  .btn-aplicar-busqueda {
-    width: 100%;
+  .fecha-parametro-wrapper.calendario-padre-activo,
+  .publicaciones-date-wrapper.calendario-wrapper-activo,
+  .publicaciones-date-wrapper.calendario-wrapper-activo
+    .calendario-reutilizable,
+  .publicaciones-date-wrapper.calendario-wrapper-activo .calendario-popup {
+    z-index: 999999 !important;
   }
 }

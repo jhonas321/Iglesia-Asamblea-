@@ -153,22 +153,57 @@
   }
 }
 
-/* RESPONSIVE */
+/* RESPONSIVE TABLET Y CELULAR */
 @media (max-width: 768px) {
+  .calendario-reutilizable {
+    position: relative;
+    width: 100%;
+    z-index: 999;
+  }
+
   .calendario-popup {
-    width: min(330px, 100%);
+    position: absolute !important;
+    top: calc(100% + 12px) !important;
+    left: 0 !important;
+    right: auto !important;
+    transform: none !important;
+    width: 100% !important;
+    max-width: none !important;
+    margin-top: 0;
+    z-index: 9999;
   }
 }
 
+/* CELULAR PEQUEÑO */
 @media (max-width: 480px) {
+  .calendario-reutilizable {
+    position: relative;
+    width: 100%;
+    z-index: 999;
+  }
+
   .calendario-popup {
-    left: 50%;
-    transform: translateX(-50%);
-    width: min(315px, 92vw);
+    position: absolute !important;
+    top: calc(100% + 12px) !important;
+    left: 0 !important;
+    right: auto !important;
+    transform: none !important;
+    width: 100% !important;
+    max-width: none !important;
+    margin-top: 0;
+    z-index: 9999;
   }
 
   .calendario-popup-grid button {
     height: 32px;
     font-size: 0.78rem;
+  }
+
+  .calendario-popup-header {
+    padding: 16px 14px 10px;
+  }
+
+  .calendario-popup-header strong {
+    font-size: 0.95rem;
   }
 }
