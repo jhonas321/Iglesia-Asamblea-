@@ -42,10 +42,13 @@ const formatearFechaInput = (valor) => {
 };
 
 const obtenerNombreMes = (fecha) => {
-  return fecha.toLocaleDateString("es-BO", {
+  const mes = fecha.toLocaleDateString("es-BO", {
     month: "long",
-    year: "numeric",
   });
+
+  const anio = fecha.getFullYear();
+
+  return `${mes} ${anio}`;
 };
 
 const obtenerDiasCalendario = (fechaBase) => {
