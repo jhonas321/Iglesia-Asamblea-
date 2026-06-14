@@ -1,4 +1,4 @@
-import "../../styles/login.css";
+import "../../styles/iniciosesion.css";
 import { useState } from "react";
 import {
   FaEnvelope,
