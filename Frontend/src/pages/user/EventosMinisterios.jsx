@@ -15,7 +15,7 @@ import "../../styles/eventos-ministerios.css";
 const eventos = [
   {
     id: 1,
-    titulo: "Semana de oración ministerial",
+    titulo: "Campaña Distrital",
     ministerio: "Ministerios Generales",
     fecha: "20 al 24 Mayo 2026",
     fechaOrden: "2026-05-20",

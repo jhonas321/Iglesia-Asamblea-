@@ -9,7 +9,7 @@ function Organigrama() {
       miembros: [
         {
           cargo: "Pastor General",
-          nombre: "Pastor Mario",
+          nombre: "Pastor Mario Rodriguez Flores",
           foto: "https://randomuser.me/api/portraits/men/32.jpg",
         },
       ],
