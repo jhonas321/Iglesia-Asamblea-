@@ -12,7 +12,7 @@ export const eventos = [
       detalles:
         "Durante esta semana los ministerios participan en tiempos de oración, reflexión bíblica y búsqueda espiritual como iglesia.",
       imagen: "/images/convencion.jpeg",
-      estado: "Eventos pasados",
+      estado: "enCurso",
     },
     {
       id: 2,

@@ -101,12 +101,16 @@
   cursor: pointer;
   text-decoration: none;
   color: inherit;
-  transition: flex 0.6s ease, transform 0.35s ease, box-shadow 0.35s ease;
+  transition: flex 0.6s ease, transform 0.35s ease, box-shadow 0.35s ease,
+    border-color 0.35s ease;
   border: 1px solid rgba(111, 137, 232, 0.28);
   position: relative;
+  user-select: none;
+  touch-action: manipulation;
 }
 
-.ministerio-card:hover {
+.ministerio-card:hover,
+.ministerio-card.card-activa {
   flex: 2.3;
   transform: translateY(-6px);
   box-shadow:
@@ -131,7 +135,8 @@
   transition: transform 0.6s ease;
 }
 
-.ministerio-card:hover .ministerio-image img {
+.ministerio-card:hover .ministerio-image img,
+.ministerio-card.card-activa .ministerio-image img {
   transform: scale(1.08);
 }
 
@@ -189,7 +194,8 @@
   text-shadow: 0 3px 14px rgba(0, 0, 0, 0.5);
 }
 
-.ministerio-card:hover .ministerio-image-title {
+.ministerio-card:hover .ministerio-image-title,
+.ministerio-card.card-activa .ministerio-image-title {
   opacity: 0;
   visibility: hidden;
 }
@@ -206,7 +212,8 @@
   transition: flex-basis 0.45s ease, background 0.2s ease;
 }
 
-.ministerio-card:hover .ministerio-info {
+.ministerio-card:hover .ministerio-info,
+.ministerio-card.card-activa .ministerio-info {
   flex-basis: 430px;
   background: #ffffff;
   border-left: 1px solid rgba(63, 98, 184, 0.14);
@@ -230,7 +237,8 @@
   transition: opacity 0.2s ease;
 }
 
-.ministerio-card:hover .ministerio-content {
+.ministerio-card:hover .ministerio-content,
+.ministerio-card.card-activa .ministerio-content {
   opacity: 1;
   visibility: visible;
   transition-delay: 0.45s;
@@ -282,8 +290,14 @@
   z-index: 1;
 }
 
+/* TEXTO PARA TOUCH */
+.ministerio-tap-hint {
+  display: none;
+}
+
 /* BOTÓN */
-.ministerio-content button {
+.ministerio-content button,
+.ministerio-btn {
   width: fit-content;
   border: none;
   outline: none;
@@ -293,14 +307,20 @@
   border-radius: 14px;
   font-size: 0.95rem;
   font-weight: 700;
+  font-family: inherit;
   cursor: pointer;
   box-shadow: 0 12px 24px rgba(63, 98, 184, 0.28);
   transition: all 0.3s ease;
   position: relative;
-  z-index: 1;
+  z-index: 20;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  text-decoration: none;
 }
 
-.ministerio-content button:hover {
+.ministerio-content button:hover,
+.ministerio-btn:hover {
   transform: translateY(-4px);
   box-shadow: 0 18px 32px rgba(63, 98, 184, 0.38);
 }
@@ -334,7 +354,7 @@
   }
 }
 
-/* TABLET */
+/* TABLET VERTICAL */
 @media (max-width: 992px) {
   .ministerios-preview {
     animation: none;
@@ -374,7 +394,8 @@
   }
 
   .ministerio-info,
-  .ministerio-card:hover .ministerio-info {
+  .ministerio-card:hover .ministerio-info,
+  .ministerio-card.card-activa .ministerio-info {
     flex: unset;
     width: 100%;
     min-height: auto;
@@ -384,7 +405,8 @@
   }
 
   .ministerio-content,
-  .ministerio-card:hover .ministerio-content {
+  .ministerio-card:hover .ministerio-content,
+  .ministerio-card.card-activa .ministerio-content {
     position: static;
     opacity: 1;
     visibility: visible;
@@ -400,12 +422,12 @@
     visibility: visible;
   }
 
-  .ministerio-card:hover .ministerio-image-title {
+  .ministerio-card:hover .ministerio-image-title,
+  .ministerio-card.card-activa .ministerio-image-title {
     opacity: 1;
     visibility: visible;
   }
 
-  /* ESTA PARTE EVITA QUE SE REPITA PUBLICACIONES / EVENTOS EN CELULAR */
   .ministerio-image-title h3,
   .ministerio-image-title p {
     display: none;
@@ -420,11 +442,135 @@
   }
 }
 
+/* TABLET HORIZONTAL: 2 COLUMNAS, ABRE/CIERRA CON CLICK Y ENTRA SOLO CON BOTÓN */
+@media (min-width: 769px) and (max-width: 1180px) and (orientation: landscape) {
+  .ministerios-wrapper {
+    flex-direction: row;
+    height: 420px;
+    gap: 18px;
+  }
+
+  .ministerio-card {
+    flex: 1;
+    flex-direction: row;
+    border-radius: 28px;
+  }
+
+  /* En tablet horizontal el hover NO abre la card */
+  .ministerio-card:hover {
+    flex: 1;
+    transform: none;
+    box-shadow: none;
+  }
+
+  .ministerio-card.card-activa {
+    flex: 2.15;
+    transform: translateY(-5px);
+    box-shadow:
+      0 24px 48px rgba(0, 0, 0, 0.34),
+      0 12px 26px rgba(63, 98, 184, 0.22);
+  }
+
+  .ministerio-image {
+    width: auto;
+    min-width: 0;
+    height: auto;
+    flex: 1 1 100%;
+  }
+
+  .ministerio-card:hover .ministerio-image img {
+    transform: none;
+  }
+
+  .ministerio-card.card-activa .ministerio-image img {
+    transform: scale(1.06);
+  }
+
+  .ministerio-image-title {
+    left: 24px;
+    right: 24px;
+    bottom: 24px;
+  }
+
+  .ministerio-image-title h3,
+  .ministerio-image-title p {
+    display: block;
+  }
+
+  .ministerio-card:hover .ministerio-image-title {
+    opacity: 1;
+    visibility: visible;
+  }
+
+  .ministerio-card.card-activa .ministerio-image-title {
+    opacity: 0;
+    visibility: hidden;
+  }
+
+  .ministerio-info,
+  .ministerio-card:hover .ministerio-info {
+    flex: 0 0 0;
+    width: 0;
+    min-width: 0;
+    overflow: hidden;
+    background: transparent;
+    border-left: none;
+    position: relative;
+    transition: flex-basis 0.45s ease, background 0.2s ease;
+  }
+
+  .ministerio-card.card-activa .ministerio-info {
+    flex-basis: 380px;
+    background: #ffffff;
+    border-left: 1px solid rgba(63, 98, 184, 0.14);
+  }
+
+  .ministerio-content,
+  .ministerio-card:hover .ministerio-content {
+    position: absolute;
+    inset: 0;
+    opacity: 0;
+    visibility: hidden;
+    padding: 32px;
+    transition: opacity 0.2s ease;
+  }
+
+  .ministerio-card.card-activa .ministerio-content {
+    opacity: 1;
+    visibility: visible;
+    transition-delay: 0.35s;
+  }
+
+  .ministerio-content h3 {
+    font-size: 1.55rem;
+  }
+
+  .ministerio-content p {
+    font-size: 0.92rem;
+    line-height: 1.62;
+  }
+
+  .ministerio-tap-hint {
+    display: block;
+    color: #3f62b8;
+    font-size: 0.82rem;
+    font-weight: 800;
+    margin: -8px 0 16px;
+  }
+
+  .ministerio-content button,
+  .ministerio-btn {
+    padding: 11px 17px;
+    font-size: 0.9rem;
+  }
+}
+
 /* CELULAR */
 @media (max-width: 768px) {
   .ministerios-preview {
     padding: 80px 5%;
     scroll-margin-top: 90px;
+    overflow: hidden;
   }
 
   .ministerios-title {
@@ -449,11 +595,53 @@
   }
 
   .ministerios-wrapper {
-    gap: 18px;
+    gap: 22px;
   }
 
   .ministerio-card {
-    border-radius: 26px;
+    border-radius: 28px;
+    overflow: hidden;
+    background: rgba(255, 255, 255, 0.08);
+    border: 1px solid rgba(111, 137, 232, 0.28);
+    box-shadow: 0 20px 42px rgba(0, 0, 0, 0.22);
+    position: relative;
+  }
+
+  .ministerio-card::after {
+    content: "Toca para ver más";
+    position: absolute;
+    top: 14px;
+    right: 14px;
+    z-index: 6;
+    background: rgba(255, 255, 255, 0.94);
+    color: #17253f;
+    padding: 7px 11px;
+    border-radius: 999px;
+    font-size: 0.7rem;
+    font-weight: 900;
+    box-shadow: 0 10px 22px rgba(0, 0, 0, 0.18);
+    pointer-events: none;
+  }
+
+  .ministerio-card.card-activa::after {
+    content: "Toca para cerrar";
+    background: linear-gradient(135deg, #3f62b8, #6f89e8);
+    color: #ffffff;
+  }
+
+  .ministerio-card:hover,
+  .ministerio-card.card-activa {
+    flex: unset;
+    transform: translateY(-4px);
+    border-color: rgba(111, 137, 232, 0.5);
+    box-shadow:
+      0 24px 48px rgba(0, 0, 0, 0.3),
+      0 14px 28px rgba(63, 98, 184, 0.22);
+  }
+
+  .ministerio-card:hover .ministerio-image img,
+  .ministerio-card.card-activa .ministerio-image img {
+    transform: scale(1.04);
   }
 
   .ministerio-image {
@@ -461,18 +649,71 @@
     flex: 0 0 230px;
   }
 
+  .ministerio-overlay {
+    background: linear-gradient(
+      180deg,
+      rgba(0, 0, 0, 0.1),
+      rgba(0, 0, 0, 0.82)
+    );
+  }
+
   .ministerio-image-title {
     left: 22px;
     right: 22px;
     bottom: 22px;
+    opacity: 1;
+    visibility: visible;
+  }
+
+  .ministerio-card:hover .ministerio-image-title,
+  .ministerio-card.card-activa .ministerio-image-title {
+    opacity: 1;
+    visibility: visible;
   }
 
   .ministerio-image-title span {
     font-size: 11px;
     padding: 7px 12px;
+    margin-bottom: 10px;
   }
 
-  .ministerio-content {
+  .ministerio-image-title h3 {
+    display: block;
+    font-size: 1.55rem;
+    margin: 0;
+  }
+
+  .ministerio-image-title p {
+    display: block;
+    font-size: 0.86rem;
+    line-height: 1.45;
+    margin-top: 8px;
+    max-width: 95%;
+  }
+
+  .ministerio-info,
+  .ministerio-card:hover .ministerio-info {
+    width: 100%;
+    flex: unset;
+    flex-basis: auto;
+    max-height: 0;
+    min-height: 0;
+    overflow: hidden;
+    background: #ffffff;
+    border-left: none;
+    transition: max-height 0.45s ease;
+  }
+
+  .ministerio-card.card-activa .ministerio-info {
+    max-height: 440px;
+  }
+
+  .ministerio-content,
+  .ministerio-card:hover .ministerio-content {
+    position: static;
+    opacity: 1;
+    visibility: visible;
+    transition: none;
     padding: 28px 24px;
   }
 
@@ -490,9 +731,20 @@
 
   .ministerio-content p {
     font-size: 0.95rem;
+    line-height: 1.65;
+    margin-bottom: 14px;
   }
 
-  .ministerio-content button {
+  .ministerio-tap-hint {
+    display: block;
+    color: #3f62b8;
+    font-size: 0.84rem;
+    font-weight: 800;
+    margin-bottom: 16px;
+  }
+
+  .ministerio-content button,
+  .ministerio-btn {
     padding: 11px 17px;
     font-size: 0.92rem;
   }
@@ -520,20 +772,42 @@
   }
 
   .ministerios-wrapper {
-    gap: 20px;
+    gap: 22px;
   }
 
   .ministerio-card {
     border-radius: 24px;
   }
 
+  .ministerio-card::after {
+    top: 12px;
+    right: 12px;
+    font-size: 0.66rem;
+    padding: 6px 10px;
+  }
+
   .ministerio-image {
-    height: 210px;
-    flex: 0 0 210px;
+    height: 215px;
+    flex: 0 0 215px;
+  }
+
+  .ministerio-image-title {
+    left: 18px;
+    right: 18px;
+    bottom: 18px;
+  }
+
+  .ministerio-image-title h3 {
+    font-size: 1.4rem;
+  }
+
+  .ministerio-image-title p {
+    font-size: 0.8rem;
+    line-height: 1.42;
   }
 
   .ministerio-content {
-    padding: 26px 22px 28px;
+    padding: 24px 20px 26px;
   }
 
   .ministerio-content h3 {
@@ -542,10 +816,11 @@
 
   .ministerio-content p {
     font-size: 0.92rem;
-    line-height: 1.65;
+    line-height: 1.6;
   }
 
-  .ministerio-content button {
+  .ministerio-content button,
+  .ministerio-btn {
     width: 100%;
     justify-content: center;
     text-align: center;

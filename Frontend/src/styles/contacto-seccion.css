@@ -5,7 +5,7 @@
 
 .contact {
   position: relative;
-  padding: 110px 20px;
+  padding: 92px 20px;
   background:
     radial-gradient(circle at top left, rgba(94, 137, 255, 0.22), transparent 32%),
     radial-gradient(circle at bottom right, rgba(255, 214, 145, 0.24), transparent 34%),
@@ -72,7 +72,7 @@
 
 .contact .section-title {
   max-width: 780px;
-  margin: 0 auto 58px;
+  margin: 0 auto 46px;
   text-align: center;
   animation: contactFadeUp 0.8s ease both;
 }
@@ -95,9 +95,9 @@
 }
 
 .contact .section-title h2 {
-  margin: 0 0 16px;
+  margin: 0 0 14px;
   color: #10284f;
-  font-size: clamp(2rem, 4vw, 3.1rem);
+  font-size: clamp(2rem, 3.4vw, 2.75rem);
   font-weight: 900;
   line-height: 1.12;
   letter-spacing: -1px;
@@ -105,10 +105,10 @@
 
 .contact .section-title p {
   margin: 0 auto;
-  max-width: 680px;
+  max-width: 660px;
   color: #4c5f7a;
-  font-size: 1.05rem;
-  line-height: 1.8;
+  font-size: 0.98rem;
+  line-height: 1.7;
   font-weight: 500;
 }
 
@@ -147,11 +147,11 @@
 }
 
 .contact-info {
-  padding: 32px;
+  padding: 30px;
 }
 
 .contact-message-card {
-  padding: 34px;
+  padding: 32px;
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -209,18 +209,18 @@
   display: flex;
   align-items: center;
   gap: 18px;
-  margin-bottom: 30px;
+  margin-bottom: 28px;
 }
 
 .contact-main-icon,
 .message-icon {
-  width: 72px;
-  height: 72px;
-  flex: 0 0 72px;
+  width: 68px;
+  height: 68px;
+  flex: 0 0 68px;
   display: flex;
   align-items: center;
   justify-content: center;
-  border-radius: 24px;
+  border-radius: 22px;
   color: #315fd6;
   background: linear-gradient(145deg, #ffffff, #edf4ff);
   box-shadow:
@@ -230,8 +230,8 @@
 
 .contact-main-icon svg,
 .message-icon svg {
-  width: 34px;
-  height: 34px;
+  width: 32px;
+  height: 32px;
   stroke: currentColor;
 }
 
@@ -239,7 +239,7 @@
 .contact-item span {
   display: inline-block;
   color: #7a8799;
-  font-size: 0.82rem;
+  font-size: 0.8rem;
   font-weight: 900;
   text-transform: uppercase;
   letter-spacing: 0.7px;
@@ -248,7 +248,7 @@
 .contact-header h3 {
   margin: 8px 0 0;
   color: #162d55;
-  font-size: 1.45rem;
+  font-size: 1.38rem;
   font-weight: 900;
   line-height: 1.25;
 }
@@ -261,15 +261,15 @@
   position: relative;
   z-index: 1;
   display: grid;
-  gap: 16px;
+  gap: 14px;
 }
 
 .contact-item {
   display: flex;
   align-items: center;
   gap: 16px;
-  padding: 18px;
-  border-radius: 22px;
+  padding: 16px;
+  border-radius: 20px;
   background: rgba(246, 249, 255, 0.78);
   border: 1px solid rgba(216, 225, 245, 0.78);
   box-shadow: 0 8px 20px rgba(90, 110, 160, 0.05);
@@ -286,13 +286,13 @@
 }
 
 .contact-icon {
-  width: 48px;
-  height: 48px;
-  flex: 0 0 48px;
+  width: 46px;
+  height: 46px;
+  flex: 0 0 46px;
   display: flex;
   align-items: center;
   justify-content: center;
-  border-radius: 17px;
+  border-radius: 16px;
   color: #315fd6;
   background: linear-gradient(145deg, #ffffff, #edf4ff);
   box-shadow:
@@ -301,15 +301,15 @@
 }
 
 .contact-icon svg {
-  width: 24px;
-  height: 24px;
+  width: 23px;
+  height: 23px;
   stroke: currentColor;
 }
 
 .contact-item p {
   margin: 6px 0 0;
   color: #4c5f7a;
-  font-size: 1rem;
+  font-size: 0.96rem;
   line-height: 1.45;
   font-weight: 600;
 }
@@ -321,7 +321,7 @@
 .message-icon {
   position: relative;
   z-index: 1;
-  margin-bottom: 26px;
+  margin-bottom: 24px;
 }
 
 .contact-message-card h3 {
@@ -329,7 +329,7 @@
   z-index: 1;
   margin: 0 0 14px;
   color: #162d55;
-  font-size: 1.45rem;
+  font-size: 1.38rem;
   font-weight: 900;
   line-height: 1.25;
 }
@@ -337,10 +337,10 @@
 .contact-message-card p {
   position: relative;
   z-index: 1;
-  margin: 0 0 28px;
+  margin: 0;
   color: #5c6b80;
-  font-size: 0.98rem;
-  line-height: 1.75;
+  font-size: 0.96rem;
+  line-height: 1.7;
   font-weight: 500;
 }
 
@@ -414,7 +414,106 @@
 }
 
 /* =========================
-   RESPONSIVE
+   TABLET HORIZONTAL
+========================= */
+
+@media (min-width: 769px) and (max-width: 1180px) and (orientation: landscape) {
+  .contact {
+    padding: 58px 20px 62px;
+  }
+
+  .contact::before {
+    inset: 14px 22px;
+    border-radius: 28px;
+  }
+
+  .contact-container-main {
+    max-width: 1060px;
+  }
+
+  .contact .section-title {
+    margin-bottom: 34px;
+  }
+
+  .contact .section-title h2 {
+    font-size: 2.2rem;
+    margin-bottom: 12px;
+  }
+
+  .contact .section-title p {
+    max-width: 630px;
+    font-size: 0.92rem;
+    line-height: 1.55;
+  }
+
+  .contact-container {
+    grid-template-columns: 1.15fr 0.85fr;
+    gap: 20px;
+  }
+
+  .contact-info {
+    padding: 26px;
+    border-radius: 26px;
+  }
+
+  .contact-message-card {
+    padding: 28px;
+    border-radius: 26px;
+  }
+
+  .contact-header {
+    margin-bottom: 24px;
+  }
+
+  .contact-main-icon,
+  .message-icon {
+    width: 60px;
+    height: 60px;
+    flex-basis: 60px;
+    border-radius: 20px;
+  }
+
+  .contact-main-icon svg,
+  .message-icon svg {
+    width: 29px;
+    height: 29px;
+  }
+
+  .contact-header h3,
+  .contact-message-card h3 {
+    font-size: 1.25rem;
+  }
+
+  .contact-list {
+    gap: 12px;
+  }
+
+  .contact-item {
+    padding: 14px;
+    border-radius: 18px;
+  }
+
+  .contact-icon {
+    width: 42px;
+    height: 42px;
+    flex-basis: 42px;
+    border-radius: 14px;
+  }
+
+  .contact-icon svg {
+    width: 21px;
+    height: 21px;
+  }
+
+  .contact-item p,
+  .contact-message-card p {
+    font-size: 0.88rem;
+    line-height: 1.5;
+  }
+}
+
+/* =========================
+   TABLET VERTICAL
 ========================= */
 
 @media (max-width: 992px) {
@@ -427,9 +526,13 @@
   }
 }
 
+/* =========================
+   CELULAR
+========================= */
+
 @media (max-width: 768px) {
   .contact {
-    padding: 88px 16px;
+    padding: 72px 16px;
   }
 
   .contact::before {
@@ -437,12 +540,32 @@
     border-radius: 26px;
   }
 
+  .contact-bg-one,
+  .contact-bg-two {
+    filter: blur(60px);
+    opacity: 0.42;
+  }
+
+  .contact-bg-three {
+    display: none;
+  }
+
   .contact .section-title {
-    margin-bottom: 42px;
+    margin-bottom: 32px;
+  }
+
+  .contact .section-title h2 {
+    font-size: 2.05rem;
+    margin-bottom: 12px;
   }
 
   .contact .section-title p {
-    font-size: 0.98rem;
+    font-size: 0.92rem;
+    line-height: 1.6;
+  }
+
+  .contact-container {
+    gap: 18px;
   }
 
   .contact-info,
@@ -451,31 +574,22 @@
   }
 
   .contact-info {
-    padding: 26px;
+    padding: 24px;
   }
 
   .contact-message-card {
-    padding: 28px;
+    padding: 26px;
+  }
+
+  .contact-info:hover,
+  .contact-message-card:hover,
+  .contact-item:hover {
+    transform: none;
   }
 
   .contact-header {
     align-items: flex-start;
-  }
-}
-
-@media (max-width: 480px) {
-  .contact {
-    padding: 76px 14px;
-  }
-
-  .contact-info,
-  .contact-message-card {
-    padding: 24px;
-  }
-
-  .contact-header {
-    flex-direction: column;
-    gap: 14px;
+    margin-bottom: 24px;
   }
 
   .contact-main-icon,
@@ -494,12 +608,12 @@
 
   .contact-header h3,
   .contact-message-card h3 {
-    font-size: 1.25rem;
+    font-size: 1.22rem;
   }
 
   .contact-item {
     align-items: flex-start;
-    padding: 16px;
+    padding: 15px;
   }
 
   .contact-icon {
@@ -516,7 +630,103 @@
 
   .contact-item p,
   .contact-message-card p {
-    font-size: 0.94rem;
+    font-size: 0.9rem;
+    line-height: 1.5;
+  }
+}
+
+/* =========================
+   CELULAR PEQUEÑO
+========================= */
+
+@media (max-width: 480px) {
+  .contact {
+    padding: 64px 14px;
+  }
+
+  .contact::before {
+    inset: 11px;
+    border-radius: 22px;
+  }
+
+  .contact-bg-one,
+  .contact-bg-two {
+    display: none;
+  }
+
+  .contact .section-title {
+    margin-bottom: 26px;
+  }
+
+  .contact .section-title h2 {
+    font-size: 1.85rem;
+  }
+
+  .contact .section-title p {
+    font-size: 0.88rem;
+    line-height: 1.55;
+  }
+
+  .contact-container {
+    gap: 16px;
+  }
+
+  .contact-info,
+  .contact-message-card {
+    padding: 22px;
+    border-radius: 22px;
+  }
+
+  .contact-header {
+    flex-direction: column;
+    gap: 14px;
+    margin-bottom: 22px;
+  }
+
+  .contact-main-icon,
+  .message-icon {
+    width: 56px;
+    height: 56px;
+    flex-basis: 56px;
+    border-radius: 18px;
+  }
+
+  .contact-main-icon svg,
+  .message-icon svg {
+    width: 28px;
+    height: 28px;
+  }
+
+  .contact-header h3,
+  .contact-message-card h3 {
+    font-size: 1.15rem;
+  }
+
+  .contact-list {
+    gap: 12px;
+  }
+
+  .contact-item {
+    padding: 14px;
+    gap: 13px;
+    border-radius: 18px;
+  }
+
+  .contact-icon {
+    width: 40px;
+    height: 40px;
+    flex-basis: 40px;
+    border-radius: 14px;
+  }
+
+  .contact-icon svg {
+    width: 20px;
+    height: 20px;
+  }
+
+  .contact-item p,
+  .contact-message-card p {
+    font-size: 0.86rem;
   }
 
   .contact-button {
