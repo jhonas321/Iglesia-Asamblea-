@@ -42,6 +42,12 @@ const publicaciones = [
       "/images/prueba.jpeg",
       "/images/panorama.jpg",
       "/images/grande.webp",
+      "https://images.unsplash.com/photo-1559027615-cd4628902d4a?auto=format&fit=crop&w=1200&q=80",
+      "https://images.unsplash.com/photo-1559027615-cd4628902d4a?auto=format&fit=crop&w=1200&q=80",
+      "https://images.unsplash.com/photo-1559027615-cd4628902d4a?auto=format&fit=crop&w=1200&q=80",
+      "https://images.unsplash.com/photo-1559027615-cd4628902d4a?auto=format&fit=crop&w=1200&q=80",
+      "https://images.unsplash.com/photo-1559027615-cd4628902d4a?auto=format&fit=crop&w=1200&q=80",
+      "https://images.unsplash.com/photo-1559027615-cd4628902d4a?auto=format&fit=crop&w=1200&q=80",
     ],
     categoria: "Recuerdo",
     videoTrailer: {
@@ -606,6 +612,7 @@ const crearMiniaturaVideo = (url) => {
 };
 
 const PUBLICACIONES_POR_PAGINA = 8;
+const FOTOS_POR_PAGINA = 8;
 
 function PublicacionesMinisterios() {
   const navigate = useNavigate();
@@ -632,6 +639,7 @@ function PublicacionesMinisterios() {
   const [videoModal, setVideoModal] = useState(null);
   const [datosVideos, setDatosVideos] = useState({});
   const [paginaActual, setPaginaActual] = useState(1);
+  const [paginaFotosActual, setPaginaFotosActual] = useState(1);
 
   useLayoutEffect(() => {
     window.scrollTo({ top: 0, left: 0, behavior: "auto" });
@@ -763,6 +771,35 @@ function PublicacionesMinisterios() {
 
     return publicacionesFiltradas.slice(indiceInicial, indiceFinal);
   }, [publicacionesFiltradas, paginaActual]);
+
+  useEffect(() => {
+    setPaginaFotosActual(1);
+  }, [publicacionSeleccionada?.id]);
+
+  useEffect(() => {
+    if (!publicacionSeleccionada) return;
+
+    const totalPaginasFotos = Math.ceil(
+      publicacionSeleccionada.fotos.length / FOTOS_POR_PAGINA
+    );
+
+    if (totalPaginasFotos > 0 && paginaFotosActual > totalPaginasFotos) {
+      setPaginaFotosActual(totalPaginasFotos);
+    }
+  }, [publicacionSeleccionada, paginaFotosActual]);
+
+  const fotosPaginadas = useMemo(() => {
+    if (!publicacionSeleccionada) return [];
+
+    const indiceInicial = (paginaFotosActual - 1) * FOTOS_POR_PAGINA;
+    const indiceFinal = indiceInicial + FOTOS_POR_PAGINA;
+
+    return publicacionSeleccionada.fotos.slice(indiceInicial, indiceFinal);
+  }, [publicacionSeleccionada, paginaFotosActual]);
+
+  const cambiarPaginaFotos = (nuevaPagina) => {
+    setPaginaFotosActual(nuevaPagina);
+  };
 
   const cambiarPaginaPublicaciones = (nuevaPagina) => {
     setPaginaActual(nuevaPagina);
@@ -1045,21 +1082,32 @@ function PublicacionesMinisterios() {
                 </div>
 
                 <div className="detalle-fotos-grid">
-                  {publicacionSeleccionada.fotos.map((foto, index) => (
-                    <button
-                      type="button"
-                      className="detalle-foto"
-                      key={index}
-                      onClick={() => setFotoModal(foto)}
-                    >
-                      <img
-                        src={foto}
-                        alt={`${publicacionSeleccionada.titulo} ${index + 1}`}
-                      />
-                    </button>
-                  ))}
+                  {fotosPaginadas.map((foto, index) => {
+                    const numeroFotoGlobal =
+                      (paginaFotosActual - 1) * FOTOS_POR_PAGINA + index + 1;
+
+                    return (
+                      <button
+                        type="button"
+                        className="detalle-foto"
+                        key={`${foto}-${numeroFotoGlobal}`}
+                        onClick={() => setFotoModal(foto)}
+                      >
+                        <img
+                          src={foto}
+                          alt={`${publicacionSeleccionada.titulo} ${numeroFotoGlobal}`}
+                        />
+                      </button>
+                    );
+                  })}
                 </div>
               </div>
+              <Paginacion
+                paginaActual={paginaFotosActual}
+                totalElementos={publicacionSeleccionada.fotos.length}
+                elementosPorPagina={FOTOS_POR_PAGINA}
+                onCambiarPagina={cambiarPaginaFotos}
+              />
             </div>
           </article>
         </section>
