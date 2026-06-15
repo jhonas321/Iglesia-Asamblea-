@@ -19,7 +19,79 @@ import CalendarioPersonalizado from "../../components/CalendarioPersonalizado";
 
 const videoPrueba = "/videos/download.mp4";
 
-const publicaciones = [
+/* Banco de fotos diferentes para que todas las publicaciones tengan 18 fotos */
+const bancoFotos = [
+  "https://images.unsplash.com/photo-1492684223066-81342ee5ff30?auto=format&fit=crop&w=1200&q=80",
+  "https://images.unsplash.com/photo-1501281668745-f7f57925c3b4?auto=format&fit=crop&w=1200&q=80",
+  "https://images.unsplash.com/photo-1511795409834-ef04bbd61622?auto=format&fit=crop&w=1200&q=80",
+  "https://images.unsplash.com/photo-1517457373958-b7bdd4587205?auto=format&fit=crop&w=1200&q=80",
+  "https://images.unsplash.com/photo-1523580494863-6f3031224c94?auto=format&fit=crop&w=1200&q=80",
+  "https://images.unsplash.com/photo-1501386761578-eac5c94b800a?auto=format&fit=crop&w=1200&q=80",
+  "/images/vertical.jpeg",
+  "/images/prueba.jpeg",
+  "/images/panorama.jpg",
+  "/images/grande.webp",
+  "https://images.unsplash.com/photo-1559027615-cd4628902d4a?auto=format&fit=crop&w=1200&q=80",
+  "https://images.unsplash.com/photo-1529156069898-49953e39b3ac?auto=format&fit=crop&w=1200&q=80",
+  "https://images.unsplash.com/photo-1530103862676-de8c9debad1d?auto=format&fit=crop&w=1200&q=80",
+  "https://images.unsplash.com/photo-1464366400600-7168b8af9bc3?auto=format&fit=crop&w=1200&q=80",
+  "https://images.unsplash.com/photo-1517048676732-d65bc937f952?auto=format&fit=crop&w=1200&q=80",
+  "https://images.unsplash.com/photo-1528605248644-14dd04022da1?auto=format&fit=crop&w=1200&q=80",
+  "https://images.unsplash.com/photo-1505236858219-8359eb29e329?auto=format&fit=crop&w=1200&q=80",
+  "https://images.unsplash.com/photo-1488521787991-ed7bbaae773c?auto=format&fit=crop&w=1200&q=80",
+  "https://images.unsplash.com/photo-1593113598332-cd288d649433?auto=format&fit=crop&w=1200&q=80",
+  "https://images.unsplash.com/photo-1532629345422-7515f3d16bb6?auto=format&fit=crop&w=1200&q=80",
+  "https://images.unsplash.com/photo-1609139003551-ee40f5f73ec0?auto=format&fit=crop&w=1200&q=80",
+  "https://images.unsplash.com/photo-1509099836639-18ba1795216d?auto=format&fit=crop&w=1200&q=80",
+  "https://images.unsplash.com/photo-1469571486292-0ba58a3f068b?auto=format&fit=crop&w=1200&q=80",
+  "https://images.unsplash.com/photo-1542810634-71277d95dcbb?auto=format&fit=crop&w=1200&q=80",
+  "https://images.unsplash.com/photo-1503454537195-1dcabb73ffb9?auto=format&fit=crop&w=1200&q=80",
+  "https://images.unsplash.com/photo-1599059813005-11265ba4b4ce?auto=format&fit=crop&w=1200&q=80",
+  "https://images.unsplash.com/photo-1491438590914-bc09fcaaf77a?auto=format&fit=crop&w=1200&q=80",
+  "https://images.unsplash.com/photo-1529390079861-591de354faf5?auto=format&fit=crop&w=1200&q=80",
+  "https://images.unsplash.com/photo-1503676260728-1c00da094a0b?auto=format&fit=crop&w=1200&q=80",
+  "https://images.unsplash.com/photo-1516627145497-ae6968895b74?auto=format&fit=crop&w=1200&q=80",
+  "https://images.unsplash.com/photo-1484820540004-14229fe36ca4?auto=format&fit=crop&w=1200&q=80",
+  "https://images.unsplash.com/photo-1509062522246-3755977927d7?auto=format&fit=crop&w=1200&q=80",
+  "https://images.unsplash.com/photo-1544776193-352d25ca82cd?auto=format&fit=crop&w=1200&q=80",
+  "https://images.unsplash.com/photo-1558021212-51b6ecfa0db9?auto=format&fit=crop&w=1200&q=80",
+  "https://images.unsplash.com/photo-1524995997946-a1c2e315a42f?auto=format&fit=crop&w=1200&q=80",
+  "https://images.unsplash.com/photo-1577896851231-70ef18881754?auto=format&fit=crop&w=1200&q=80",
+  "https://images.unsplash.com/photo-1516280440614-37939bbacd81?auto=format&fit=crop&w=1200&q=80",
+  "https://images.unsplash.com/photo-1507874457470-272b3c8d8ee2?auto=format&fit=crop&w=1200&q=80",
+  "https://images.unsplash.com/photo-1511379938547-c1f69419868d?auto=format&fit=crop&w=1200&q=80",
+  "https://images.unsplash.com/photo-1470225620780-dba8ba36b745?auto=format&fit=crop&w=1200&q=80",
+  "https://images.unsplash.com/photo-1506157786151-b8491531f063?auto=format&fit=crop&w=1200&q=80",
+  "https://images.unsplash.com/photo-1493225457124-a3eb161ffa5f?auto=format&fit=crop&w=1200&q=80",
+  "https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?auto=format&fit=crop&w=1200&q=80",
+  "https://images.unsplash.com/photo-1524368535928-5b5e00ddc76b?auto=format&fit=crop&w=1200&q=80",
+  "https://images.unsplash.com/photo-1459749411175-04bf5292ceea?auto=format&fit=crop&w=1200&q=80",
+  "https://images.unsplash.com/photo-1516450360452-9312f5e86fc7?auto=format&fit=crop&w=1200&q=80",
+  "https://images.unsplash.com/photo-1507692049790-de58290a4334?auto=format&fit=crop&w=1200&q=80",
+  "https://images.unsplash.com/photo-1478147427282-58a87a120781?auto=format&fit=crop&w=1200&q=80",
+  "https://images.unsplash.com/photo-1438232992991-995b7058bbb3?auto=format&fit=crop&w=1200&q=80",
+  "https://images.unsplash.com/photo-1490730141103-6cac27aaab94?auto=format&fit=crop&w=1200&q=80",
+  "https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?auto=format&fit=crop&w=1200&q=80",
+  "https://images.unsplash.com/photo-1470252649378-9c29740c9fa8?auto=format&fit=crop&w=1200&q=80",
+  "https://images.unsplash.com/photo-1519741497674-611481863552?auto=format&fit=crop&w=1200&q=80",
+  "https://images.unsplash.com/photo-1519225421980-715cb0215aed?auto=format&fit=crop&w=1200&q=80",
+  "https://images.unsplash.com/photo-1529634806980-85c3dd6d34ac?auto=format&fit=crop&w=1200&q=80",
+  "https://images.unsplash.com/photo-1522673607200-164d1b6ce486?auto=format&fit=crop&w=1200&q=80",
+];
+
+const obtenerFotosPublicacion = (id, imagenPrincipal) => {
+  const fotosSinPrincipal = bancoFotos.filter((foto) => foto !== imagenPrincipal);
+  const inicio = (id * 7) % fotosSinPrincipal.length;
+
+  const fotosRotadas = [
+    ...fotosSinPrincipal.slice(inicio),
+    ...fotosSinPrincipal.slice(0, inicio),
+  ];
+
+  return [imagenPrincipal, ...fotosRotadas].slice(0, 18);
+};
+
+const publicacionesBase = [
   {
     id: 1,
     ministerio: "Jóvenes",
@@ -31,30 +103,7 @@ const publicaciones = [
       "Una noche de alabanza, oración y comunión preparada para los jóvenes de la iglesia.",
     imagen:
       "https://images.unsplash.com/photo-1492684223066-81342ee5ff30?auto=format&fit=crop&w=1200&q=80",
-    fotos: [
-      "https://images.unsplash.com/photo-1492684223066-81342ee5ff30?auto=format&fit=crop&w=1200&q=80",
-      "https://images.unsplash.com/photo-1501281668745-f7f57925c3b4?auto=format&fit=crop&w=1200&q=80",
-      "https://images.unsplash.com/photo-1511795409834-ef04bbd61622?auto=format&fit=crop&w=1200&q=80",
-      "https://images.unsplash.com/photo-1517457373958-b7bdd4587205?auto=format&fit=crop&w=1200&q=80",
-      "https://images.unsplash.com/photo-1523580494863-6f3031224c94?auto=format&fit=crop&w=1200&q=80",
-      "https://images.unsplash.com/photo-1501386761578-eac5c94b800a?auto=format&fit=crop&w=1200&q=80",
-      "/images/vertical.jpeg",
-      "/images/prueba.jpeg",
-      "/images/panorama.jpg",
-      "/images/grande.webp",
-      "https://images.unsplash.com/photo-1559027615-cd4628902d4a?auto=format&fit=crop&w=1200&q=80",
-      "https://images.unsplash.com/photo-1559027615-cd4628902d4a?auto=format&fit=crop&w=1200&q=80",
-      "https://images.unsplash.com/photo-1559027615-cd4628902d4a?auto=format&fit=crop&w=1200&q=80",
-      "https://images.unsplash.com/photo-1559027615-cd4628902d4a?auto=format&fit=crop&w=1200&q=80",
-      "https://images.unsplash.com/photo-1559027615-cd4628902d4a?auto=format&fit=crop&w=1200&q=80",
-      "https://images.unsplash.com/photo-1559027615-cd4628902d4a?auto=format&fit=crop&w=1200&q=80",
-    ],
     categoria: "Recuerdo",
-    videoTrailer: {
-      url: videoPrueba,
-      portadaFallback:
-        "https://images.unsplash.com/photo-1492684223066-81342ee5ff30?auto=format&fit=crop&w=1200&q=80",
-    },
     videoCompleto: {
       url: "https://www.youtube.com/",
     },
@@ -70,20 +119,7 @@ const publicaciones = [
       "Actividad realizada para compartir un mensaje de esperanza con la comunidad.",
     imagen:
       "https://images.unsplash.com/photo-1511632765486-a01980e01a18?auto=format&fit=crop&w=1200&q=80",
-    fotos: [
-      "https://images.unsplash.com/photo-1511632765486-a01980e01a18?auto=format&fit=crop&w=1200&q=80",
-      "https://images.unsplash.com/photo-1529156069898-49953e39b3ac?auto=format&fit=crop&w=1200&q=80",
-      "https://images.unsplash.com/photo-1523580494863-6f3031224c94?auto=format&fit=crop&w=1200&q=80",
-      "https://images.unsplash.com/photo-1488521787991-ed7bbaae773c?auto=format&fit=crop&w=1200&q=80",
-      "https://images.unsplash.com/photo-1593113598332-cd288d649433?auto=format&fit=crop&w=1200&q=80",
-      "https://images.unsplash.com/photo-1532629345422-7515f3d16bb6?auto=format&fit=crop&w=1200&q=80",
-    ],
     categoria: "Campaña",
-    videoTrailer: {
-      url: videoPrueba,
-      portadaFallback:
-        "https://images.unsplash.com/photo-1511632765486-a01980e01a18?auto=format&fit=crop&w=1200&q=80",
-    },
     videoCompleto: {
       url: "https://drive.google.com/",
     },
@@ -99,20 +135,7 @@ const publicaciones = [
       "Actividad infantil con enseñanza bíblica, canciones, juegos y manualidades.",
     imagen:
       "https://images.unsplash.com/photo-1503454537195-1dcabb73ffb9?auto=format&fit=crop&w=1200&q=80",
-    fotos: [
-      "https://images.unsplash.com/photo-1503454537195-1dcabb73ffb9?auto=format&fit=crop&w=1200&q=80",
-      "https://images.unsplash.com/photo-1542810634-71277d95dcbb?auto=format&fit=crop&w=1200&q=80",
-      "https://images.unsplash.com/photo-1488521787991-ed7bbaae773c?auto=format&fit=crop&w=1200&q=80",
-      "https://images.unsplash.com/photo-1599059813005-11265ba4b4ce?auto=format&fit=crop&w=1200&q=80",
-      "https://images.unsplash.com/photo-1491438590914-bc09fcaaf77a?auto=format&fit=crop&w=1200&q=80",
-      "https://images.unsplash.com/photo-1529390079861-591de354faf5?auto=format&fit=crop&w=1200&q=80",
-    ],
     categoria: "Infantil",
-    videoTrailer: {
-      url: videoPrueba,
-      portadaFallback:
-        "https://images.unsplash.com/photo-1503454537195-1dcabb73ffb9?auto=format&fit=crop&w=1200&q=80",
-    },
     videoCompleto: {
       url: "https://t.me/",
     },
@@ -128,20 +151,7 @@ const publicaciones = [
       "Un encuentro de oración, enseñanza bíblica y compañerismo entre hermanas.",
     imagen:
       "https://images.unsplash.com/photo-1529156069898-49953e39b3ac?auto=format&fit=crop&w=1200&q=80",
-    fotos: [
-      "https://images.unsplash.com/photo-1529156069898-49953e39b3ac?auto=format&fit=crop&w=1200&q=80",
-      "https://images.unsplash.com/photo-1517457373958-b7bdd4587205?auto=format&fit=crop&w=1200&q=80",
-      "https://images.unsplash.com/photo-1511795409834-ef04bbd61622?auto=format&fit=crop&w=1200&q=80",
-      "https://images.unsplash.com/photo-1527529482837-4698179dc6ce?auto=format&fit=crop&w=1200&q=80",
-      "https://images.unsplash.com/photo-1530103862676-de8c9debad1d?auto=format&fit=crop&w=1200&q=80",
-      "https://images.unsplash.com/photo-1464366400600-7168b8af9bc3?auto=format&fit=crop&w=1200&q=80",
-    ],
     categoria: "Comunión",
-    videoTrailer: {
-      url: videoPrueba,
-      portadaFallback:
-        "https://images.unsplash.com/photo-1529156069898-49953e39b3ac?auto=format&fit=crop&w=1200&q=80",
-    },
     videoCompleto: {
       url: "https://www.facebook.com/",
     },
@@ -157,20 +167,7 @@ const publicaciones = [
       "El equipo de alabanza realizó un ensayo general para preparar el servicio especial.",
     imagen:
       "https://images.unsplash.com/photo-1516280440614-37939bbacd81?auto=format&fit=crop&w=1200&q=80",
-    fotos: [
-      "https://images.unsplash.com/photo-1516280440614-37939bbacd81?auto=format&fit=crop&w=1200&q=80",
-      "https://images.unsplash.com/photo-1507874457470-272b3c8d8ee2?auto=format&fit=crop&w=1200&q=80",
-      "https://images.unsplash.com/photo-1511379938547-c1f69419868d?auto=format&fit=crop&w=1200&q=80",
-      "https://images.unsplash.com/photo-1501386761578-eac5c94b800a?auto=format&fit=crop&w=1200&q=80",
-      "https://images.unsplash.com/photo-1470225620780-dba8ba36b745?auto=format&fit=crop&w=1200&q=80",
-      "https://images.unsplash.com/photo-1506157786151-b8491531f063?auto=format&fit=crop&w=1200&q=80",
-    ],
     categoria: "Alabanza",
-    videoTrailer: {
-      url: videoPrueba,
-      portadaFallback:
-        "https://images.unsplash.com/photo-1516280440614-37939bbacd81?auto=format&fit=crop&w=1200&q=80",
-    },
     videoCompleto: {
       url: "https://www.youtube.com/",
     },
@@ -186,20 +183,7 @@ const publicaciones = [
       "Una noche dedicada a la oración, intercesión y búsqueda espiritual.",
     imagen:
       "https://images.unsplash.com/photo-1507692049790-de58290a4334?auto=format&fit=crop&w=1200&q=80",
-    fotos: [
-      "https://images.unsplash.com/photo-1507692049790-de58290a4334?auto=format&fit=crop&w=1200&q=80",
-      "https://images.unsplash.com/photo-1478147427282-58a87a120781?auto=format&fit=crop&w=1200&q=80",
-      "https://images.unsplash.com/photo-1438232992991-995b7058bbb3?auto=format&fit=crop&w=1200&q=80",
-      "https://images.unsplash.com/photo-1490730141103-6cac27aaab94?auto=format&fit=crop&w=1200&q=80",
-      "https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?auto=format&fit=crop&w=1200&q=80",
-      "https://images.unsplash.com/photo-1470252649378-9c29740c9fa8?auto=format&fit=crop&w=1200&q=80",
-    ],
     categoria: "Oración",
-    videoTrailer: {
-      url: videoPrueba,
-      portadaFallback:
-        "https://images.unsplash.com/photo-1507692049790-de58290a4334?auto=format&fit=crop&w=1200&q=80",
-    },
     videoCompleto: {
       url: "https://drive.google.com/",
     },
@@ -215,20 +199,7 @@ const publicaciones = [
       "Una cena especial para fortalecer la comunicación y unidad familiar.",
     imagen:
       "https://images.unsplash.com/photo-1511795409834-ef04bbd61622?auto=format&fit=crop&w=1200&q=80",
-    fotos: [
-      "https://images.unsplash.com/photo-1511795409834-ef04bbd61622?auto=format&fit=crop&w=1200&q=80",
-      "https://images.unsplash.com/photo-1527529482837-4698179dc6ce?auto=format&fit=crop&w=1200&q=80",
-      "https://images.unsplash.com/photo-1464366400600-7168b8af9bc3?auto=format&fit=crop&w=1200&q=80",
-      "https://images.unsplash.com/photo-1530103862676-de8c9debad1d?auto=format&fit=crop&w=1200&q=80",
-      "https://images.unsplash.com/photo-1528605248644-14dd04022da1?auto=format&fit=crop&w=1200&q=80",
-      "https://images.unsplash.com/photo-1505236858219-8359eb29e329?auto=format&fit=crop&w=1200&q=80",
-    ],
     categoria: "Familia",
-    videoTrailer: {
-      url: videoPrueba,
-      portadaFallback:
-        "https://images.unsplash.com/photo-1511795409834-ef04bbd61622?auto=format&fit=crop&w=1200&q=80",
-    },
     videoCompleto: {
       url: "https://t.me/",
     },
@@ -244,20 +215,7 @@ const publicaciones = [
       "Jornada solidaria de entrega de alimentos a familias necesitadas.",
     imagen:
       "https://images.unsplash.com/photo-1488521787991-ed7bbaae773c?auto=format&fit=crop&w=1200&q=80",
-    fotos: [
-      "https://images.unsplash.com/photo-1488521787991-ed7bbaae773c?auto=format&fit=crop&w=1200&q=80",
-      "https://images.unsplash.com/photo-1593113598332-cd288d649433?auto=format&fit=crop&w=1200&q=80",
-      "https://images.unsplash.com/photo-1599059813005-11265ba4b4ce?auto=format&fit=crop&w=1200&q=80",
-      "https://images.unsplash.com/photo-1532629345422-7515f3d16bb6?auto=format&fit=crop&w=1200&q=80",
-      "https://images.unsplash.com/photo-1609139003551-ee40f5f73ec0?auto=format&fit=crop&w=1200&q=80",
-      "https://images.unsplash.com/photo-1559027615-cd4628902d4a?auto=format&fit=crop&w=1200&q=80",
-    ],
     categoria: "Servicio",
-    videoTrailer: {
-      url: videoPrueba,
-      portadaFallback:
-        "https://images.unsplash.com/photo-1488521787991-ed7bbaae773c?auto=format&fit=crop&w=1200&q=80",
-    },
     videoCompleto: {
       url: "https://drive.google.com/",
     },
@@ -272,21 +230,8 @@ const publicaciones = [
     descripcion:
       "Jornada solidaria de entrega de alimentos a familias necesitadas.",
     imagen:
-      "https://images.unsplash.com/photo-1488521787991-ed7bbaae773c?auto=format&fit=crop&w=1200&q=80",
-    fotos: [
-      "https://images.unsplash.com/photo-1488521787991-ed7bbaae773c?auto=format&fit=crop&w=1200&q=80",
       "https://images.unsplash.com/photo-1593113598332-cd288d649433?auto=format&fit=crop&w=1200&q=80",
-      "https://images.unsplash.com/photo-1599059813005-11265ba4b4ce?auto=format&fit=crop&w=1200&q=80",
-      "https://images.unsplash.com/photo-1532629345422-7515f3d16bb6?auto=format&fit=crop&w=1200&q=80",
-      "https://images.unsplash.com/photo-1609139003551-ee40f5f73ec0?auto=format&fit=crop&w=1200&q=80",
-      "https://images.unsplash.com/photo-1559027615-cd4628902d4a?auto=format&fit=crop&w=1200&q=80",
-    ],
     categoria: "Servicio",
-    videoTrailer: {
-      url: videoPrueba,
-      portadaFallback:
-        "https://images.unsplash.com/photo-1488521787991-ed7bbaae773c?auto=format&fit=crop&w=1200&q=80",
-    },
     videoCompleto: {
       url: "https://drive.google.com/",
     },
@@ -301,21 +246,8 @@ const publicaciones = [
     descripcion:
       "Jornada solidaria de entrega de alimentos a familias necesitadas.",
     imagen:
-      "https://images.unsplash.com/photo-1488521787991-ed7bbaae773c?auto=format&fit=crop&w=1200&q=80",
-    fotos: [
-      "https://images.unsplash.com/photo-1488521787991-ed7bbaae773c?auto=format&fit=crop&w=1200&q=80",
-      "https://images.unsplash.com/photo-1593113598332-cd288d649433?auto=format&fit=crop&w=1200&q=80",
       "https://images.unsplash.com/photo-1599059813005-11265ba4b4ce?auto=format&fit=crop&w=1200&q=80",
-      "https://images.unsplash.com/photo-1532629345422-7515f3d16bb6?auto=format&fit=crop&w=1200&q=80",
-      "https://images.unsplash.com/photo-1609139003551-ee40f5f73ec0?auto=format&fit=crop&w=1200&q=80",
-      "https://images.unsplash.com/photo-1559027615-cd4628902d4a?auto=format&fit=crop&w=1200&q=80",
-    ],
     categoria: "Servicio",
-    videoTrailer: {
-      url: videoPrueba,
-      portadaFallback:
-        "https://images.unsplash.com/photo-1488521787991-ed7bbaae773c?auto=format&fit=crop&w=1200&q=80",
-    },
     videoCompleto: {
       url: "https://drive.google.com/",
     },
@@ -330,21 +262,8 @@ const publicaciones = [
     descripcion:
       "Jornada solidaria de entrega de alimentos a familias necesitadas.",
     imagen:
-      "https://images.unsplash.com/photo-1488521787991-ed7bbaae773c?auto=format&fit=crop&w=1200&q=80",
-    fotos: [
-      "https://images.unsplash.com/photo-1488521787991-ed7bbaae773c?auto=format&fit=crop&w=1200&q=80",
-      "https://images.unsplash.com/photo-1593113598332-cd288d649433?auto=format&fit=crop&w=1200&q=80",
-      "https://images.unsplash.com/photo-1599059813005-11265ba4b4ce?auto=format&fit=crop&w=1200&q=80",
       "https://images.unsplash.com/photo-1532629345422-7515f3d16bb6?auto=format&fit=crop&w=1200&q=80",
-      "https://images.unsplash.com/photo-1609139003551-ee40f5f73ec0?auto=format&fit=crop&w=1200&q=80",
-      "https://images.unsplash.com/photo-1559027615-cd4628902d4a?auto=format&fit=crop&w=1200&q=80",
-    ],
     categoria: "Servicio",
-    videoTrailer: {
-      url: videoPrueba,
-      portadaFallback:
-        "https://images.unsplash.com/photo-1488521787991-ed7bbaae773c?auto=format&fit=crop&w=1200&q=80",
-    },
     videoCompleto: {
       url: "https://drive.google.com/",
     },
@@ -359,21 +278,8 @@ const publicaciones = [
     descripcion:
       "Jornada solidaria de entrega de alimentos a familias necesitadas.",
     imagen:
-      "https://images.unsplash.com/photo-1488521787991-ed7bbaae773c?auto=format&fit=crop&w=1200&q=80",
-    fotos: [
-      "https://images.unsplash.com/photo-1488521787991-ed7bbaae773c?auto=format&fit=crop&w=1200&q=80",
-      "https://images.unsplash.com/photo-1593113598332-cd288d649433?auto=format&fit=crop&w=1200&q=80",
-      "https://images.unsplash.com/photo-1599059813005-11265ba4b4ce?auto=format&fit=crop&w=1200&q=80",
-      "https://images.unsplash.com/photo-1532629345422-7515f3d16bb6?auto=format&fit=crop&w=1200&q=80",
       "https://images.unsplash.com/photo-1609139003551-ee40f5f73ec0?auto=format&fit=crop&w=1200&q=80",
-      "https://images.unsplash.com/photo-1559027615-cd4628902d4a?auto=format&fit=crop&w=1200&q=80",
-    ],
     categoria: "Servicio",
-    videoTrailer: {
-      url: videoPrueba,
-      portadaFallback:
-        "https://images.unsplash.com/photo-1488521787991-ed7bbaae773c?auto=format&fit=crop&w=1200&q=80",
-    },
     videoCompleto: {
       url: "https://drive.google.com/",
     },
@@ -388,21 +294,8 @@ const publicaciones = [
     descripcion:
       "Jornada solidaria de entrega de alimentos a familias necesitadas.",
     imagen:
-      "https://images.unsplash.com/photo-1488521787991-ed7bbaae773c?auto=format&fit=crop&w=1200&q=80",
-    fotos: [
-      "https://images.unsplash.com/photo-1488521787991-ed7bbaae773c?auto=format&fit=crop&w=1200&q=80",
-      "https://images.unsplash.com/photo-1593113598332-cd288d649433?auto=format&fit=crop&w=1200&q=80",
-      "https://images.unsplash.com/photo-1599059813005-11265ba4b4ce?auto=format&fit=crop&w=1200&q=80",
-      "https://images.unsplash.com/photo-1532629345422-7515f3d16bb6?auto=format&fit=crop&w=1200&q=80",
-      "https://images.unsplash.com/photo-1609139003551-ee40f5f73ec0?auto=format&fit=crop&w=1200&q=80",
       "https://images.unsplash.com/photo-1559027615-cd4628902d4a?auto=format&fit=crop&w=1200&q=80",
-    ],
     categoria: "Servicio",
-    videoTrailer: {
-      url: videoPrueba,
-      portadaFallback:
-        "https://images.unsplash.com/photo-1488521787991-ed7bbaae773c?auto=format&fit=crop&w=1200&q=80",
-    },
     videoCompleto: {
       url: "https://drive.google.com/",
     },
@@ -417,26 +310,26 @@ const publicaciones = [
     descripcion:
       "Jornada solidaria de entrega de alimentos a familias necesitadas.",
     imagen:
-      "https://images.unsplash.com/photo-1488521787991-ed7bbaae773c?auto=format&fit=crop&w=1200&q=80",
-    fotos: [
-      "https://images.unsplash.com/photo-1488521787991-ed7bbaae773c?auto=format&fit=crop&w=1200&q=80",
-      "https://images.unsplash.com/photo-1593113598332-cd288d649433?auto=format&fit=crop&w=1200&q=80",
-      "https://images.unsplash.com/photo-1599059813005-11265ba4b4ce?auto=format&fit=crop&w=1200&q=80",
-      "https://images.unsplash.com/photo-1532629345422-7515f3d16bb6?auto=format&fit=crop&w=1200&q=80",
-      "https://images.unsplash.com/photo-1609139003551-ee40f5f73ec0?auto=format&fit=crop&w=1200&q=80",
-      "https://images.unsplash.com/photo-1559027615-cd4628902d4a?auto=format&fit=crop&w=1200&q=80",
-    ],
+      "https://images.unsplash.com/photo-1509099836639-18ba1795216d?auto=format&fit=crop&w=1200&q=80",
     categoria: "Servicio",
-    videoTrailer: {
-      url: videoPrueba,
-      portadaFallback:
-        "https://images.unsplash.com/photo-1488521787991-ed7bbaae773c?auto=format&fit=crop&w=1200&q=80",
-    },
     videoCompleto: {
       url: "https://drive.google.com/",
     },
   },
 ];
+
+const publicaciones = publicacionesBase.map((pub) => {
+  const fotos = obtenerFotosPublicacion(pub.id, pub.imagen);
+
+  return {
+    ...pub,
+    fotos,
+    videoTrailer: {
+      url: videoPrueba,
+      portadaFallback: fotos[0],
+    },
+  };
+});
 
 const meses = {
   enero: 0,
@@ -640,10 +533,25 @@ function PublicacionesMinisterios() {
   const [datosVideos, setDatosVideos] = useState({});
   const [paginaActual, setPaginaActual] = useState(1);
   const [paginaFotosActual, setPaginaFotosActual] = useState(1);
+  const [esCelular, setEsCelular] = useState(false);
 
   useLayoutEffect(() => {
     window.scrollTo({ top: 0, left: 0, behavior: "auto" });
   }, [id]);
+
+  useEffect(() => {
+    const revisarPantalla = () => {
+      setEsCelular(window.innerWidth <= 768);
+    };
+
+    revisarPantalla();
+
+    window.addEventListener("resize", revisarPantalla);
+
+    return () => {
+      window.removeEventListener("resize", revisarPantalla);
+    };
+  }, []);
 
   useEffect(() => {
     if (!publicacionSeleccionada) return;
@@ -798,7 +706,26 @@ function PublicacionesMinisterios() {
   }, [publicacionSeleccionada, paginaFotosActual]);
 
   const cambiarPaginaFotos = (nuevaPagina) => {
-    setPaginaFotosActual(nuevaPagina);
+    if (!esCelular) {
+      setPaginaFotosActual(nuevaPagina);
+      return;
+    }
+
+    const inicioFotos = document.querySelector(".detalle-galeria");
+
+    if (!inicioFotos) {
+      setPaginaFotosActual(nuevaPagina);
+      return;
+    }
+
+    inicioFotos.scrollIntoView({
+      behavior: "smooth",
+      block: "start",
+    });
+
+    setTimeout(() => {
+      setPaginaFotosActual(nuevaPagina);
+    }, 450);
   };
 
   const cambiarPaginaPublicaciones = (nuevaPagina) => {
@@ -991,7 +918,6 @@ function PublicacionesMinisterios() {
 
               <div className="detalle-slider-overlay">
                 <h1>{publicacionSeleccionada.titulo}</h1>
-                <p>Ministerio de {publicacionSeleccionada.ministerio}</p>
               </div>
 
               <div className="detalle-slider-progreso">
@@ -1011,8 +937,6 @@ function PublicacionesMinisterios() {
                   {publicacionSeleccionada.ministerio}
                 </span>
               </div>
-
-              <h2>{publicacionSeleccionada.titulo}</h2>
 
               <div className="detalle-datos">
                 <p>
@@ -1081,6 +1005,16 @@ function PublicacionesMinisterios() {
                   <p>Haz click en una foto para verla en grande.</p>
                 </div>
 
+                <div className="detalle-fotos-paginacion detalle-fotos-paginacion-superior">
+                  <Paginacion
+                    paginaActual={paginaFotosActual}
+                    totalElementos={publicacionSeleccionada.fotos.length}
+                    elementosPorPagina={FOTOS_POR_PAGINA}
+                    onCambiarPagina={cambiarPaginaFotos}
+                    scrollAlCambiar={false}
+                  />
+                </div>
+
                 <div className="detalle-fotos-grid">
                   {fotosPaginadas.map((foto, index) => {
                     const numeroFotoGlobal =
@@ -1101,13 +1035,17 @@ function PublicacionesMinisterios() {
                     );
                   })}
                 </div>
+
+                <div className="detalle-fotos-paginacion detalle-fotos-paginacion-inferior">
+                  <Paginacion
+                    paginaActual={paginaFotosActual}
+                    totalElementos={publicacionSeleccionada.fotos.length}
+                    elementosPorPagina={FOTOS_POR_PAGINA}
+                    onCambiarPagina={cambiarPaginaFotos}
+                    scrollAlCambiar={false}
+                  />
+                </div>
               </div>
-              <Paginacion
-                paginaActual={paginaFotosActual}
-                totalElementos={publicacionSeleccionada.fotos.length}
-                elementosPorPagina={FOTOS_POR_PAGINA}
-                onCambiarPagina={cambiarPaginaFotos}
-              />
             </div>
           </article>
         </section>
@@ -1385,8 +1323,10 @@ function PublicacionesMinisterios() {
           totalElementos={publicacionesFiltradas.length}
           elementosPorPagina={PUBLICACIONES_POR_PAGINA}
           onCambiarPagina={cambiarPaginaPublicaciones}
+          scrollAlCambiar={false}
         />
-        <br></br>
+
+        <br />
 
         <div className="galeria-grid">
           {publicacionesPaginadas.map((pub, index) => (
