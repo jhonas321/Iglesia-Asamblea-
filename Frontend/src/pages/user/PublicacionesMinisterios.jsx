@@ -1,4 +1,5 @@
 import "../../styles/publicaciones.css";
+
 import {
   FaArrowLeft,
   FaCalendarAlt,
@@ -13,6 +14,7 @@ import {
 } from "react-icons/fa";
 import { useEffect, useLayoutEffect, useMemo, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
+import Paginacion from "../../components/ui/Paginacion";
 import CalendarioPersonalizado from "../../components/CalendarioPersonalizado";
 
 const videoPrueba = "/videos/download.mp4";
@@ -254,6 +256,180 @@ const publicaciones = [
       url: "https://drive.google.com/",
     },
   },
+  {
+    id: 9,
+    ministerio: "Ayuda Social",
+    titulo: "Entrega de alimentos",
+    fecha: "5 Julio 2026",
+    hora: "10:00",
+    lugar: "Zona central",
+    descripcion:
+      "Jornada solidaria de entrega de alimentos a familias necesitadas.",
+    imagen:
+      "https://images.unsplash.com/photo-1488521787991-ed7bbaae773c?auto=format&fit=crop&w=1200&q=80",
+    fotos: [
+      "https://images.unsplash.com/photo-1488521787991-ed7bbaae773c?auto=format&fit=crop&w=1200&q=80",
+      "https://images.unsplash.com/photo-1593113598332-cd288d649433?auto=format&fit=crop&w=1200&q=80",
+      "https://images.unsplash.com/photo-1599059813005-11265ba4b4ce?auto=format&fit=crop&w=1200&q=80",
+      "https://images.unsplash.com/photo-1532629345422-7515f3d16bb6?auto=format&fit=crop&w=1200&q=80",
+      "https://images.unsplash.com/photo-1609139003551-ee40f5f73ec0?auto=format&fit=crop&w=1200&q=80",
+      "https://images.unsplash.com/photo-1559027615-cd4628902d4a?auto=format&fit=crop&w=1200&q=80",
+    ],
+    categoria: "Servicio",
+    videoTrailer: {
+      url: videoPrueba,
+      portadaFallback:
+        "https://images.unsplash.com/photo-1488521787991-ed7bbaae773c?auto=format&fit=crop&w=1200&q=80",
+    },
+    videoCompleto: {
+      url: "https://drive.google.com/",
+    },
+  },
+  {
+    id: 10,
+    ministerio: "Ayuda Social",
+    titulo: "Entrega de alimentos",
+    fecha: "5 Julio 2026",
+    hora: "10:00",
+    lugar: "Zona central",
+    descripcion:
+      "Jornada solidaria de entrega de alimentos a familias necesitadas.",
+    imagen:
+      "https://images.unsplash.com/photo-1488521787991-ed7bbaae773c?auto=format&fit=crop&w=1200&q=80",
+    fotos: [
+      "https://images.unsplash.com/photo-1488521787991-ed7bbaae773c?auto=format&fit=crop&w=1200&q=80",
+      "https://images.unsplash.com/photo-1593113598332-cd288d649433?auto=format&fit=crop&w=1200&q=80",
+      "https://images.unsplash.com/photo-1599059813005-11265ba4b4ce?auto=format&fit=crop&w=1200&q=80",
+      "https://images.unsplash.com/photo-1532629345422-7515f3d16bb6?auto=format&fit=crop&w=1200&q=80",
+      "https://images.unsplash.com/photo-1609139003551-ee40f5f73ec0?auto=format&fit=crop&w=1200&q=80",
+      "https://images.unsplash.com/photo-1559027615-cd4628902d4a?auto=format&fit=crop&w=1200&q=80",
+    ],
+    categoria: "Servicio",
+    videoTrailer: {
+      url: videoPrueba,
+      portadaFallback:
+        "https://images.unsplash.com/photo-1488521787991-ed7bbaae773c?auto=format&fit=crop&w=1200&q=80",
+    },
+    videoCompleto: {
+      url: "https://drive.google.com/",
+    },
+  },
+  {
+    id: 11,
+    ministerio: "Ayuda Social",
+    titulo: "Entrega de alimentos",
+    fecha: "5 Julio 2026",
+    hora: "10:00",
+    lugar: "Zona central",
+    descripcion:
+      "Jornada solidaria de entrega de alimentos a familias necesitadas.",
+    imagen:
+      "https://images.unsplash.com/photo-1488521787991-ed7bbaae773c?auto=format&fit=crop&w=1200&q=80",
+    fotos: [
+      "https://images.unsplash.com/photo-1488521787991-ed7bbaae773c?auto=format&fit=crop&w=1200&q=80",
+      "https://images.unsplash.com/photo-1593113598332-cd288d649433?auto=format&fit=crop&w=1200&q=80",
+      "https://images.unsplash.com/photo-1599059813005-11265ba4b4ce?auto=format&fit=crop&w=1200&q=80",
+      "https://images.unsplash.com/photo-1532629345422-7515f3d16bb6?auto=format&fit=crop&w=1200&q=80",
+      "https://images.unsplash.com/photo-1609139003551-ee40f5f73ec0?auto=format&fit=crop&w=1200&q=80",
+      "https://images.unsplash.com/photo-1559027615-cd4628902d4a?auto=format&fit=crop&w=1200&q=80",
+    ],
+    categoria: "Servicio",
+    videoTrailer: {
+      url: videoPrueba,
+      portadaFallback:
+        "https://images.unsplash.com/photo-1488521787991-ed7bbaae773c?auto=format&fit=crop&w=1200&q=80",
+    },
+    videoCompleto: {
+      url: "https://drive.google.com/",
+    },
+  },
+  {
+    id: 12,
+    ministerio: "Ayuda Social",
+    titulo: "Entrega de alimentos",
+    fecha: "5 Julio 2026",
+    hora: "10:00",
+    lugar: "Zona central",
+    descripcion:
+      "Jornada solidaria de entrega de alimentos a familias necesitadas.",
+    imagen:
+      "https://images.unsplash.com/photo-1488521787991-ed7bbaae773c?auto=format&fit=crop&w=1200&q=80",
+    fotos: [
+      "https://images.unsplash.com/photo-1488521787991-ed7bbaae773c?auto=format&fit=crop&w=1200&q=80",
+      "https://images.unsplash.com/photo-1593113598332-cd288d649433?auto=format&fit=crop&w=1200&q=80",
+      "https://images.unsplash.com/photo-1599059813005-11265ba4b4ce?auto=format&fit=crop&w=1200&q=80",
+      "https://images.unsplash.com/photo-1532629345422-7515f3d16bb6?auto=format&fit=crop&w=1200&q=80",
+      "https://images.unsplash.com/photo-1609139003551-ee40f5f73ec0?auto=format&fit=crop&w=1200&q=80",
+      "https://images.unsplash.com/photo-1559027615-cd4628902d4a?auto=format&fit=crop&w=1200&q=80",
+    ],
+    categoria: "Servicio",
+    videoTrailer: {
+      url: videoPrueba,
+      portadaFallback:
+        "https://images.unsplash.com/photo-1488521787991-ed7bbaae773c?auto=format&fit=crop&w=1200&q=80",
+    },
+    videoCompleto: {
+      url: "https://drive.google.com/",
+    },
+  },
+  {
+    id: 13,
+    ministerio: "Ayuda Social",
+    titulo: "Entrega de alimentos",
+    fecha: "5 Julio 2026",
+    hora: "10:00",
+    lugar: "Zona central",
+    descripcion:
+      "Jornada solidaria de entrega de alimentos a familias necesitadas.",
+    imagen:
+      "https://images.unsplash.com/photo-1488521787991-ed7bbaae773c?auto=format&fit=crop&w=1200&q=80",
+    fotos: [
+      "https://images.unsplash.com/photo-1488521787991-ed7bbaae773c?auto=format&fit=crop&w=1200&q=80",
+      "https://images.unsplash.com/photo-1593113598332-cd288d649433?auto=format&fit=crop&w=1200&q=80",
+      "https://images.unsplash.com/photo-1599059813005-11265ba4b4ce?auto=format&fit=crop&w=1200&q=80",
+      "https://images.unsplash.com/photo-1532629345422-7515f3d16bb6?auto=format&fit=crop&w=1200&q=80",
+      "https://images.unsplash.com/photo-1609139003551-ee40f5f73ec0?auto=format&fit=crop&w=1200&q=80",
+      "https://images.unsplash.com/photo-1559027615-cd4628902d4a?auto=format&fit=crop&w=1200&q=80",
+    ],
+    categoria: "Servicio",
+    videoTrailer: {
+      url: videoPrueba,
+      portadaFallback:
+        "https://images.unsplash.com/photo-1488521787991-ed7bbaae773c?auto=format&fit=crop&w=1200&q=80",
+    },
+    videoCompleto: {
+      url: "https://drive.google.com/",
+    },
+  },
+  {
+    id: 14,
+    ministerio: "Ayuda Social",
+    titulo: "Entrega de alimentos",
+    fecha: "5 Julio 2026",
+    hora: "10:00",
+    lugar: "Zona central",
+    descripcion:
+      "Jornada solidaria de entrega de alimentos a familias necesitadas.",
+    imagen:
+      "https://images.unsplash.com/photo-1488521787991-ed7bbaae773c?auto=format&fit=crop&w=1200&q=80",
+    fotos: [
+      "https://images.unsplash.com/photo-1488521787991-ed7bbaae773c?auto=format&fit=crop&w=1200&q=80",
+      "https://images.unsplash.com/photo-1593113598332-cd288d649433?auto=format&fit=crop&w=1200&q=80",
+      "https://images.unsplash.com/photo-1599059813005-11265ba4b4ce?auto=format&fit=crop&w=1200&q=80",
+      "https://images.unsplash.com/photo-1532629345422-7515f3d16bb6?auto=format&fit=crop&w=1200&q=80",
+      "https://images.unsplash.com/photo-1609139003551-ee40f5f73ec0?auto=format&fit=crop&w=1200&q=80",
+      "https://images.unsplash.com/photo-1559027615-cd4628902d4a?auto=format&fit=crop&w=1200&q=80",
+    ],
+    categoria: "Servicio",
+    videoTrailer: {
+      url: videoPrueba,
+      portadaFallback:
+        "https://images.unsplash.com/photo-1488521787991-ed7bbaae773c?auto=format&fit=crop&w=1200&q=80",
+    },
+    videoCompleto: {
+      url: "https://drive.google.com/",
+    },
+  },
 ];
 
 const meses = {
@@ -429,6 +605,8 @@ const crearMiniaturaVideo = (url) => {
   });
 };
 
+const PUBLICACIONES_POR_PAGINA = 8;
+
 function PublicacionesMinisterios() {
   const navigate = useNavigate();
   const { id } = useParams();
@@ -453,6 +631,7 @@ function PublicacionesMinisterios() {
   const [fotoModal, setFotoModal] = useState(null);
   const [videoModal, setVideoModal] = useState(null);
   const [datosVideos, setDatosVideos] = useState({});
+  const [paginaActual, setPaginaActual] = useState(1);
 
   useLayoutEffect(() => {
     window.scrollTo({ top: 0, left: 0, behavior: "auto" });
@@ -563,6 +742,32 @@ function PublicacionesMinisterios() {
     tipoBusqueda,
     publicacionesOrdenadas,
   ]);
+
+  useEffect(() => {
+    setPaginaActual(1);
+  }, [filtroTexto, filtroFechaInicio, filtroFechaFin, tipoBusqueda]);
+
+  useEffect(() => {
+    const totalPaginas = Math.ceil(
+      publicacionesFiltradas.length / PUBLICACIONES_POR_PAGINA
+    );
+
+    if (totalPaginas > 0 && paginaActual > totalPaginas) {
+      setPaginaActual(totalPaginas);
+    }
+  }, [publicacionesFiltradas.length, paginaActual]);
+
+  const publicacionesPaginadas = useMemo(() => {
+    const indiceInicial = (paginaActual - 1) * PUBLICACIONES_POR_PAGINA;
+    const indiceFinal = indiceInicial + PUBLICACIONES_POR_PAGINA;
+
+    return publicacionesFiltradas.slice(indiceInicial, indiceFinal);
+  }, [publicacionesFiltradas, paginaActual]);
+
+  const cambiarPaginaPublicaciones = (nuevaPagina) => {
+    setPaginaActual(nuevaPagina);
+    setCalendarioAbierto("");
+  };
 
   const alternarBusquedaTexto = () => {
     setTipoBusqueda((actual) => {
@@ -1127,8 +1332,16 @@ function PublicacionesMinisterios() {
           )}
         </div>
 
+        <Paginacion
+          paginaActual={paginaActual}
+          totalElementos={publicacionesFiltradas.length}
+          elementosPorPagina={PUBLICACIONES_POR_PAGINA}
+          onCambiarPagina={cambiarPaginaPublicaciones}
+        />
+        <br></br>
+
         <div className="galeria-grid">
-          {publicacionesFiltradas.map((pub, index) => (
+          {publicacionesPaginadas.map((pub, index) => (
             <article
               className={`galeria-item item-${index + 1}`}
               key={pub.id}
@@ -1154,6 +1367,14 @@ function PublicacionesMinisterios() {
             </article>
           ))}
         </div>
+
+        <Paginacion
+          paginaActual={paginaActual}
+          totalElementos={publicacionesFiltradas.length}
+          elementosPorPagina={PUBLICACIONES_POR_PAGINA}
+          onCambiarPagina={cambiarPaginaPublicaciones}
+          scrollAlCambiar={true}
+        />
 
         {publicacionesFiltradas.length === 0 && (
           <div className="sin-publicaciones">
