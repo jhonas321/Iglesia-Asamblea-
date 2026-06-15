@@ -279,6 +279,7 @@
   pointer-events: none;
   z-index: 2;
 }
+
 .map-container::after {
   content: "";
   position: absolute;
@@ -352,7 +353,81 @@
 }
 
 /* =========================
-   RESPONSIVE
+   TABLET HORIZONTAL
+========================= */
+
+@media (min-width: 769px) and (max-width: 1180px) and (orientation: landscape) {
+  .location {
+    padding: 72px 20px;
+  }
+
+  .location::before {
+    inset: 14px 22px;
+    border-radius: 28px;
+  }
+
+  .location-container {
+    max-width: 1060px;
+  }
+
+  .location .section-title {
+    margin-bottom: 38px;
+  }
+
+  .location .section-title h2 {
+    font-size: 2.35rem;
+    margin-bottom: 12px;
+  }
+
+  .location .section-title p {
+    max-width: 650px;
+    font-size: 0.95rem;
+    line-height: 1.6;
+  }
+
+  .location-content {
+    grid-template-columns: 300px 1fr;
+    gap: 20px;
+  }
+
+  .location-info-card {
+    min-height: 360px;
+    padding: 24px;
+    border-radius: 26px;
+  }
+
+  .location-icon {
+    width: 62px;
+    height: 62px;
+    border-radius: 20px;
+    margin-bottom: 20px;
+  }
+
+  .location-icon svg {
+    width: 30px;
+    height: 30px;
+  }
+
+  .location-info-card h3 {
+    font-size: 1.28rem;
+  }
+
+  .location-info-card p {
+    font-size: 0.92rem;
+  }
+
+  .map-container {
+    height: 360px;
+    border-radius: 26px;
+  }
+
+  .map-container::before {
+    border-radius: 26px;
+  }
+}
+
+/* =========================
+   TABLET VERTICAL
 ========================= */
 
 @media (max-width: 992px) {
@@ -369,9 +444,13 @@
   }
 }
 
+/* =========================
+   CELULAR
+========================= */
+
 @media (max-width: 768px) {
   .location {
-    padding: 88px 16px;
+    padding: 82px 16px;
   }
 
   .location::before {
@@ -379,12 +458,31 @@
     border-radius: 26px;
   }
 
+  .location-bg-one,
+  .location-bg-two {
+    filter: blur(60px);
+    opacity: 0.42;
+  }
+
+  .location-bg-three {
+    display: none;
+  }
+
   .location .section-title {
-    margin-bottom: 42px;
+    margin-bottom: 34px;
+  }
+
+  .location .section-title h2 {
+    font-size: 2.15rem;
   }
 
   .location .section-title p {
-    font-size: 0.98rem;
+    font-size: 0.96rem;
+    line-height: 1.65;
+  }
+
+  .location-content {
+    gap: 18px;
   }
 
   .location-info-card,
@@ -392,27 +490,18 @@
     border-radius: 24px;
   }
 
-  .map-container {
-    height: 340px;
-  }
-
-  .map-container::before {
-    border-radius: 24px;
-  }
-}
-
-@media (max-width: 480px) {
-  .location {
-    padding: 76px 14px;
-  }
-
   .location-info-card {
     padding: 24px;
+    display: grid;
+    grid-template-columns: 62px 1fr;
+    align-items: center;
+    gap: 16px;
   }
 
   .location-icon {
     width: 62px;
     height: 62px;
+    margin-bottom: 0;
     border-radius: 20px;
   }
 
@@ -421,15 +510,102 @@
     height: 30px;
   }
 
+  .location-info-card span {
+    margin-bottom: 6px;
+    font-size: 0.76rem;
+  }
+
   .location-info-card h3 {
-    font-size: 1.25rem;
+    font-size: 1.15rem;
+    margin-bottom: 8px;
   }
 
   .location-info-card p {
-    font-size: 0.94rem;
+    font-size: 0.9rem;
+    line-height: 1.5;
   }
 
   .map-container {
-    height: 300px;
+    height: 330px;
+  }
+
+  .map-container::before {
+    border-radius: 24px;
+  }
+
+  .map-container:hover {
+    transform: none;
+  }
+}
+
+/* =========================
+   CELULAR PEQUEÑO
+========================= */
+
+@media (max-width: 480px) {
+  .location {
+    padding: 72px 14px;
+  }
+
+  .location::before {
+    inset: 11px;
+    border-radius: 22px;
+  }
+
+  .location-bg-one,
+  .location-bg-two {
+    display: none;
+  }
+
+  .location .section-title {
+    margin-bottom: 28px;
+  }
+
+  .location .section-title h2 {
+    font-size: 1.95rem;
+  }
+
+  .location .section-title p {
+    font-size: 0.9rem;
+    line-height: 1.6;
+  }
+
+  .location-content {
+    gap: 15px;
+  }
+
+  .location-info-card {
+    padding: 20px;
+    grid-template-columns: 54px 1fr;
+    gap: 14px;
+    border-radius: 22px;
+  }
+
+  .location-icon {
+    width: 54px;
+    height: 54px;
+    border-radius: 18px;
+  }
+
+  .location-icon svg {
+    width: 27px;
+    height: 27px;
+  }
+
+  .location-info-card h3 {
+    font-size: 1.05rem;
+  }
+
+  .location-info-card p {
+    font-size: 0.86rem;
+  }
+
+  .map-container {
+    height: 285px;
+    border-radius: 22px;
+  }
+
+  .map-container::before {
+    border-radius: 22px;
   }
 }

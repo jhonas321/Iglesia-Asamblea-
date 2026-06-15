@@ -1,4 +1,4 @@
-import { Church, HandHeart, MapPin, Phone, PhoneCall } from "lucide-react";
+import { House, HandHeart, MapPin, Phone, PhoneCall } from "lucide-react";
 import "../styles/contacto-seccion.css";
 
 function ContactoSeccion() {
@@ -34,7 +34,7 @@ function ContactoSeccion() {
             <div className="contact-list">
               <div className="contact-item">
                 <div className="contact-icon">
-                  <Church size={24} strokeWidth={2.3} />
+                <House size={24} strokeWidth={2.3} />
                 </div>
 
                 <div>

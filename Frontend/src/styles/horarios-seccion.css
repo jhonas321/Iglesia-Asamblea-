@@ -227,6 +227,12 @@
   font-weight: 900;
 }
 
+.schedule-mobile-main,
+.schedule-mobile-time,
+.schedule-accordion-toggle {
+  display: none;
+}
+
 .schedule-card-body {
   position: relative;
   z-index: 1;
@@ -368,39 +374,395 @@
   }
 }
 
+/* ========================================= */
+/* TABLET HORIZONTAL - MENOS ESPACIO */
+/* ========================================= */
+
+@media (min-width: 769px) and (max-width: 1180px) and (orientation: landscape) {
+  .schedule {
+    padding: 58px 20px 62px;
+  }
+
+  .schedule::before {
+    inset: 14px 22px;
+    border-radius: 28px;
+  }
+
+  .schedule-container {
+    max-width: 1060px;
+  }
+
+  .schedule .section-title {
+    margin-bottom: 36px;
+  }
+
+  .schedule .section-title h2 {
+    font-size: 2.25rem;
+    margin-bottom: 12px;
+  }
+
+  .schedule .section-title p {
+    font-size: 0.94rem;
+    line-height: 1.55;
+    max-width: 640px;
+  }
+
+  .schedule-grid {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 18px;
+  }
+
+  .schedule-card {
+    min-height: 265px;
+    padding: 22px;
+    border-radius: 26px;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .schedule-card-top {
+    margin-bottom: 22px;
+  }
+
+  .schedule-icon {
+    width: 54px;
+    height: 54px;
+    border-radius: 18px;
+  }
+
+  .schedule-icon svg {
+    width: 24px;
+    height: 24px;
+  }
+
+  .schedule-day {
+    padding: 8px 13px;
+    font-size: 0.84rem;
+  }
+
+  .schedule-card-body h3 {
+    font-size: 1.08rem;
+    line-height: 1.2;
+    margin-bottom: 10px;
+  }
+
+  .schedule-card-body p {
+    font-size: 0.86rem;
+    line-height: 1.5;
+  }
+
+  .schedule-card-footer {
+    position: static;
+    margin-top: auto;
+    padding-top: 14px;
+    left: auto;
+    right: auto;
+    bottom: auto;
+  }
+
+  .time-label {
+    font-size: 0.74rem;
+  }
+
+  .schedule-card-footer strong {
+    font-size: 1.34rem;
+  }
+}
+
+/* ========================================= */
+/* CELULAR - ACORDEÓN */
+/* ========================================= */
+
 @media (max-width: 560px) {
   .schedule {
-    padding: 76px 14px;
+    padding: 72px 14px;
+  }
+
+  .schedule::before {
+    inset: 12px;
+    border-radius: 24px;
+  }
+
+  .schedule-bg-one {
+    width: 210px;
+    height: 210px;
+  }
+
+  .schedule-bg-two {
+    width: 220px;
+    height: 220px;
+  }
+
+  .schedule-bg-three {
+    display: none;
+  }
+
+  .schedule-container {
+    max-width: 100%;
+  }
+
+  .schedule .section-title {
+    margin-bottom: 32px;
+  }
+
+  .schedule .section-title h2 {
+    font-size: 2rem;
+  }
+
+  .schedule .section-title p {
+    font-size: 0.92rem;
+    line-height: 1.65;
   }
 
   .schedule-grid {
     grid-template-columns: 1fr;
+    gap: 12px;
   }
 
   .schedule-card {
-    min-height: 255px;
+    min-height: 0;
+    padding: 0;
+    border-radius: 20px;
+    cursor: pointer;
+    animation: none;
+    display: block;
+    overflow: hidden;
+  }
+
+  .schedule-card:hover {
+    transform: none;
+  }
+
+  .schedule-card::before {
+    width: 110px;
+    height: 110px;
+    top: -56px;
+    right: -48px;
+  }
+
+  .schedule-card::after {
+    left: 0;
+    right: 0;
+    height: 3px;
   }
 
   .schedule-card-top {
-    margin-bottom: 24px;
+    margin: 0;
+    padding: 14px;
+    display: grid;
+    grid-template-columns: 46px 1fr auto 34px;
+    align-items: center;
+    gap: 10px;
   }
 
   .schedule-icon {
-    width: 58px;
-    height: 58px;
-    border-radius: 20px;
-    font-size: 1.7rem;
+    width: 46px;
+    height: 46px;
+    border-radius: 15px;
+    font-size: 1.35rem;
+  }
+
+  .schedule-icon svg {
+    width: 22px;
+    height: 22px;
+  }
+
+  .schedule-day {
+    display: none;
+  }
+
+  .schedule-mobile-main {
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+  }
+
+  .schedule-mobile-main span {
+    color: #24498d;
+    font-size: 0.76rem;
+    font-weight: 900;
+    text-transform: uppercase;
+    letter-spacing: 0.55px;
+  }
+
+  .schedule-mobile-main strong {
+    color: #162d55;
+    font-size: 0.96rem;
+    font-weight: 950;
+    line-height: 1.15;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .schedule-mobile-time {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    color: #c0831f;
+    font-size: 1rem;
+    font-weight: 950;
+    white-space: nowrap;
+  }
+
+  .schedule-accordion-toggle {
+    width: 34px;
+    height: 34px;
+    border: none;
+    border-radius: 50%;
+    background: rgba(49, 95, 214, 0.1);
+    color: #24498d;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0;
+    transition: background 0.3s ease, transform 0.3s ease;
+  }
+
+  .schedule-accordion-toggle svg {
+    width: 14px;
+    height: 14px;
+    transition: transform 0.3s ease;
+  }
+
+  .schedule-card-open .schedule-accordion-toggle {
+    background: linear-gradient(135deg, #315fd6, #6f89e8);
+    color: #ffffff;
+  }
+
+  .schedule-card-open .schedule-accordion-toggle svg {
+    transform: rotate(180deg);
+  }
+
+  .schedule-card-body {
+    max-height: 0;
+    overflow: hidden;
+    opacity: 0;
+    padding: 0 14px 0 70px;
+    transition: max-height 0.35s ease, opacity 0.25s ease, padding 0.35s ease;
+  }
+
+  .schedule-card-open .schedule-card-body {
+    max-height: 120px;
+    opacity: 1;
+    padding: 0 14px 16px 70px;
   }
 
   .schedule-card-body h3 {
-    font-size: 1.15rem;
+    display: none;
   }
 
   .schedule-card-body p {
-    font-size: 0.93rem;
+    font-size: 0.86rem;
+    line-height: 1.55;
+  }
+
+  .schedule-card-footer {
+    display: none;
+  }
+}
+
+/* CELULAR MUY PEQUEÑO */
+@media (max-width: 390px) {
+  .schedule {
+    padding: 66px 12px;
+  }
+
+  .schedule .section-title h2 {
+    font-size: 1.85rem;
+  }
+
+  .schedule .section-title p {
+    font-size: 0.88rem;
+  }
+
+  .schedule-card-top {
+    grid-template-columns: 42px 1fr auto 32px;
+    padding: 13px;
+    gap: 9px;
+  }
+
+  .schedule-icon {
+    width: 42px;
+    height: 42px;
+    border-radius: 14px;
+  }
+
+  .schedule-icon svg {
+    width: 20px;
+    height: 20px;
+  }
+
+  .schedule-mobile-main strong {
+    font-size: 0.9rem;
+  }
+
+  .schedule-mobile-time {
+    font-size: 0.92rem;
+  }
+
+  .schedule-accordion-toggle {
+    width: 32px;
+    height: 32px;
+  }
+
+  .schedule-card-body {
+    padding-left: 64px;
+  }
+
+  .schedule-card-open .schedule-card-body {
+    padding-left: 64px;
+  }
+
+  .schedule-card-body p {
+    font-size: 0.82rem;
+  }
+}
+
+/* ========================================= */
+/* AJUSTE SOLO PC - CARDS UN POCO MÁS GRANDES */
+/* ========================================= */
+
+@media (min-width: 1181px) {
+  .schedule-container {
+    max-width: 1260px;
+  }
+
+  .schedule-grid {
+    gap: 28px;
+  }
+
+  .schedule-card {
+    min-height: 305px;
+    padding: 28px;
+  }
+
+  .schedule-icon {
+    width: 66px;
+    height: 66px;
+  }
+
+  .schedule-icon svg {
+    width: 30px;
+    height: 30px;
+  }
+
+  .schedule-card-body h3 {
+    font-size: 1.32rem;
+  }
+
+  .schedule-card-body p {
+    font-size: 0.98rem;
+  }
+
+  .schedule-card-footer {
+    left: 28px;
+    right: 28px;
   }
 
   .schedule-card-footer strong {
-    font-size: 1.42rem;
+    font-size: 1.68rem;
   }
 }

@@ -1022,7 +1022,7 @@
   }
 
   .eventos-section {
-    padding: 75px 5%;
+    padding: 60px 5% 65px;
     animation: none;
     overflow: visible;
   }
@@ -1032,18 +1032,51 @@
     display: none;
   }
 
+  /* Botones de estado compactos en celular */
+  .eventos-tabs {
+    width: 100%;
+    max-width: 420px;
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 11px;
+    margin-bottom: 26px;
+  }
+
+  .eventos-tabs button {
+    width: 100%;
+    min-width: 0;
+    height: 48px;
+    padding: 0 10px;
+    border-radius: 18px;
+    font-size: 0.86rem;
+    font-weight: 900;
+    line-height: 1.15;
+    box-shadow: 0 12px 24px rgba(21, 43, 87, 0.1);
+  }
+
+  .filter-toggle {
+    max-width: 420px;
+    height: 48px;
+    margin-bottom: 22px;
+    border-radius: 15px;
+    font-size: 0.92rem;
+  }
+
   .filter-type-options {
-    max-width: 520px;
+    max-width: 420px;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
     margin-bottom: 18px;
   }
 
   .filter-type-options button {
     height: 46px;
-    font-size: 0.9rem;
+    font-size: 0.82rem;
+    padding: 0 8px;
   }
 
   .eventos-filters-wrapper {
-    max-width: 520px;
+    max-width: 420px;
     margin-bottom: 32px;
   }
 
@@ -1069,11 +1102,12 @@
   .eventos-grid {
     grid-template-columns: 1fr;
     max-width: 410px;
-    gap: 18px;
+    gap: 20px;
   }
 
+  /* Card mantiene formato horizontal */
   .evento-card {
-    min-height: 205px;
+    min-height: 225px;
     grid-template-columns: 37% 63%;
     border-radius: 18px;
   }
@@ -1090,69 +1124,69 @@
 
   .evento-img {
     height: auto;
-    min-height: 205px;
+    min-height: 225px;
   }
 
   .evento-img img {
     height: 100%;
-    min-height: 205px;
+    min-height: 225px;
     object-fit: cover;
     object-position: center;
   }
 
   .evento-content {
-    min-height: 205px;
-    padding: 44px 13px 14px;
+    min-height: 225px;
+    padding: 46px 14px 15px;
   }
 
   .evento-estado {
     top: 12px;
     right: 12px;
     padding: 6px 10px;
-    font-size: 0.61rem;
+    font-size: 0.68rem;
   }
 
   .evento-ministerio {
-    font-size: 0.62rem;
-    margin-bottom: 5px;
-    letter-spacing: 0.45px;
+    font-size: 0.68rem;
+    margin-bottom: 6px;
+    letter-spacing: 0.5px;
   }
 
   .evento-content h3 {
-    font-size: 0.92rem;
-    line-height: 1.16;
-    margin-bottom: 7px;
+    font-size: 1rem;
+    line-height: 1.18;
+    margin-bottom: 8px;
     -webkit-line-clamp: 2;
   }
 
   .evento-info {
     gap: 5px;
-    margin-bottom: 8px;
+    margin-bottom: 9px;
   }
 
   .evento-info p {
-    font-size: 0.64rem;
-    padding: 5px 7px;
+    font-size: 0.7rem;
+    padding: 6px 8px;
     border-radius: 8px;
-    gap: 5px;
+    gap: 6px;
     white-space: nowrap;
   }
 
   .evento-info-icon {
-    font-size: 0.68rem;
+    font-size: 0.72rem;
   }
 
   .evento-descripcion {
-    font-size: 0.68rem;
-    line-height: 1.35;
-    margin-bottom: 9px;
+    font-size: 0.72rem;
+    line-height: 1.38;
+    margin-bottom: 10px;
     -webkit-line-clamp: 2;
   }
 
   .evento-content button {
-    padding: 8px 11px;
+    padding: 8px 12px;
     border-radius: 10px;
-    font-size: 0.68rem;
+    font-size: 0.72rem;
   }
 
   .evento-modal {
@@ -1182,13 +1216,33 @@
     font-size: 2.2rem;
   }
 
+  .eventos-section {
+    padding: 50px 5% 58px;
+  }
+
   .eventos-tabs {
+    max-width: 410px;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
     gap: 10px;
+    margin-bottom: 26px;
   }
 
   .eventos-tabs button {
     width: 100%;
-    min-width: 100%;
+    min-width: 0;
+    height: 48px;
+    padding: 0 8px;
+    border-radius: 18px;
+    font-size: 0.82rem;
+    line-height: 1.14;
+  }
+
+  .filter-toggle {
+    max-width: 410px;
+    height: 48px;
+    margin-bottom: 24px;
+    border-radius: 15px;
+    font-size: 0.92rem;
   }
 
   .eventos-filter-card {
@@ -1198,7 +1252,15 @@
   }
 
   .filter-type-options {
-    grid-template-columns: 1fr;
+    max-width: 410px;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+  }
+
+  .filter-type-options button {
+    height: 45px;
+    font-size: 0.8rem;
+    border-radius: 14px;
   }
 
   .search-field input,
@@ -1224,73 +1286,76 @@
 
   .eventos-grid {
     max-width: 410px;
-    gap: 17px;
+    gap: 20px;
   }
 
+  /* Card horizontal conservada */
   .evento-card {
-    min-height: 190px;
-    grid-template-columns: 36% 64%;
-    border-radius: 17px;
+    min-height: 225px;
+    grid-template-columns: 37% 63%;
+    border-radius: 18px;
   }
 
   .evento-img {
-    min-height: 190px;
+    min-height: 225px;
   }
 
   .evento-img img {
-    min-height: 190px;
+    min-height: 225px;
     object-fit: cover;
     object-position: center;
   }
 
   .evento-content {
-    min-height: 190px;
-    padding: 42px 12px 13px;
+    min-height: 225px;
+    padding: 46px 13px 15px;
   }
 
   .evento-estado {
-    top: 11px;
-    right: 11px;
-    padding: 5px 9px;
-    font-size: 0.58rem;
+    top: 12px;
+    right: 12px;
+    padding: 6px 10px;
+    font-size: 0.67rem;
   }
 
   .evento-ministerio {
-    font-size: 0.58rem;
-    margin-bottom: 4px;
+    font-size: 0.67rem;
+    margin-bottom: 5px;
+    letter-spacing: 0.45px;
   }
 
   .evento-content h3 {
-    font-size: 0.86rem;
-    margin-bottom: 6px;
+    font-size: 0.98rem;
+    line-height: 1.18;
+    margin-bottom: 8px;
   }
 
   .evento-info {
-    gap: 4px;
-    margin-bottom: 7px;
+    gap: 5px;
+    margin-bottom: 8px;
   }
 
   .evento-info p {
-    font-size: 0.59rem;
-    padding: 5px 6px;
-    border-radius: 7px;
+    font-size: 0.69rem;
+    padding: 6px 7px;
+    border-radius: 8px;
   }
 
   .evento-info-icon {
-    font-size: 0.64rem;
+    font-size: 0.72rem;
   }
 
   .evento-descripcion {
-    font-size: 0.62rem;
-    line-height: 1.32;
-    margin-bottom: 8px;
+    font-size: 0.71rem;
+    line-height: 1.36;
+    margin-bottom: 10px;
     -webkit-line-clamp: 2;
   }
 
   .evento-content button {
-    padding: 7px 10px;
-    border-radius: 9px;
-    font-size: 0.63rem;
+    padding: 8px 12px;
+    border-radius: 10px;
+    font-size: 0.72rem;
   }
 }
 
@@ -1343,5 +1408,150 @@
     height: 36px;
 
     font-size: 1.5rem;
+  }
+}
+
+
+/* ========================================= */
+/* AJUSTE SOLO VERTICAL DE FILTROS EN CELULAR */
+/* No toca ancho ni distribución horizontal */
+/* ========================================= */
+
+@media (max-width: 768px) {
+  .eventos-filter-card {
+    height: 255px;
+    min-height: 255px;
+    padding-top: 18px;
+    padding-bottom: 18px;
+    gap: 8px;
+  }
+
+  .date-fields-row {
+    gap: 8px;
+  }
+
+  .search-field,
+  .date-field {
+    gap: 6px;
+  }
+
+  .search-field label,
+  .date-field label {
+    height: auto;
+    font-size: 0.8rem;
+    line-height: 1.1;
+  }
+
+  .search-field input,
+  .custom-date-input,
+  .custom-date-button {
+    height: 40px;
+    min-height: 40px;
+    font-size: 0.8rem;
+    border-radius: 11px;
+  }
+
+  .custom-date-button span {
+    font-size: 0.8rem;
+  }
+
+  .search-field input {
+    line-height: 40px;
+  }
+
+  .filter-actions {
+    margin-top: auto;
+  }
+
+  .filter-btn {
+    height: 40px;
+    font-size: 0.82rem;
+    border-radius: 11px;
+  }
+
+  .field-clear-btn {
+    width: 21px;
+    height: 21px;
+    font-size: 0.9rem;
+  }
+
+  .date-picker-wrapper .date-clear-btn {
+    width: 21px;
+    height: 21px;
+    font-size: 15px;
+  }
+
+  .date-picker-wrapper .date-input-icon,
+  .date-input-icon {
+    font-size: 0.82rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .eventos-filter-card {
+    height: 245px;
+    min-height: 245px;
+    padding-top: 16px;
+    padding-bottom: 16px;
+    gap: 7px;
+  }
+
+  .date-fields-row {
+    gap: 7px;
+  }
+
+  .search-field,
+  .date-field {
+    gap: 5px;
+  }
+
+  .search-field label,
+  .date-field label {
+    font-size: 0.76rem;
+  }
+
+  .search-field input,
+  .custom-date-input,
+  .custom-date-button {
+    height: 38px;
+    min-height: 38px;
+    font-size: 0.76rem;
+  }
+
+  .custom-date-button span {
+    font-size: 0.76rem;
+  }
+
+  .search-field input {
+    line-height: 38px;
+  }
+
+  .filter-btn {
+    height: 38px;
+    font-size: 0.8rem;
+  }
+}
+
+/* Texto de ayuda para rellenar el espacio del buscador en celular */
+@media (max-width: 768px) {
+  .eventos-filter-card.filter-active .search-field::after {
+    content: "Puedes buscar por ministerio, título del evento o actividad.";
+    display: block;
+    margin-top: 10px;
+    padding: 10px 12px;
+    border-radius: 12px;
+    background: #f1f5ff;
+    color: #52627d;
+    font-size: 0.76rem;
+    font-weight: 600;
+    line-height: 1.35;
+  }
+}
+
+@media (max-width: 480px) {
+  .eventos-filter-card.filter-active .search-field::after {
+    margin-top: 9px;
+    padding: 9px 11px;
+    font-size: 0.72rem;
   }
 }

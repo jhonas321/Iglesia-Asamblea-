@@ -1,8 +1,26 @@
-import { Link } from "react-router-dom";
+import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { Camera, CalendarDays } from "lucide-react";
 import "../styles/ministerios-preview.css";
 
 function MinisteriosPreview() {
+  const navigate = useNavigate();
+  const [tarjetaActiva, setTarjetaActiva] = useState("");
+
+  const manejarClickTarjeta = (tarjeta) => {
+    setTarjetaActiva((actual) => (actual === tarjeta ? "" : tarjeta));
+  };
+
+  const irAPublicaciones = (e) => {
+    e.stopPropagation();
+    navigate("/ministerios/publicaciones");
+  };
+
+  const irAEventos = (e) => {
+    e.stopPropagation();
+    navigate("/ministerios/eventos");
+  };
+
   return (
     <section id="ministerios" className="ministerios-preview">
       <div className="ministerios-title">
@@ -16,7 +34,12 @@ function MinisteriosPreview() {
       </div>
 
       <div className="ministerios-wrapper">
-        <Link to="/ministerios/publicaciones" className="ministerio-card">
+        <article
+          className={`ministerio-card ${
+            tarjetaActiva === "publicaciones" ? "card-activa" : ""
+          }`}
+          onClick={() => manejarClickTarjeta("publicaciones")}
+        >
           <div className="ministerio-image">
             <img
               src="/images/banner.avif"
@@ -50,12 +73,23 @@ function MinisteriosPreview() {
                 ministerios.
               </p>
 
-              <button type="button">Ver publicaciones</button>
+              <span className="ministerio-tap-hint">
+                Toca nuevamente la tarjeta para cerrar.
+              </span>
+
+              <button type="button" onClick={irAPublicaciones}>
+                Ver publicaciones
+              </button>
             </div>
           </div>
-        </Link>
+        </article>
 
-        <Link to="/ministerios/eventos" className="ministerio-card">
+        <article
+          className={`ministerio-card ${
+            tarjetaActiva === "eventos" ? "card-activa" : ""
+          }`}
+          onClick={() => manejarClickTarjeta("eventos")}
+        >
           <div className="ministerio-image">
             <img
               src="/images/avisos.avif"
@@ -88,10 +122,16 @@ function MinisteriosPreview() {
                 reuniones, cultos especiales, ensayos y actividades programadas.
               </p>
 
-              <button type="button">Ver eventos</button>
+              <span className="ministerio-tap-hint">
+                Toca nuevamente la tarjeta para cerrar.
+              </span>
+
+              <button type="button" onClick={irAEventos}>
+                Ver eventos
+              </button>
             </div>
           </div>
-        </Link>
+        </article>
       </div>
     </section>
   );
