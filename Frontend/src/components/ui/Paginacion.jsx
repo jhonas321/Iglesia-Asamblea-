@@ -14,23 +14,27 @@ function Paginacion({
   const paginas = Array.from({ length: totalPaginas }, (_, index) => index + 1);
 
   const hacerScrollArriba = () => {
-    setTimeout(() => {
-      window.scrollTo({
-        top: 0,
-        left: 0,
-        behavior: "smooth",
-      });
-    }, 100);
+    window.scrollTo({
+      top: 0,
+      left: 0,
+      behavior: "smooth",
+    });
   };
 
   const irAPagina = (pagina) => {
     if (pagina < 1 || pagina > totalPaginas || pagina === paginaActual) return;
 
-    onCambiarPagina(pagina);
-
     if (scrollAlCambiar) {
       hacerScrollArriba();
+
+      setTimeout(() => {
+        onCambiarPagina(pagina);
+      }, 280);
+
+      return;
     }
+
+    onCambiarPagina(pagina);
   };
 
   return (
