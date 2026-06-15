@@ -536,6 +536,21 @@
   font-size: 1rem;
 }
 
+/* CONTADOR */
+.eventos-count {
+  width: fit-content;
+  margin: 0 auto 24px;
+  padding: 9px 16px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.72);
+  color: #3f4c66;
+  font-size: 0.9rem;
+  font-weight: 800;
+  box-shadow: 0 10px 22px rgba(20, 38, 67, 0.08);
+  position: relative;
+  z-index: 2;
+}
+
 /* GRID */
 .eventos-grid {
   max-width: 1500px;
@@ -1032,7 +1047,6 @@
     display: none;
   }
 
-  /* Botones de estado compactos en celular */
   .eventos-tabs {
     width: 100%;
     max-width: 420px;
@@ -1099,13 +1113,18 @@
     margin-top: 18px;
   }
 
+  .eventos-count {
+    font-size: 0.78rem;
+    padding: 8px 13px;
+    margin-bottom: 18px;
+  }
+
   .eventos-grid {
     grid-template-columns: 1fr;
     max-width: 410px;
     gap: 20px;
   }
 
-  /* Card mantiene formato horizontal */
   .evento-card {
     min-height: 225px;
     grid-template-columns: 37% 63%;
@@ -1189,25 +1208,137 @@
     font-size: 0.72rem;
   }
 
+  /* MODAL CELULAR MÁS COMPACTO Y SIN BORDES BLANCOS */
+  .evento-modal-overlay {
+    padding: 14px;
+    align-items: center;
+  }
+
   .evento-modal {
-    grid-template-columns: 1fr;
+    width: min(390px, calc(100vw - 24px));
     height: auto;
-    max-height: 90vh;
+    max-height: 88dvh;
+    grid-template-columns: 1fr;
+    border-radius: 22px;
     overflow-y: auto;
+    background: #ffffff;
   }
 
   .evento-modal-img {
-    height: 430px;
-    border-radius: 28px 28px 0 0;
+    height: 350px;
+    flex-shrink: 0;
+    border-radius: 22px 22px 0 0;
+    background: linear-gradient(135deg, #10203a, #1a3258, #132744);
+    overflow: hidden;
+    isolation: isolate;
+  }
+
+  .evento-modal-img::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(
+      180deg,
+      rgba(8, 16, 30, 0.08),
+      rgba(8, 16, 30, 0.2)
+    );
+    z-index: 1;
+    pointer-events: none;
+  }
+
+  .evento-modal-bg {
+    inset: -14px;
+    width: calc(100% + 28px);
+    height: calc(100% + 28px);
+    filter: blur(26px);
+    transform: scale(1.12);
+    opacity: 0.64;
+  }
+
+  .evento-modal-flyer {
+    width: 86%;
+    height: 92%;
+    max-width: 86%;
+    max-height: 92%;
+    z-index: 2;
   }
 
   .evento-modal-content {
-    padding: 28px 22px;
+    padding: 24px 20px 22px;
     overflow: visible;
+  }
+
+  .evento-modal-estado {
+    padding: 6px 12px;
+    font-size: 0.72rem;
+    margin-bottom: 10px;
+  }
+
+  .evento-modal-ministerio {
+    font-size: 0.72rem;
+    letter-spacing: 0.7px;
+    margin-bottom: 9px;
+  }
+
+  .evento-modal-content h2 {
+    font-size: 1.45rem;
+    line-height: 1.22;
+    margin-bottom: 13px;
+  }
+
+  .evento-modal-info {
+    gap: 8px;
+    margin-bottom: 14px;
+  }
+
+  .evento-modal-info p {
+    padding: 8px 10px;
+    border-radius: 10px;
+    font-size: 0.82rem;
+    gap: 7px;
+  }
+
+  .evento-modal-descripcion {
+    font-size: 0.88rem;
+    line-height: 1.55;
+    margin-bottom: 18px;
   }
 
   .evento-modal-btn {
     width: 100%;
+    padding: 11px 14px;
+    border-radius: 12px;
+    font-size: 0.84rem;
+  }
+
+  .evento-modal-close {
+    display: flex !important;
+    align-items: center;
+    justify-content: center;
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    width: 36px;
+    height: 36px;
+    border: none;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.92);
+    color: #17253f;
+    font-size: 1.5rem;
+    font-weight: 900;
+    line-height: 1;
+    cursor: pointer;
+    z-index: 99999;
+    box-shadow: 0 10px 24px rgba(0, 0, 0, 0.28);
+    opacity: 1;
+    visibility: visible;
+    pointer-events: auto;
+  }
+
+  .evento-modal-close:hover {
+    background: #ffffff;
+    color: #17253f;
+    transform: scale(1.06);
   }
 }
 
@@ -1289,7 +1420,6 @@
     gap: 20px;
   }
 
-  /* Card horizontal conservada */
   .evento-card {
     min-height: 225px;
     grid-template-columns: 37% 63%;
@@ -1357,66 +1487,57 @@
     border-radius: 10px;
     font-size: 0.72rem;
   }
-}
 
-/* BOTÓN X DEL MODAL VISIBLE EN CELULAR Y TABLET */
-@media (max-width: 768px) {
+  .evento-modal-overlay {
+    padding: 12px;
+  }
+
+  .evento-modal {
+    width: min(370px, calc(100vw - 20px));
+    max-height: 88dvh;
+    border-radius: 21px;
+  }
+
+  .evento-modal-img {
+    height: 335px;
+    border-radius: 21px 21px 0 0;
+  }
+
+  .evento-modal-content {
+    padding: 22px 20px 20px;
+  }
+
+  .evento-modal-content h2 {
+    font-size: 1.35rem;
+    margin-bottom: 12px;
+  }
+
+  .evento-modal-info p {
+    font-size: 0.78rem;
+    padding: 7px 9px;
+  }
+
+  .evento-modal-descripcion {
+    font-size: 0.84rem;
+    line-height: 1.5;
+    margin-bottom: 16px;
+  }
+
+  .evento-modal-btn {
+    font-size: 0.82rem;
+    padding: 10px 12px;
+  }
+
   .evento-modal-close {
-    display: flex !important;
-    align-items: center;
-    justify-content: center;
-
-    position: absolute;
-    top: 12px;
-    right: 12px;
-
-    width: 38px;
-    height: 38px;
-
-    border: none;
-    border-radius: 50%;
-
-    background: rgba(255, 255, 255, 0.92);
-    color: #17253f;
-
-    font-size: 1.6rem;
-    font-weight: 900;
-    line-height: 1;
-
-    cursor: pointer;
-    z-index: 99999;
-
-    box-shadow: 0 10px 24px rgba(0, 0, 0, 0.28);
-    opacity: 1;
-    visibility: visible;
-    pointer-events: auto;
-  }
-
-  .evento-modal-close:hover {
-    background: #ffffff;
-    color: #17253f;
-    transform: scale(1.06);
+    top: 9px;
+    right: 9px;
+    width: 34px;
+    height: 34px;
+    font-size: 1.42rem;
   }
 }
 
-@media (max-width: 480px) {
-  .evento-modal-close {
-    top: 10px;
-    right: 10px;
-
-    width: 36px;
-    height: 36px;
-
-    font-size: 1.5rem;
-  }
-}
-
-
-/* ========================================= */
 /* AJUSTE SOLO VERTICAL DE FILTROS EN CELULAR */
-/* No toca ancho ni distribución horizontal */
-/* ========================================= */
-
 @media (max-width: 768px) {
   .eventos-filter-card {
     height: 255px;
@@ -1555,3 +1676,127 @@
     font-size: 0.72rem;
   }
 }
+
+
+
+/* ========================================= */
+/* QUITAR BORDES BLANCOS DEL MODAL EN CELULAR */
+/* ========================================= */
+
+@media (max-width: 768px) {
+  .evento-modal {
+    background: #10203a;
+    overflow: hidden;
+  }
+
+  .evento-modal-img {
+    margin: 0;
+    border: none;
+    outline: none;
+    background: linear-gradient(135deg, #0b1220, #17253f, #243b68);
+    border-radius: 22px 22px 0 0;
+  }
+
+  .evento-modal-img::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(135deg, #0b1220, #17253f, #243b68);
+    z-index: 0;
+    pointer-events: none;
+  }
+
+  .evento-modal-bg {
+    z-index: 1;
+  }
+
+  .evento-modal-flyer {
+    z-index: 3;
+  }
+
+  .evento-modal-img::after {
+    z-index: 2;
+  }
+
+  .evento-modal-content {
+    background: #ffffff;
+    border-radius: 0 0 22px 22px;
+  }
+}
+
+@media (max-width: 480px) {
+  .evento-modal {
+    background: #10203a;
+  }
+
+  .evento-modal-img {
+    border-radius: 21px 21px 0 0;
+  }
+
+  .evento-modal-content {
+    border-radius: 0 0 21px 21px;
+  }
+}
+
+
+/* ========================================= */
+/* LIMPIAR LÍNEAS DEL MODAL EN TABLET */
+/* ========================================= */
+
+@media (min-width: 769px) and (max-width: 1280px) {
+  .evento-modal {
+    overflow: hidden;
+    background: #ffffff;
+  }
+
+  .evento-modal-img {
+    position: relative;
+    overflow: hidden;
+    isolation: isolate;
+    background: linear-gradient(135deg, #0b1220, #17253f, #243b68);
+    border-radius: 28px 0 0 28px;
+  }
+
+  .evento-modal-img::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(135deg, #0b1220, #17253f, #243b68);
+    z-index: 0;
+    pointer-events: none;
+  }
+
+  .evento-modal-img::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(
+      180deg,
+      rgba(8, 16, 30, 0.08),
+      rgba(8, 16, 30, 0.18)
+    );
+    z-index: 2;
+    pointer-events: none;
+  }
+
+  .evento-modal-bg {
+    position: absolute;
+    inset: -18px;
+    width: calc(100% + 36px);
+    height: calc(100% + 36px);
+    object-fit: cover;
+    filter: blur(28px);
+    transform: scale(1.14);
+    opacity: 0.62;
+    z-index: 1;
+  }
+
+  .evento-modal-flyer {
+    position: relative;
+    z-index: 3;
+    display: block;
+    background: transparent;
+  }
+}
+
+
