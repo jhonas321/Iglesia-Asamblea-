@@ -13,23 +13,45 @@ function Paginacion({
 
   const paginas = Array.from({ length: totalPaginas }, (_, index) => index + 1);
 
-  const hacerScrollArriba = () => {
+  const hacerScrollArriba = (callback) => {
     window.scrollTo({
       top: 0,
       left: 0,
       behavior: "smooth",
     });
+
+    let intentos = 0;
+
+    const revisarSiLlegoArriba = () => {
+      intentos++;
+
+      if (window.scrollY <= 5 || intentos > 120) {
+        callback();
+
+        setTimeout(() => {
+          window.scrollTo({
+            top: 0,
+            left: 0,
+            behavior: "auto",
+          });
+        }, 50);
+
+        return;
+      }
+
+      requestAnimationFrame(revisarSiLlegoArriba);
+    };
+
+    requestAnimationFrame(revisarSiLlegoArriba);
   };
 
   const irAPagina = (pagina) => {
     if (pagina < 1 || pagina > totalPaginas || pagina === paginaActual) return;
 
     if (scrollAlCambiar) {
-      hacerScrollArriba();
-
-      setTimeout(() => {
+      hacerScrollArriba(() => {
         onCambiarPagina(pagina);
-      }, 280);
+      });
 
       return;
     }

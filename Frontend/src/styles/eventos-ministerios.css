@@ -1926,3 +1926,82 @@
   }
 }
 
+/* ========================================= */
+/* MODAL EVENTOS - TABLET HORIZONTAL BAJITA */
+/* ========================================= */
+
+@media (min-width: 769px) and (max-width: 900px) and (max-height: 520px) {
+  .evento-modal {
+    width: min(740px, calc(100vw - 34px));
+    height: calc(100dvh - 34px);
+    max-height: calc(100dvh - 34px);
+    grid-template-columns: 43% 57%;
+    border-radius: 24px;
+  }
+
+  .evento-modal-img {
+    border-radius: 24px 0 0 24px;
+  }
+
+  .evento-modal-flyer {
+    width: 82%;
+    height: 82%;
+    max-width: 82%;
+    max-height: 82%;
+  }
+
+  .evento-modal-content {
+    justify-content: flex-start;
+    padding: 30px 34px 24px;
+    overflow-y: auto;
+  }
+
+  .evento-modal-estado {
+    padding: 6px 12px;
+    font-size: 0.72rem;
+    margin-bottom: 10px;
+  }
+
+  .evento-modal-ministerio {
+    font-size: 0.76rem;
+    letter-spacing: 0.7px;
+    margin-bottom: 9px;
+  }
+
+  .evento-modal-content h2 {
+    font-size: 1.45rem;
+    line-height: 1.15;
+    margin-bottom: 14px;
+  }
+
+  .evento-modal-info {
+    gap: 8px;
+    margin-bottom: 14px;
+  }
+
+  .evento-modal-info p {
+    padding: 8px 11px;
+    border-radius: 11px;
+    font-size: 0.78rem;
+  }
+
+  .evento-modal-descripcion {
+    font-size: 0.84rem;
+    line-height: 1.55;
+    margin-bottom: 16px;
+  }
+
+  .evento-modal-btn {
+    padding: 10px 15px;
+    border-radius: 12px;
+    font-size: 0.8rem;
+  }
+
+  .evento-modal-close {
+    width: 36px;
+    height: 36px;
+    top: 14px;
+    right: 14px;
+    font-size: 1.45rem;
+  }
+}
