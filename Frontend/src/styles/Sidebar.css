@@ -1,0 +1,250 @@
+.sidebar {
+  width: 270px;
+  height: 100vh;
+  background: linear-gradient(
+    180deg,
+    rgba(11, 18, 32, 0.98),
+    rgba(20, 38, 67, 0.98)
+  );
+  backdrop-filter: blur(18px);
+  color: #ffffff;
+  position: fixed;
+  top: 0;
+  left: 0;
+  padding: 22px 18px;
+  display: flex;
+  flex-direction: column;
+  border-right: 1px solid rgba(255, 255, 255, 0.12);
+  box-shadow: 18px 0 45px rgba(0, 0, 0, 0.35);
+  z-index: 1000;
+}
+
+/* HEADER */
+.sidebar-header {
+  display: flex;
+  align-items: center;
+  gap: 13px;
+  padding-bottom: 24px;
+  margin-bottom: 18px;
+}
+
+.sidebar-logo {
+  width: 44px;
+  height: 44px;
+  border-radius: 14px;
+  background: rgba(255, 255, 255, 0.08);
+  color: #d4af37;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.sidebar-brand h2 {
+  margin: 0;
+  font-size: 18px;
+  font-weight: 900;
+  color: #ffffff;
+  letter-spacing: -0.4px;
+}
+
+.sidebar-brand span {
+  display: block;
+  margin-top: 3px;
+  font-size: 11px;
+  font-weight: 600;
+  color: #d9dde3;
+}
+
+/* USER */
+.sidebar-user {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  background: rgba(255, 255, 255, 0.06);
+  padding: 13px;
+  border-radius: 16px;
+  margin-bottom: 24px;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.sidebar-user-icon {
+  width: 42px;
+  height: 42px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.08);
+  color: #d9dde3;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.sidebar-user-info h3 {
+  margin: 0;
+  font-size: 14px;
+  font-weight: 800;
+  color: #ffffff;
+}
+
+.sidebar-user-info p {
+  margin: 3px 0 0;
+  font-size: 12px;
+  color: #d9dde3;
+}
+
+/* MENU */
+.sidebar-menu {
+  flex: 1;
+  overflow-y: auto;
+}
+
+.sidebar-menu::-webkit-scrollbar {
+  width: 4px;
+}
+
+.sidebar-menu::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.18);
+  border-radius: 20px;
+}
+
+.sidebar-menu ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.sidebar-menu li {
+  margin-bottom: 6px;
+}
+
+.sidebar-link {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 13px;
+  padding: 12px 13px;
+  border-radius: 14px;
+  text-decoration: none;
+  color: #d9dde3;
+  font-size: 14px;
+  font-weight: 700;
+  transition: all 0.25s ease;
+}
+
+.sidebar-link svg {
+  min-width: 20px;
+  color: #a8bad5;
+  transition: all 0.25s ease;
+}
+
+.sidebar-link:hover {
+  background: rgba(255, 255, 255, 0.06);
+  color: #ffffff;
+}
+
+.sidebar-link:hover svg {
+  color: #d4af37;
+}
+
+.sidebar-link.active {
+  background: linear-gradient(135deg, #a8bad5, #2f4f7f);
+  color: #ffffff;
+  box-shadow: 0 8px 22px rgba(47, 79, 127, 0.35);
+  border: 1px solid rgba(255, 255, 255, 0.35);
+}
+
+.sidebar-link.active::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  width: 4px;
+  height: 24px;
+  border-radius: 0 6px 6px 0;
+  background: #d4af37;
+}
+
+.sidebar-link.active svg {
+  color: #ffffff;
+}
+
+/* FOOTER */
+.sidebar-footer {
+  padding-top: 18px;
+  margin-top: 18px;
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.sidebar-logout {
+  display: flex;
+  align-items: center;
+  gap: 13px;
+  padding: 12px 13px;
+  border-radius: 14px;
+  text-decoration: none;
+  color: #d9dde3;
+  font-size: 14px;
+  font-weight: 800;
+  transition: all 0.25s ease;
+}
+
+.sidebar-logout svg {
+  color: #d4af37;
+}
+
+.sidebar-logout:hover {
+  background: linear-gradient(135deg, #d4af37, #b88916);
+  color: #07101d;
+}
+
+.sidebar-logout:hover svg {
+  color: #07101d;
+}
+
+/* RESPONSIVE */
+@media (max-width: 900px) {
+  .sidebar {
+    width: 240px;
+    padding: 20px 14px;
+  }
+
+  .sidebar-brand h2 {
+    font-size: 16px;
+  }
+
+  .sidebar-link,
+  .sidebar-logout {
+    font-size: 13px;
+  }
+}
+
+@media (max-width: 650px) {
+  .sidebar {
+    width: 76px;
+    padding: 18px 10px;
+  }
+
+  .sidebar-header {
+    justify-content: center;
+  }
+
+  .sidebar-brand,
+  .sidebar-user-info,
+  .sidebar-link span,
+  .sidebar-logout span {
+    display: none;
+  }
+
+  .sidebar-user {
+    justify-content: center;
+    padding: 11px;
+  }
+
+  .sidebar-link,
+  .sidebar-logout {
+    justify-content: center;
+    padding: 13px;
+  }
+
+  .sidebar-link.active::before {
+    height: 22px;
+  }
+}
