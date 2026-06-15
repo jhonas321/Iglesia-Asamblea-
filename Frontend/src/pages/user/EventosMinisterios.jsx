@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
+
 import {
   FaCalendarAlt,
   FaClock,
@@ -9,7 +10,9 @@ import {
   FaChevronDown,
   FaWhatsapp,
 } from "react-icons/fa";
+
 import CalendarioPersonalizado from "../../components/CalendarioPersonalizado";
+import Paginacion from "../../components/ui/Paginacion";
 import "../../styles/eventos-ministerios.css";
 
 const eventos = [
@@ -175,6 +178,36 @@ function EventosMinisterios() {
   const [filtroTexto, setFiltroTexto] = useState("");
   const [filtroFechaInicio, setFiltroFechaInicio] = useState("");
   const [filtroFechaFinal, setFiltroFechaFinal] = useState("");
+
+  const [paginaActual, setPaginaActual] = useState(1);
+  const [eventosPorPagina, setEventosPorPagina] = useState(6);
+
+  useEffect(() => {
+    const actualizarEventosPorPagina = () => {
+      const nuevaCantidad = window.innerWidth <= 1280 ? 4 : 6;
+  
+      setEventosPorPagina((cantidadActual) => {
+        if (cantidadActual !== nuevaCantidad) {
+          setPaginaActual(1);
+          return nuevaCantidad;
+        }
+  
+        return cantidadActual;
+      });
+    };
+  
+    actualizarEventosPorPagina();
+  
+    window.addEventListener("resize", actualizarEventosPorPagina);
+  
+    return () => {
+      window.removeEventListener("resize", actualizarEventosPorPagina);
+    };
+  }, []);
+
+  useEffect(() => {
+    setPaginaActual(1);
+  }, [pestanaActiva, filtroTexto, filtroFechaInicio, filtroFechaFinal]);
 
   useEffect(() => {
     if (!id) return;
@@ -374,6 +407,15 @@ function EventosMinisterios() {
       (evento) => filtrarPorTexto(evento) && filtrarPorRangoFechas(evento)
     )
   );
+
+  const indiceInicio = (paginaActual - 1) * eventosPorPagina;
+  const indiceFinal = indiceInicio + eventosPorPagina;
+
+  const eventosVisibles = eventosFiltrados.slice(indiceInicio, indiceFinal);
+
+  const cambiarPagina = (pagina) => {
+    setPaginaActual(pagina);
+  };
 
   const cerrarModal = () => {
     setEventoSeleccionado(null);
@@ -638,49 +680,79 @@ function EventosMinisterios() {
           </div>
         )}
 
-        <div className="eventos-grid">
-          {eventosFiltrados.map((evento) => (
-            <article className="evento-card" key={evento.id}>
-              <div className="evento-img">
-                <img src={evento.imagen} alt={evento.titulo} />
-              </div>
+        {eventosFiltrados.length > 0 && (
+          <>
+          
+            <Paginacion
+              paginaActual={paginaActual}
+              totalElementos={eventosFiltrados.length}
+              elementosPorPagina={eventosPorPagina}
+              onCambiarPagina={cambiarPagina}
+              scrollAlCambiar={false}
+            />
 
-              <div className="evento-content">
-                <span className={`evento-estado estado-${evento.estado}`}>
-                  {textoEstado(evento.estado)}
-                </span>
+          <br>
+          </br>
 
-                <span className="evento-ministerio">{evento.ministerio}</span>
+            <div className="eventos-grid">
+              {eventosVisibles.map((evento) => (
+                <article className="evento-card" key={evento.id}>
+                  <div className="evento-img">
+                    <img src={evento.imagen} alt={evento.titulo} />
+                  </div>
 
-                <h3>{evento.titulo}</h3>
+                  <div className="evento-content">
+                    <span className={`evento-estado estado-${evento.estado}`}>
+                      {textoEstado(evento.estado)}
+                    </span>
 
-                <div className="evento-info">
-                  <p>
-                    <FaCalendarAlt className="evento-info-icon" />
-                    {evento.fecha}
-                  </p>
-                  <p>
-                    <FaClock className="evento-info-icon" />
-                    {evento.hora}
-                  </p>
-                  <p>
-                    <FaMapMarkerAlt className="evento-info-icon" />
-                    {evento.lugar}
-                  </p>
-                </div>
+                    <span className="evento-ministerio">
+                      {evento.ministerio}
+                    </span>
 
-                <p className="evento-descripcion">{evento.descripcion}</p>
+                    <h3>{evento.titulo}</h3>
 
-                <button
-                  type="button"
-                  onClick={() => setEventoSeleccionado(evento)}
-                >
-                  Ver detalles
-                </button>
-              </div>
-            </article>
-          ))}
-        </div>
+                    <div className="evento-info">
+                      <p>
+                        <FaCalendarAlt className="evento-info-icon" />
+                        {evento.fecha}
+                      </p>
+
+                      <p>
+                        <FaClock className="evento-info-icon" />
+                        {evento.hora}
+                      </p>
+
+                      <p>
+                        <FaMapMarkerAlt className="evento-info-icon" />
+                        {evento.lugar}
+                      </p>
+                    </div>
+
+                    <p className="evento-descripcion">
+                      {evento.descripcion}
+                    </p>
+
+                    <button
+                      type="button"
+                      onClick={() => setEventoSeleccionado(evento)}
+                    >
+                      Ver detalles
+                    </button>
+                  </div>
+                </article>
+              ))}
+            </div>
+
+            <Paginacion
+              paginaActual={paginaActual}
+              totalElementos={eventosFiltrados.length}
+              elementosPorPagina={eventosPorPagina}
+              onCambiarPagina={cambiarPagina}
+              scrollAlCambiar={true}
+            />
+          </>
+        )}
       </section>
 
       {eventoSeleccionado && (
@@ -728,10 +800,12 @@ function EventosMinisterios() {
                   <FaCalendarAlt className="evento-info-icon" />
                   {eventoSeleccionado.fecha}
                 </p>
+
                 <p>
                   <FaClock className="evento-info-icon" />
                   {eventoSeleccionado.hora}
                 </p>
+
                 <p>
                   <FaMapMarkerAlt className="evento-info-icon" />
                   {eventoSeleccionado.lugar}
