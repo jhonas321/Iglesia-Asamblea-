@@ -13,7 +13,7 @@ import {
   FaExternalLinkAlt,
 } from "react-icons/fa";
 import { useEffect, useLayoutEffect, useMemo, useState } from "react";
-import { useNavigate, useParams } from "react-router-dom";
+import { useNavigate, useParams, useSearchParams } from "react-router-dom";
 import Paginacion from "../../components/ui/Paginacion";
 import CalendarioPersonalizado from "../../components/CalendarioPersonalizado";
 
@@ -511,6 +511,8 @@ function PublicacionesMinisterios() {
   const navigate = useNavigate();
   const { id } = useParams();
 
+  const [searchParams, setSearchParams] = useSearchParams();
+
   const publicacionSeleccionada = useMemo(() => {
     if (!id) return null;
 
@@ -534,6 +536,25 @@ function PublicacionesMinisterios() {
   const [paginaActual, setPaginaActual] = useState(1);
   const [paginaFotosActual, setPaginaFotosActual] = useState(1);
   const [esCelular, setEsCelular] = useState(false);
+
+  const abrirFotoModal = (foto, indiceFoto) => {
+    setFotoModal(foto);
+
+    const nuevosParametros = new URLSearchParams(searchParams);
+    nuevosParametros.set("foto", String(indiceFoto));
+    nuevosParametros.delete("video");
+
+    setSearchParams(nuevosParametros, { replace: true });
+  };
+
+  const cerrarFotoModal = () => {
+    setFotoModal(null);
+
+    const nuevosParametros = new URLSearchParams(searchParams);
+    nuevosParametros.delete("foto");
+
+    setSearchParams(nuevosParametros, { replace: true });
+  };
 
   useLayoutEffect(() => {
     window.scrollTo({ top: 0, left: 0, behavior: "auto" });
@@ -568,16 +589,74 @@ function PublicacionesMinisterios() {
   }, [publicacionSeleccionada]);
 
   useEffect(() => {
-    document.body.style.overflow = fotoModal || videoModal ? "hidden" : "";
+    const modalAbierto = fotoModal || videoModal;
+
+    if (!modalAbierto) return;
+
+    const scrollY = window.scrollY;
+
+    const body = document.body;
+    const html = document.documentElement;
+
+    const overflowBodyAnterior = body.style.overflow;
+    const positionBodyAnterior = body.style.position;
+    const topBodyAnterior = body.style.top;
+    const widthBodyAnterior = body.style.width;
+    const overflowHtmlAnterior = html.style.overflow;
+
+    body.style.overflow = "hidden";
+    body.style.position = "fixed";
+    body.style.top = `-${scrollY}px`;
+    body.style.width = "100%";
+    html.style.overflow = "hidden";
 
     return () => {
-      document.body.style.overflow = "";
+      body.style.overflow = overflowBodyAnterior;
+      body.style.position = positionBodyAnterior;
+      body.style.top = topBodyAnterior;
+      body.style.width = widthBodyAnterior;
+      html.style.overflow = overflowHtmlAnterior;
+
+      window.scrollTo(0, scrollY);
     };
   }, [fotoModal, videoModal]);
 
   useEffect(() => {
+    if (!publicacionSeleccionada) return;
+
+    const fotoParametro = searchParams.get("foto");
+
+    if (fotoParametro === null) {
+      setFotoModal(null);
+      return;
+    }
+
+    const indiceFoto = Number(fotoParametro);
+
+    if (
+      Number.isNaN(indiceFoto) ||
+      indiceFoto < 0 ||
+      indiceFoto >= publicacionSeleccionada.fotos.length
+    ) {
+      const nuevosParametros = new URLSearchParams(searchParams);
+      nuevosParametros.delete("foto");
+
+      setSearchParams(nuevosParametros, { replace: true });
+      setFotoModal(null);
+      return;
+    }
+
+    setFotoModal(publicacionSeleccionada.fotos[indiceFoto]);
+  }, [publicacionSeleccionada, searchParams, setSearchParams]);
+
+  useEffect(() => {
     const cerrarConEscape = (e) => {
       if (e.key === "Escape") {
+        const nuevosParametros = new URLSearchParams(window.location.search);
+        nuevosParametros.delete("foto");
+        nuevosParametros.delete("video");
+
+        setSearchParams(nuevosParametros, { replace: true });
         setFotoModal(null);
         setVideoModal(null);
       }
@@ -588,7 +667,7 @@ function PublicacionesMinisterios() {
     return () => {
       window.removeEventListener("keydown", cerrarConEscape);
     };
-  }, []);
+  }, [setSearchParams]);
 
   useEffect(() => {
     const videosUnicos = [
@@ -1025,7 +1104,9 @@ function PublicacionesMinisterios() {
                         type="button"
                         className="detalle-foto"
                         key={`${foto}-${numeroFotoGlobal}`}
-                        onClick={() => setFotoModal(foto)}
+                        onClick={() =>
+                          abrirFotoModal(foto, numeroFotoGlobal - 1)
+                        }
                       >
                         <img
                           src={foto}
@@ -1051,7 +1132,12 @@ function PublicacionesMinisterios() {
         </section>
 
         {fotoModal && (
-          <div className="foto-modal" onClick={() => setFotoModal(null)}>
+          <div
+            className="foto-modal"
+            onClick={cerrarFotoModal}
+            onWheel={(e) => e.preventDefault()}
+            onTouchMove={(e) => e.preventDefault()}
+          >
             <div
               className="foto-modal-fondo"
               style={{ backgroundImage: `url(${fotoModal})` }}
@@ -1060,7 +1146,7 @@ function PublicacionesMinisterios() {
             <button
               type="button"
               className="foto-modal-cerrar"
-              onClick={() => setFotoModal(null)}
+              onClick={cerrarFotoModal}
               aria-label="Cerrar imagen"
             >
               <FaTimes />
@@ -1088,9 +1174,14 @@ function PublicacionesMinisterios() {
         )}
 
         {videoModal && (
-          <div className="video-modal" onClick={() => setVideoModal(null)}>
+          <div
+            className="video-modal"
+            onClick={() => setVideoModal(null)}
+            onWheel={(e) => e.preventDefault()}
+            onTouchMove={(e) => e.preventDefault()}
+          >
+            {" "}
             <div className="video-modal-fondo"></div>
-
             <button
               type="button"
               className="video-modal-cerrar"
@@ -1099,7 +1190,6 @@ function PublicacionesMinisterios() {
             >
               <FaTimes />
             </button>
-
             <div
               className={`video-modal-contenido ${
                 videoModal.orientacion === "vertical"
