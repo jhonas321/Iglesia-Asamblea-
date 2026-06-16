@@ -244,6 +244,9 @@ body {
     z-index: 3001;
     overflow-y: auto;
     overflow-x: hidden;
+
+    overscroll-behavior: contain;
+    -webkit-overflow-scrolling: touch;
   }
 
   .nav-links.active {
@@ -311,6 +314,9 @@ body {
     visibility: hidden;
     transition: all 0.3s ease;
     z-index: 1500;
+
+    overscroll-behavior: contain;
+    touch-action: none;
   }
 
   .menu-overlay.active {

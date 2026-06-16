@@ -1,5 +1,5 @@
 import "../styles/navbar.css";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { HashLink } from "react-router-hash-link";
 import {
@@ -21,7 +21,40 @@ function Navbar() {
   const cerrarMenu = () => {
     setMenuOpen(false);
   };
+  useEffect(() => {
+    if (!menuOpen) return;
 
+    const esResponsive = window.matchMedia("(max-width: 1280px)").matches;
+
+    if (!esResponsive) return;
+
+    const scrollY = window.scrollY;
+
+    const body = document.body;
+    const html = document.documentElement;
+
+    const overflowBodyAnterior = body.style.overflow;
+    const positionBodyAnterior = body.style.position;
+    const topBodyAnterior = body.style.top;
+    const widthBodyAnterior = body.style.width;
+    const overflowHtmlAnterior = html.style.overflow;
+
+    body.style.overflow = "hidden";
+    body.style.position = "fixed";
+    body.style.top = `-${scrollY}px`;
+    body.style.width = "100%";
+    html.style.overflow = "hidden";
+
+    return () => {
+      body.style.overflow = overflowBodyAnterior;
+      body.style.position = positionBodyAnterior;
+      body.style.top = topBodyAnterior;
+      body.style.width = widthBodyAnterior;
+      html.style.overflow = overflowHtmlAnterior;
+
+      window.scrollTo(0, scrollY);
+    };
+  }, [menuOpen]);
   return (
     <>
       <nav className="navbar">
@@ -136,6 +169,8 @@ function Navbar() {
       <div
         className={`menu-overlay ${menuOpen ? "active" : ""}`}
         onClick={cerrarMenu}
+        onWheel={(e) => e.preventDefault()}
+        onTouchMove={(e) => e.preventDefault()}
       ></div>
     </>
   );
