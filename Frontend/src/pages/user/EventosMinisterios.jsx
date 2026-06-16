@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 
 import {
@@ -9,6 +9,8 @@ import {
   FaChevronUp,
   FaChevronDown,
   FaWhatsapp,
+  FaArrowLeft,
+  FaDownload,
 } from "react-icons/fa";
 
 import CalendarioPersonalizado from "../../components/CalendarioPersonalizado";
@@ -159,6 +161,11 @@ const eventos = [
   },
 ];
 
+const obtenerVistaTabletOCelular = () => {
+  if (typeof window === "undefined") return false;
+  return window.innerWidth <= 1280;
+};
+
 function EventosMinisterios() {
   const { id } = useParams();
   const navigate = useNavigate();
@@ -180,28 +187,38 @@ function EventosMinisterios() {
   const [filtroFechaFinal, setFiltroFechaFinal] = useState("");
 
   const [paginaActual, setPaginaActual] = useState(1);
-  const [eventosPorPagina, setEventosPorPagina] = useState(6);
+  const [eventosPorPagina, setEventosPorPagina] = useState(() =>
+    obtenerVistaTabletOCelular() ? 4 : 6
+  );
+  const [esTabletOCelular, setEsTabletOCelular] = useState(
+    obtenerVistaTabletOCelular
+  );
+
+  const scrollAntesModalPc = useRef(0);
 
   useEffect(() => {
-    const actualizarEventosPorPagina = () => {
-      const nuevaCantidad = window.innerWidth <= 1280 ? 4 : 6;
-  
+    const actualizarVista = () => {
+      const vistaTabletOCelular = window.innerWidth <= 1280;
+      const nuevaCantidad = vistaTabletOCelular ? 4 : 6;
+
+      setEsTabletOCelular(vistaTabletOCelular);
+
       setEventosPorPagina((cantidadActual) => {
         if (cantidadActual !== nuevaCantidad) {
           setPaginaActual(1);
           return nuevaCantidad;
         }
-  
+
         return cantidadActual;
       });
     };
-  
-    actualizarEventosPorPagina();
-  
-    window.addEventListener("resize", actualizarEventosPorPagina);
-  
+
+    actualizarVista();
+
+    window.addEventListener("resize", actualizarVista);
+
     return () => {
-      window.removeEventListener("resize", actualizarEventosPorPagina);
+      window.removeEventListener("resize", actualizarVista);
     };
   }, []);
 
@@ -210,19 +227,36 @@ function EventosMinisterios() {
   }, [pestanaActiva, filtroTexto, filtroFechaInicio, filtroFechaFinal]);
 
   useEffect(() => {
-    if (!id) return;
+    if (!id) {
+      setEventoSeleccionado(null);
+      return;
+    }
 
     const eventoEncontrado = eventos.find((evento) => evento.id === Number(id));
 
     if (eventoEncontrado) {
       setEventoSeleccionado(eventoEncontrado);
+      return;
     }
-  }, [id]);
+
+    setEventoSeleccionado(null);
+    navigate("/ministerios/eventos", { replace: true });
+  }, [id, navigate]);
 
   useEffect(() => {
-    if (!eventoSeleccionado) return;
+    if (!eventoSeleccionado || !esTabletOCelular) return;
 
-    const scrollY = window.scrollY;
+    window.scrollTo({
+      top: 0,
+      left: 0,
+      behavior: "smooth",
+    });
+  }, [eventoSeleccionado, esTabletOCelular]);
+
+  useEffect(() => {
+    if (!eventoSeleccionado || esTabletOCelular) return;
+
+    const scrollY = scrollAntesModalPc.current || window.scrollY;
 
     document.body.style.position = "fixed";
     document.body.style.top = `-${scrollY}px`;
@@ -239,9 +273,13 @@ function EventosMinisterios() {
       document.body.style.width = "";
       document.body.style.overflow = "";
 
-      window.scrollTo(0, scrollY);
+      window.scrollTo({
+        top: scrollY,
+        left: 0,
+        behavior: "auto",
+      });
     };
-  }, [eventoSeleccionado]);
+  }, [eventoSeleccionado, esTabletOCelular]);
 
   const textoEstado = (estado) => {
     if (estado === "enCurso") return "En curso";
@@ -413,349 +451,587 @@ function EventosMinisterios() {
 
   const eventosVisibles = eventosFiltrados.slice(indiceInicio, indiceFinal);
 
+  const mostrarDetalleNormal = eventoSeleccionado && esTabletOCelular;
+  const mostrarModalPc = eventoSeleccionado && !esTabletOCelular;
+
   const cambiarPagina = (pagina) => {
     setPaginaActual(pagina);
   };
 
-  const cerrarModal = () => {
+  const restaurarScrollPc = (scrollObjetivo) => {
+    if (esTabletOCelular) return;
+
+    const posicion = Number(scrollObjetivo) || 0;
+
+    requestAnimationFrame(() => {
+      window.scrollTo({
+        top: posicion,
+        left: 0,
+        behavior: "auto",
+      });
+    });
+
+    [30, 80, 160].forEach((tiempo) => {
+      setTimeout(() => {
+        window.scrollTo({
+          top: posicion,
+          left: 0,
+          behavior: "auto",
+        });
+      }, tiempo);
+    });
+  };
+
+  const abrirDetalle = (evento) => {
+    if (!esTabletOCelular) {
+      const scrollActual = window.scrollY;
+      scrollAntesModalPc.current = scrollActual;
+
+      setEventoSeleccionado(evento);
+
+      navigate(`/ministerios/eventos/${evento.id}`, {
+        state: { mantenerScroll: true, scrollObjetivo: scrollActual },
+        preventScrollReset: true,
+      });
+
+      return;
+    }
+
+    setEventoSeleccionado(evento);
+    navigate(`/ministerios/eventos/${evento.id}`);
+  };
+
+  const volverAEventos = () => {
     setEventoSeleccionado(null);
     navigate("/ministerios/eventos");
   };
 
-  const consultarWhatsApp = () => {
-    if (!eventoSeleccionado) return;
+  const cerrarModal = () => {
+    const scrollObjetivo = scrollAntesModalPc.current || 0;
 
-    const mensaje = `Hola, quisiera consultar sobre el evento "${eventoSeleccionado.titulo}" del ${eventoSeleccionado.fecha} a horas ${eventoSeleccionado.hora}, en ${eventoSeleccionado.lugar}.`;
+    setEventoSeleccionado(null);
+
+    navigate("/ministerios/eventos", {
+      replace: true,
+      state: { mantenerScroll: true, scrollObjetivo },
+      preventScrollReset: true,
+    });
+
+    restaurarScrollPc(scrollObjetivo);
+  };
+
+  const consultarWhatsApp = (evento = eventoSeleccionado) => {
+    if (!evento) return;
+
+    const mensaje = `Hola, quisiera consultar sobre el evento "${evento.titulo}" del ${evento.fecha} a horas ${evento.hora}, en ${evento.lugar}.`;
 
     const url = `https://wa.me/?text=${encodeURIComponent(mensaje)}`;
 
     window.open(url, "_blank");
   };
 
+  const limpiarNombreArchivo = (texto) => {
+    return texto
+      .toLowerCase()
+      .normalize("NFD")
+      .replace(/[\u0300-\u036f]/g, "")
+      .replace(/[^a-z0-9]+/g, "-")
+      .replace(/^-+|-+$/g, "");
+  };
+
+  const obtenerExtensionImagen = (blob, rutaImagen) => {
+    if (blob?.type) {
+      const extensionDesdeMime = blob.type.split("/")[1];
+
+      if (extensionDesdeMime) {
+        return extensionDesdeMime === "jpeg" ? "jpg" : extensionDesdeMime;
+      }
+    }
+
+    const rutaSinParametros = rutaImagen.split("?")[0].toLowerCase();
+    const extensionEncontrada = rutaSinParametros.match(
+      /\.(jpg|jpeg|png|webp|gif)$/
+    );
+
+    if (extensionEncontrada) {
+      return extensionEncontrada[1] === "jpeg" ? "jpg" : extensionEncontrada[1];
+    }
+
+    return "jpg";
+  };
+
+  const descargarDesdeUrl = (url, nombreArchivo) => {
+    const enlace = document.createElement("a");
+
+    enlace.href = url;
+    enlace.download = nombreArchivo;
+    enlace.target = "_blank";
+    enlace.rel = "noopener noreferrer";
+
+    document.body.appendChild(enlace);
+    enlace.click();
+    enlace.remove();
+  };
+
+  const descargarAfiche = async (evento = eventoSeleccionado) => {
+    if (!evento) return;
+
+    const nombreBase = `afiche-${
+      limpiarNombreArchivo(evento.titulo) || "evento"
+    }`;
+
+    try {
+      const respuesta = await fetch(evento.imagen, { mode: "cors" });
+
+      if (!respuesta.ok) {
+        throw new Error("No se pudo obtener la imagen.");
+      }
+
+      const blob = await respuesta.blob();
+      const extension = obtenerExtensionImagen(blob, evento.imagen);
+      const urlTemporal = URL.createObjectURL(blob);
+
+      descargarDesdeUrl(urlTemporal, `${nombreBase}.${extension}`);
+
+      setTimeout(() => {
+        URL.revokeObjectURL(urlTemporal);
+      }, 1000);
+    } catch (error) {
+      const extension = obtenerExtensionImagen(null, evento.imagen);
+
+      descargarDesdeUrl(evento.imagen, `${nombreBase}.${extension}`);
+    }
+  };
+
   return (
     <main className="eventos-page">
-      <section className="eventos-hero">
-        <div className="eventos-hero-content">
-          <h1>Eventos Ministeriales</h1>
-          <p>
-            Consulta las próximas actividades, eventos en curso y actividades ya
-            realizadas por los ministerios de la iglesia.
-          </p>
-        </div>
-      </section>
+      {!mostrarDetalleNormal && (
+        <section className="eventos-hero">
+          <div className="eventos-hero-content">
+            <h1>Eventos Ministeriales</h1>
+            <p>
+              Consulta las próximas actividades, eventos en curso y actividades
+              ya realizadas por los ministerios de la iglesia.
+            </p>
+          </div>
+        </section>
+      )}
 
-      <section className="eventos-section">
-        <div className="eventos-tabs">
-          <button
-            type="button"
-            className={pestanaActiva === "todos" ? "active" : ""}
-            onClick={() => setPestanaActiva("todos")}
-          >
-            Todos
-          </button>
+      <section
+        className={`eventos-section ${
+          mostrarDetalleNormal ? "eventos-section-detalle-activo" : ""
+        }`}
+      >
+        {mostrarDetalleNormal ? (
+          <div className="evento-detalle-page">
+            <button
+              type="button"
+              className="evento-detalle-back"
+              onClick={volverAEventos}
+            >
+              <FaArrowLeft className="evento-detalle-back-icon" />
+              Volver a eventos
+            </button>
 
-          <button
-            type="button"
-            className={pestanaActiva === "enCurso" ? "active" : ""}
-            onClick={() => setPestanaActiva("enCurso")}
-          >
-            En curso
-          </button>
-
-          <button
-            type="button"
-            className={pestanaActiva === "proximo" ? "active" : ""}
-            onClick={() => setPestanaActiva("proximo")}
-          >
-            Próximos eventos
-          </button>
-
-          <button
-            type="button"
-            className={pestanaActiva === "pasado" ? "active" : ""}
-            onClick={() => setPestanaActiva("pasado")}
-          >
-            Eventos pasados
-          </button>
-        </div>
-
-        <button type="button" className="filter-toggle" onClick={abrirFiltros}>
-          <span>Búsqueda</span>
-          {filtrosAbiertos ? (
-            <FaChevronUp className="filter-toggle-icon" aria-hidden="true" />
-          ) : (
-            <FaChevronDown className="filter-toggle-icon" aria-hidden="true" />
-          )}
-        </button>
-
-        <div
-          className={`filter-type-options ${
-            filtrosAbiertos ? "filters-open" : ""
-          }`}
-        >
-          <button
-            type="button"
-            className={tipoFiltroActivo === "busqueda" ? "active" : ""}
-            onClick={() => seleccionarTipoFiltro("busqueda")}
-          >
-            <FaSearch className="filter-option-icon" aria-hidden="true" />
-            Buscar eventos
-          </button>
-
-          <button
-            type="button"
-            className={tipoFiltroActivo === "fechas" ? "active" : ""}
-            onClick={() => seleccionarTipoFiltro("fechas")}
-          >
-            <FaCalendarAlt className="filter-option-icon" aria-hidden="true" />
-            Buscar por fecha
-          </button>
-        </div>
-
-        <div
-          className={`eventos-filters-wrapper ${
-            filtrosAbiertos && tipoFiltroActivo ? "filters-open" : ""
-          }`}
-        >
-          <div
-            className={`eventos-filter-card ${
-              tipoFiltroActivo === "busqueda" ? "filter-active" : ""
-            }`}
-          >
-            <div className="filter-card-header">
-              <span>Buscar eventos</span>
-            </div>
-
-            <div className="search-field">
-              <label>Ministerio o título</label>
-
-              <div className="search-input-wrapper">
-                <input
-                  type="text"
-                  value={busquedaTexto}
-                  onChange={(e) => manejarCambioBusquedaTexto(e.target.value)}
-                  placeholder="Ej: Ministerios Generales, Evangelismo, Semana de oración..."
+            <article className="evento-detalle-card">
+              <div className="evento-detalle-img">
+                <img
+                  className="evento-detalle-bg"
+                  src={eventoSeleccionado.imagen}
+                  alt=""
+                  aria-hidden="true"
                 />
 
-                {busquedaTexto && (
+                <img
+                  className="evento-detalle-flyer"
+                  src={eventoSeleccionado.imagen}
+                  alt={eventoSeleccionado.titulo}
+                />
+              </div>
+
+              <div className="evento-detalle-content">
+                <span
+                  className={`evento-detalle-estado estado-${eventoSeleccionado.estado}`}
+                >
+                  {textoEstado(eventoSeleccionado.estado)}
+                </span>
+
+                <span className="evento-detalle-ministerio">
+                  {eventoSeleccionado.ministerio}
+                </span>
+
+                <h2>{eventoSeleccionado.titulo}</h2>
+
+                <div className="evento-detalle-info">
+                  <p>
+                    <FaCalendarAlt className="evento-info-icon" />
+                    {eventoSeleccionado.fecha}
+                  </p>
+
+                  <p>
+                    <FaClock className="evento-info-icon" />
+                    {eventoSeleccionado.hora}
+                  </p>
+
+                  <p>
+                    <FaMapMarkerAlt className="evento-info-icon" />
+                    {eventoSeleccionado.lugar}
+                  </p>
+                </div>
+
+                <p className="evento-detalle-descripcion">
+                  {eventoSeleccionado.detalles}
+                </p>
+
+                <div className="evento-detalle-actions">
                   <button
                     type="button"
-                    className="field-clear-btn"
-                    onClick={limpiarFiltroTexto}
-                    aria-label="Borrar búsqueda"
+                    className="evento-detalle-btn"
+                    onClick={() => consultarWhatsApp(eventoSeleccionado)}
                   >
-                    ×
+                    <FaWhatsapp className="evento-detalle-btn-icon" />
+                    Consultar por WhatsApp
                   </button>
-                )}
-              </div>
-            </div>
 
-            <div className="filter-actions">
+                  <button
+                    type="button"
+                    className="evento-detalle-download-btn"
+                    onClick={() => descargarAfiche(eventoSeleccionado)}
+                  >
+                    <FaDownload className="evento-detalle-download-icon" />
+                    Descargar afiche
+                  </button>
+                </div>
+              </div>
+            </article>
+          </div>
+        ) : (
+          <>
+            <div className="eventos-tabs">
               <button
                 type="button"
-                className="filter-btn"
-                onClick={aplicarBusquedaTexto}
+                className={pestanaActiva === "todos" ? "active" : ""}
+                onClick={() => setPestanaActiva("todos")}
               >
-                Buscar eventos
+                Todos
+              </button>
+
+              <button
+                type="button"
+                className={pestanaActiva === "enCurso" ? "active" : ""}
+                onClick={() => setPestanaActiva("enCurso")}
+              >
+                En curso
+              </button>
+
+              <button
+                type="button"
+                className={pestanaActiva === "proximo" ? "active" : ""}
+                onClick={() => setPestanaActiva("proximo")}
+              >
+                Próximos eventos
+              </button>
+
+              <button
+                type="button"
+                className={pestanaActiva === "pasado" ? "active" : ""}
+                onClick={() => setPestanaActiva("pasado")}
+              >
+                Eventos pasados
               </button>
             </div>
-          </div>
 
-          <div
-            className={`eventos-filter-card ${
-              tipoFiltroActivo === "fechas" ? "filter-active" : ""
-            }`}
-          >
-            <div className="filter-card-header">
-              <span>Buscar por fecha</span>
-            </div>
+            <button
+              type="button"
+              className="filter-toggle"
+              onClick={abrirFiltros}
+            >
+              <span>Búsqueda</span>
+              {filtrosAbiertos ? (
+                <FaChevronUp className="filter-toggle-icon" aria-hidden="true" />
+              ) : (
+                <FaChevronDown
+                  className="filter-toggle-icon"
+                  aria-hidden="true"
+                />
+              )}
+            </button>
 
-            <div className="date-fields-row">
-              <div
-                className={`date-field ${
-                  calendarioAbierto === "inicio"
-                    ? "calendario-padre-activo"
-                    : ""
-                }`}
-              >
-                <label>Fecha inicial</label>
-
-                <div
-                  className={`date-picker-wrapper ${
-                    calendarioAbierto === "inicio"
-                      ? "calendario-wrapper-activo"
-                      : ""
-                  }`}
-                >
-                  <CalendarioPersonalizado
-                    valor={fechaInicio}
-                    onChange={manejarCambioFechaInicio}
-                    ejemplo="Ej: 20/05/2026"
-                    label="Seleccionar fecha inicial"
-                    abierto={calendarioAbierto === "inicio"}
-                    onAbrir={() =>
-                      setCalendarioAbierto(
-                        calendarioAbierto === "inicio" ? "" : "inicio"
-                      )
-                    }
-                    onCerrar={() => setCalendarioAbierto("")}
-                  />
-
-                  {fechaInicio && (
-                    <button
-                      type="button"
-                      className="field-clear-btn date-clear-btn"
-                      onClick={limpiarFechaInicio}
-                      aria-label="Borrar fecha inicial"
-                    >
-                      ×
-                    </button>
-                  )}
-                </div>
-              </div>
-
-              <div
-                className={`date-field ${
-                  calendarioAbierto === "final"
-                    ? "calendario-padre-activo"
-                    : ""
-                }`}
-              >
-                <label>Fecha final</label>
-
-                <div
-                  className={`date-picker-wrapper ${
-                    calendarioAbierto === "final"
-                      ? "calendario-wrapper-activo"
-                      : ""
-                  }`}
-                >
-                  <CalendarioPersonalizado
-                    valor={fechaFinal}
-                    onChange={manejarCambioFechaFinal}
-                    ejemplo="Ej: 30/05/2026"
-                    label="Seleccionar fecha final"
-                    abierto={calendarioAbierto === "final"}
-                    onAbrir={() =>
-                      setCalendarioAbierto(
-                        calendarioAbierto === "final" ? "" : "final"
-                      )
-                    }
-                    onCerrar={() => setCalendarioAbierto("")}
-                  />
-
-                  {fechaFinal && (
-                    <button
-                      type="button"
-                      className="field-clear-btn date-clear-btn"
-                      onClick={limpiarFechaFinal}
-                      aria-label="Borrar fecha final"
-                    >
-                      ×
-                    </button>
-                  )}
-                </div>
-              </div>
-            </div>
-
-            <div className="filter-actions">
+            <div
+              className={`filter-type-options ${
+                filtrosAbiertos ? "filters-open" : ""
+              }`}
+            >
               <button
                 type="button"
-                className="filter-btn"
-                onClick={aplicarFiltroFechas}
+                className={tipoFiltroActivo === "busqueda" ? "active" : ""}
+                onClick={() => seleccionarTipoFiltro("busqueda")}
               >
+                <FaSearch className="filter-option-icon" aria-hidden="true" />
+                Buscar eventos
+              </button>
+
+              <button
+                type="button"
+                className={tipoFiltroActivo === "fechas" ? "active" : ""}
+                onClick={() => seleccionarTipoFiltro("fechas")}
+              >
+                <FaCalendarAlt
+                  className="filter-option-icon"
+                  aria-hidden="true"
+                />
                 Buscar por fecha
               </button>
             </div>
-          </div>
-        </div>
 
-        {eventosFiltrados.length === 0 && (
-          <div className="eventos-empty">
-            <h3>No se encontraron eventos</h3>
-            <p>
-              Intenta buscar otro ministerio, título o seleccionar otro rango de
-              fechas.
-            </p>
-          </div>
-        )}
+            <div
+              className={`eventos-filters-wrapper ${
+                filtrosAbiertos && tipoFiltroActivo ? "filters-open" : ""
+              }`}
+            >
+              <div
+                className={`eventos-filter-card ${
+                  tipoFiltroActivo === "busqueda" ? "filter-active" : ""
+                }`}
+              >
+                <div className="filter-card-header">
+                  <span>Buscar eventos</span>
+                </div>
 
-        {eventosFiltrados.length > 0 && (
-          <>
-          
-            <Paginacion
-              paginaActual={paginaActual}
-              totalElementos={eventosFiltrados.length}
-              elementosPorPagina={eventosPorPagina}
-              onCambiarPagina={cambiarPagina}
-              scrollAlCambiar={false}
-            />
+                <div className="search-field">
+                  <label>Ministerio o título</label>
 
-          <br>
-          </br>
+                  <div className="search-input-wrapper">
+                    <input
+                      type="text"
+                      value={busquedaTexto}
+                      onChange={(e) =>
+                        manejarCambioBusquedaTexto(e.target.value)
+                      }
+                      placeholder="Ej: Ministerios Generales, Evangelismo, Semana de oración..."
+                    />
 
-            <div className="eventos-grid">
-              {eventosVisibles.map((evento) => (
-                <article className="evento-card" key={evento.id}>
-                  <div className="evento-img">
-                    <img src={evento.imagen} alt={evento.titulo} />
+                    {busquedaTexto && (
+                      <button
+                        type="button"
+                        className="field-clear-btn"
+                        onClick={limpiarFiltroTexto}
+                        aria-label="Borrar búsqueda"
+                      >
+                        ×
+                      </button>
+                    )}
                   </div>
+                </div>
 
-                  <div className="evento-content">
-                    <span className={`evento-estado estado-${evento.estado}`}>
-                      {textoEstado(evento.estado)}
-                    </span>
+                <div className="filter-actions">
+                  <button
+                    type="button"
+                    className="filter-btn"
+                    onClick={aplicarBusquedaTexto}
+                  >
+                    Buscar eventos
+                  </button>
+                </div>
+              </div>
 
-                    <span className="evento-ministerio">
-                      {evento.ministerio}
-                    </span>
+              <div
+                className={`eventos-filter-card ${
+                  tipoFiltroActivo === "fechas" ? "filter-active" : ""
+                }`}
+              >
+                <div className="filter-card-header">
+                  <span>Buscar por fecha</span>
+                </div>
 
-                    <h3>{evento.titulo}</h3>
+                <div className="date-fields-row">
+                  <div
+                    className={`date-field ${
+                      calendarioAbierto === "inicio"
+                        ? "calendario-padre-activo"
+                        : ""
+                    }`}
+                  >
+                    <label>Fecha inicial</label>
 
-                    <div className="evento-info">
-                      <p>
-                        <FaCalendarAlt className="evento-info-icon" />
-                        {evento.fecha}
-                      </p>
-
-                      <p>
-                        <FaClock className="evento-info-icon" />
-                        {evento.hora}
-                      </p>
-
-                      <p>
-                        <FaMapMarkerAlt className="evento-info-icon" />
-                        {evento.lugar}
-                      </p>
-                    </div>
-
-                    <p className="evento-descripcion">
-                      {evento.descripcion}
-                    </p>
-
-                    <button
-                      type="button"
-                      onClick={() => setEventoSeleccionado(evento)}
+                    <div
+                      className={`date-picker-wrapper ${
+                        calendarioAbierto === "inicio"
+                          ? "calendario-wrapper-activo"
+                          : ""
+                      }`}
                     >
-                      Ver detalles
-                    </button>
+                      <CalendarioPersonalizado
+                        valor={fechaInicio}
+                        onChange={manejarCambioFechaInicio}
+                        ejemplo="Ej: 20/05/2026"
+                        label="Seleccionar fecha inicial"
+                        abierto={calendarioAbierto === "inicio"}
+                        onAbrir={() =>
+                          setCalendarioAbierto(
+                            calendarioAbierto === "inicio" ? "" : "inicio"
+                          )
+                        }
+                        onCerrar={() => setCalendarioAbierto("")}
+                      />
+
+                      {fechaInicio && (
+                        <button
+                          type="button"
+                          className="field-clear-btn date-clear-btn"
+                          onClick={limpiarFechaInicio}
+                          aria-label="Borrar fecha inicial"
+                        >
+                          ×
+                        </button>
+                      )}
+                    </div>
                   </div>
-                </article>
-              ))}
+
+                  <div
+                    className={`date-field ${
+                      calendarioAbierto === "final"
+                        ? "calendario-padre-activo"
+                        : ""
+                    }`}
+                  >
+                    <label>Fecha final</label>
+
+                    <div
+                      className={`date-picker-wrapper ${
+                        calendarioAbierto === "final"
+                          ? "calendario-wrapper-activo"
+                          : ""
+                      }`}
+                    >
+                      <CalendarioPersonalizado
+                        valor={fechaFinal}
+                        onChange={manejarCambioFechaFinal}
+                        ejemplo="Ej: 30/05/2026"
+                        label="Seleccionar fecha final"
+                        abierto={calendarioAbierto === "final"}
+                        onAbrir={() =>
+                          setCalendarioAbierto(
+                            calendarioAbierto === "final" ? "" : "final"
+                          )
+                        }
+                        onCerrar={() => setCalendarioAbierto("")}
+                      />
+
+                      {fechaFinal && (
+                        <button
+                          type="button"
+                          className="field-clear-btn date-clear-btn"
+                          onClick={limpiarFechaFinal}
+                          aria-label="Borrar fecha final"
+                        >
+                          ×
+                        </button>
+                      )}
+                    </div>
+                  </div>
+                </div>
+
+                <div className="filter-actions">
+                  <button
+                    type="button"
+                    className="filter-btn"
+                    onClick={aplicarFiltroFechas}
+                  >
+                    Buscar por fecha
+                  </button>
+                </div>
+              </div>
             </div>
 
-            <Paginacion
-              paginaActual={paginaActual}
-              totalElementos={eventosFiltrados.length}
-              elementosPorPagina={eventosPorPagina}
-              onCambiarPagina={cambiarPagina}
-              scrollAlCambiar={true}
-            />
+            {eventosFiltrados.length === 0 && (
+              <div className="eventos-empty">
+                <h3>No se encontraron eventos</h3>
+                <p>
+                  Intenta buscar otro ministerio, título o seleccionar otro rango
+                  de fechas.
+                </p>
+              </div>
+            )}
+
+            {eventosFiltrados.length > 0 && (
+              <>
+                <Paginacion
+                  paginaActual={paginaActual}
+                  totalElementos={eventosFiltrados.length}
+                  elementosPorPagina={eventosPorPagina}
+                  onCambiarPagina={cambiarPagina}
+                  scrollAlCambiar={false}
+                />
+
+                <br />
+
+                <div className="eventos-grid">
+                  {eventosVisibles.map((evento) => (
+                    <article className="evento-card" key={evento.id}>
+                      <div className="evento-img">
+                        <img src={evento.imagen} alt={evento.titulo} />
+                      </div>
+
+                      <div className="evento-content">
+                        <span
+                          className={`evento-estado estado-${evento.estado}`}
+                        >
+                          {textoEstado(evento.estado)}
+                        </span>
+
+                        <span className="evento-ministerio">
+                          {evento.ministerio}
+                        </span>
+
+                        <h3>{evento.titulo}</h3>
+
+                        <div className="evento-info">
+                          <p>
+                            <FaCalendarAlt className="evento-info-icon" />
+                            {evento.fecha}
+                          </p>
+
+                          <p>
+                            <FaClock className="evento-info-icon" />
+                            {evento.hora}
+                          </p>
+
+                          <p>
+                            <FaMapMarkerAlt className="evento-info-icon" />
+                            {evento.lugar}
+                          </p>
+                        </div>
+
+                        <p className="evento-descripcion">
+                          {evento.descripcion}
+                        </p>
+
+                        <button
+                          type="button"
+                          onClick={() => abrirDetalle(evento)}
+                        >
+                          Ver detalles
+                        </button>
+                      </div>
+                    </article>
+                  ))}
+                </div>
+
+                <Paginacion
+                  paginaActual={paginaActual}
+                  totalElementos={eventosFiltrados.length}
+                  elementosPorPagina={eventosPorPagina}
+                  onCambiarPagina={cambiarPagina}
+                  scrollAlCambiar={true}
+                />
+              </>
+            )}
           </>
         )}
       </section>
 
-      {eventoSeleccionado && (
+      {mostrarModalPc && (
         <div className="evento-modal-overlay" onClick={cerrarModal}>
           <div className="evento-modal" onClick={(e) => e.stopPropagation()}>
             <button
@@ -816,14 +1092,25 @@ function EventosMinisterios() {
                 {eventoSeleccionado.detalles}
               </p>
 
-              <button
-                type="button"
-                className="evento-modal-btn"
-                onClick={consultarWhatsApp}
-              >
-                <FaWhatsapp className="evento-modal-btn-icon" />
-                Consultar por WhatsApp
-              </button>
+              <div className="evento-modal-actions">
+                <button
+                  type="button"
+                  className="evento-modal-btn"
+                  onClick={() => consultarWhatsApp(eventoSeleccionado)}
+                >
+                  <FaWhatsapp className="evento-modal-btn-icon" />
+                  Consultar por WhatsApp
+                </button>
+
+                <button
+                  type="button"
+                  className="evento-modal-download-btn"
+                  onClick={() => descargarAfiche(eventoSeleccionado)}
+                >
+                  <FaDownload className="evento-modal-download-icon" />
+                  Descargar afiche
+                </button>
+              </div>
             </div>
           </div>
         </div>
