@@ -1402,26 +1402,24 @@
 
   .foto-modal,
   .video-modal {
-    padding: 18px 14px 82px;
+    position: fixed;
+    inset: 0;
+    z-index: 9999;
+    overflow: hidden;
+    overscroll-behavior: contain;
+    touch-action: none;
   }
 
   .foto-modal-contenido {
-    width: fit-content;
-    height: fit-content;
-    max-width: 94vw;
-    max-height: 68vh;
-    border-radius: 18px;
-    background: transparent;
+    max-width: 95vw;
+    max-height: 90vh;
+    overflow: hidden;
   }
 
   .foto-modal-contenido img {
-    display: block;
-    width: auto;
-    height: auto;
-    max-width: 94vw;
-    max-height: 68vh;
+    max-width: 100%;
+    max-height: 90vh;
     object-fit: contain;
-    border-radius: 18px;
   }
 
   .foto-modal-cerrar,
