@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 
 import {
@@ -15,160 +15,128 @@ import {
 
 import CalendarioPersonalizado from "../../components/CalendarioPersonalizado";
 import Paginacion from "../../components/ui/Paginacion";
+import { eventos } from "../../data/eventosData";
 import "../../styles/eventos-ministerios.css";
-
-const eventos = [
-  {
-    id: 1,
-    titulo: "Campaña Distrital",
-    ministerio: "Ministerios Generales",
-    fecha: "20 al 24 Mayo 2026",
-    fechaOrden: "2026-05-20",
-    hora: "19:30",
-    lugar: "Templo principal",
-    descripcion:
-      "Semana dedicada a la oración, intercesión y fortalecimiento espiritual de los ministerios.",
-    detalles:
-      "Durante esta semana los ministerios participan en tiempos de oración, reflexión bíblica y búsqueda espiritual como iglesia.",
-    imagen: "/images/convencion.jpeg",
-    estado: "enCurso",
-  },
-  {
-    id: 2,
-    titulo: "Campaña de evangelismo",
-    ministerio: "Ministerio de Evangelismo",
-    fecha: "21 al 26 Mayo 2026",
-    fechaOrden: "2026-05-21",
-    hora: "17:00",
-    lugar: "Plaza principal",
-    descripcion:
-      "Actividad de evangelismo y servicio para compartir el mensaje de esperanza con la comunidad.",
-    detalles:
-      "La campaña busca acercarse a las personas mediante oración, palabra de ánimo, música y acompañamiento espiritual.",
-    imagen: "/images/distrital.jpeg",
-    estado: "enCurso",
-  },
-  {
-    id: 3,
-    titulo: "Taller de formación bíblica",
-    ministerio: "Ministerio de Enseñanza",
-    fecha: "22 al 25 Mayo 2026",
-    fechaOrden: "2026-05-22",
-    hora: "18:00",
-    lugar: "Aula de estudios",
-    descripcion:
-      "Espacio de enseñanza para fortalecer el conocimiento bíblico de los servidores.",
-    detalles:
-      "Este taller incluye estudios bíblicos, participación grupal y orientación para aplicar la Palabra de Dios en el servicio.",
-    imagen: "/images/juvenil.jpeg",
-    estado: "enCurso",
-  },
-  {
-    id: 7,
-    titulo: "Conferencia de jóvenes",
-    ministerio: "Ministerio de Jóvenes",
-    fecha: "25 Mayo 2026",
-    fechaOrden: "2026-05-25",
-    hora: "18:30",
-    lugar: "Templo principal",
-    descripcion:
-      "Una noche especial para jóvenes con palabra, adoración, dinámicas y tiempo de compañerismo.",
-    detalles:
-      "Este evento está dirigido a jóvenes que desean fortalecer su fe, compartir con otros y participar en un tiempo especial de adoración.",
-    imagen:
-      "https://images.unsplash.com/photo-1529156069898-49953e39b3ac?auto=format&fit=crop&w=1000&q=80",
-    estado: "proximo",
-  },
-  {
-    id: 8,
-    titulo: "Culto especial de alabanza",
-    ministerio: "Ministerio de Alabanza",
-    fecha: "30 Mayo 2026",
-    fechaOrden: "2026-05-30",
-    hora: "19:00",
-    lugar: "Auditorio de la iglesia",
-    descripcion:
-      "Un tiempo dedicado a la adoración, oración y gratitud a Dios junto a toda la congregación.",
-    detalles:
-      "El ministerio de alabanza prepara un culto especial para compartir un tiempo de adoración, oración y reflexión.",
-    imagen:
-      "https://images.unsplash.com/photo-1478147427282-58a87a120781?auto=format&fit=crop&w=1000&q=80",
-    estado: "proximo",
-  },
-  {
-    id: 9,
-    titulo: "Encuentro de matrimonios",
-    ministerio: "Ministerio de Familias",
-    fecha: "05 Junio 2026",
-    fechaOrden: "2026-06-05",
-    hora: "19:30",
-    lugar: "Salón principal",
-    descripcion:
-      "Reunión especial para fortalecer la unidad, comunicación y vida espiritual familiar.",
-    detalles:
-      "El encuentro de matrimonios busca brindar enseñanza, reflexión y acompañamiento espiritual para las familias.",
-    imagen:
-      "https://images.unsplash.com/photo-1511895426328-dc8714191300?auto=format&fit=crop&w=1000&q=80",
-    estado: "proximo",
-  },
-  {
-    id: 13,
-    titulo: "Encuentro de servidores",
-    ministerio: "Ministerios Generales",
-    fecha: "12 Mayo 2026",
-    fechaOrden: "2026-05-12",
-    hora: "18:00",
-    lugar: "Salón principal",
-    descripcion:
-      "Encuentro realizado para capacitar y animar a los servidores de la iglesia.",
-    detalles:
-      "Este encuentro reunió a los servidores de diferentes áreas para recibir orientación y fortalecer el compromiso de servicio.",
-    imagen:
-      "https://images.unsplash.com/photo-1511632765486-a01980e01a18?auto=format&fit=crop&w=1000&q=80",
-    estado: "pasado",
-  },
-  {
-    id: 14,
-    titulo: "Actividad familiar de integración",
-    ministerio: "Ministerio de Familias",
-    fecha: "05 Mayo 2026",
-    fechaOrden: "2026-05-05",
-    hora: "16:00",
-    lugar: "Patio de la iglesia",
-    descripcion:
-      "Actividad realizada para compartir como familias en un ambiente de comunión y alegría.",
-    detalles:
-      "La actividad familiar permitió fortalecer la convivencia entre hermanos mediante juegos, reflexión y compañerismo.",
-    imagen:
-      "https://images.unsplash.com/photo-1517048676732-d65bc937f952?auto=format&fit=crop&w=1000&q=80",
-    estado: "pasado",
-  },
-  {
-    id: 15,
-    titulo: "Tarde de niños",
-    ministerio: "Ministerio de Niños",
-    fecha: "28 Abril 2026",
-    fechaOrden: "2026-04-28",
-    hora: "15:30",
-    lugar: "Aula infantil",
-    descripcion:
-      "Actividad con juegos, enseñanza bíblica, música y participación de los niños.",
-    detalles:
-      "Los niños compartieron una tarde especial con dinámicas, canciones y una enseñanza bíblica preparada para su edad.",
-    imagen:
-      "https://images.unsplash.com/photo-1503454537195-1dcabb73ffb9?auto=format&fit=crop&w=1000&q=80",
-    estado: "pasado",
-  },
-];
 
 const obtenerVistaTabletOCelular = () => {
   if (typeof window === "undefined") return false;
   return window.innerWidth <= 1280;
 };
 
+const obtenerFechaActualInput = () => {
+  const hoy = new Date();
+
+  const anio = hoy.getFullYear();
+  const mes = String(hoy.getMonth() + 1).padStart(2, "0");
+  const dia = String(hoy.getDate()).padStart(2, "0");
+
+  return `${anio}-${mes}-${dia}`;
+};
+
+const crearFechaLocalDesdeInput = (fechaInput) => {
+  const [anio, mes, dia] = fechaInput.split("-").map(Number);
+  return new Date(anio, mes - 1, dia);
+};
+
+const obtenerNombreMes = (numeroMes) => {
+  const meses = [
+    "Enero",
+    "Febrero",
+    "Marzo",
+    "Abril",
+    "Mayo",
+    "Junio",
+    "Julio",
+    "Agosto",
+    "Septiembre",
+    "Octubre",
+    "Noviembre",
+    "Diciembre",
+  ];
+
+  return meses[numeroMes];
+};
+
+const formatearFechaEvento = (fechaInput) => {
+  const fecha = crearFechaLocalDesdeInput(fechaInput);
+
+  const dia = String(fecha.getDate()).padStart(2, "0");
+  const mes = obtenerNombreMes(fecha.getMonth());
+  const anio = fecha.getFullYear();
+
+  return `${dia} ${mes} ${anio}`;
+};
+
+const formatearRangoFechaEvento = (fechaInicio, fechaFinal) => {
+  const inicio = crearFechaLocalDesdeInput(fechaInicio);
+  const final = crearFechaLocalDesdeInput(fechaFinal || fechaInicio);
+
+  const mismoDia =
+    inicio.getFullYear() === final.getFullYear() &&
+    inicio.getMonth() === final.getMonth() &&
+    inicio.getDate() === final.getDate();
+
+  if (mismoDia) {
+    return formatearFechaEvento(fechaInicio);
+  }
+
+  const mismoMes =
+    inicio.getFullYear() === final.getFullYear() &&
+    inicio.getMonth() === final.getMonth();
+
+  if (mismoMes) {
+    const diaInicio = String(inicio.getDate()).padStart(2, "0");
+    const diaFinal = String(final.getDate()).padStart(2, "0");
+    const mes = obtenerNombreMes(inicio.getMonth());
+    const anio = inicio.getFullYear();
+
+    return `${diaInicio} al ${diaFinal} ${mes} ${anio}`;
+  }
+
+  const mismoAnio = inicio.getFullYear() === final.getFullYear();
+
+  if (mismoAnio) {
+    const diaInicio = String(inicio.getDate()).padStart(2, "0");
+    const mesInicio = obtenerNombreMes(inicio.getMonth());
+    const diaFinal = String(final.getDate()).padStart(2, "0");
+    const mesFinal = obtenerNombreMes(final.getMonth());
+    const anio = inicio.getFullYear();
+
+    return `${diaInicio} ${mesInicio} al ${diaFinal} ${mesFinal} ${anio}`;
+  }
+
+  return `${formatearFechaEvento(fechaInicio)} al ${formatearFechaEvento(
+    fechaFinal
+  )}`;
+};
+
+const obtenerEstadoEvento = (evento, fechaActual) => {
+  const fechaInicio = evento.fechaInicio;
+  const fechaFinal = evento.fechaFinal || evento.fechaInicio;
+
+  if (fechaActual < fechaInicio) return "proximo";
+  if (fechaActual > fechaFinal) return "pasado";
+
+  return "enCurso";
+};
+
+const obtenerFechaOrdenEvento = (evento) => {
+  return evento.fechaInicio;
+};
+
 function EventosMinisterios() {
   const { id } = useParams();
   const navigate = useNavigate();
+
+  const fechaActual = obtenerFechaActualInput();
+
+  const eventosActualizados = useMemo(() => {
+    return eventos.map((evento) => ({
+      ...evento,
+      fecha: formatearRangoFechaEvento(evento.fechaInicio, evento.fechaFinal),
+      estado: obtenerEstadoEvento(evento, fechaActual),
+    }));
+  }, [fechaActual]);
 
   const [eventoSeleccionado, setEventoSeleccionado] = useState(null);
   const [pestanaActiva, setPestanaActiva] = useState("todos");
@@ -179,6 +147,7 @@ function EventosMinisterios() {
   const [busquedaTexto, setBusquedaTexto] = useState("");
   const [fechaInicio, setFechaInicio] = useState("");
   const [fechaFinal, setFechaFinal] = useState("");
+  const [errorFechas, setErrorFechas] = useState("");
 
   const [calendarioAbierto, setCalendarioAbierto] = useState("");
 
@@ -232,7 +201,9 @@ function EventosMinisterios() {
       return;
     }
 
-    const eventoEncontrado = eventos.find((evento) => evento.id === Number(id));
+    const eventoEncontrado = eventosActualizados.find(
+      (evento) => evento.id === Number(id)
+    );
 
     if (eventoEncontrado) {
       setEventoSeleccionado(eventoEncontrado);
@@ -241,7 +212,7 @@ function EventosMinisterios() {
 
     setEventoSeleccionado(null);
     navigate("/ministerios/eventos", { replace: true });
-  }, [id, navigate]);
+  }, [id, navigate, eventosActualizados]);
 
   useEffect(() => {
     if (!eventoSeleccionado || !esTabletOCelular) return;
@@ -305,6 +276,7 @@ function EventosMinisterios() {
 
     setFechaInicio("");
     setFiltroFechaInicio("");
+    setErrorFechas("");
 
     if (calendarioAbierto === "inicio") {
       setCalendarioAbierto("");
@@ -316,40 +288,23 @@ function EventosMinisterios() {
 
     setFechaFinal("");
     setFiltroFechaFinal("");
+    setErrorFechas("");
 
     if (calendarioAbierto === "final") {
       setCalendarioAbierto("");
     }
   };
 
-  const limpiarFiltrosSinCerrar = () => {
-    setBusquedaTexto("");
-    setFechaInicio("");
-    setFechaFinal("");
-    setFiltroTexto("");
-    setFiltroFechaInicio("");
-    setFiltroFechaFinal("");
-    setCalendarioAbierto("");
-  };
-
-  const limpiarFiltros = () => {
-    limpiarFiltrosSinCerrar();
-    setTipoFiltroActivo("");
-  };
-
   const abrirFiltros = () => {
-    setFiltrosAbiertos(!filtrosAbiertos);
-
     if (filtrosAbiertos) {
-      limpiarFiltros();
+      setCalendarioAbierto("");
     }
+
+    setFiltrosAbiertos(!filtrosAbiertos);
   };
 
   const seleccionarTipoFiltro = (tipo) => {
-    if (tipoFiltroActivo !== tipo) {
-      limpiarFiltrosSinCerrar();
-    }
-
+    setCalendarioAbierto("");
     setTipoFiltroActivo(tipo);
   };
 
@@ -358,6 +313,12 @@ function EventosMinisterios() {
   };
 
   const aplicarFiltroFechas = () => {
+    if (fechaInicio && fechaFinal && fechaInicio > fechaFinal) {
+      setErrorFechas("La fecha inicial no puede ser mayor que la fecha final.");
+      return;
+    }
+
+    setErrorFechas("");
     setFiltroFechaInicio(fechaInicio);
     setFiltroFechaFinal(fechaFinal);
     setCalendarioAbierto("");
@@ -370,12 +331,12 @@ function EventosMinisterios() {
 
   const manejarCambioFechaInicio = (valor) => {
     setFechaInicio(valor);
-    setFiltroFechaInicio(valor);
+    setErrorFechas("");
   };
 
   const manejarCambioFechaFinal = (valor) => {
     setFechaFinal(valor);
-    setFiltroFechaFinal(valor);
+    setErrorFechas("");
   };
 
   const ordenarEventos = (lista) => {
@@ -393,21 +354,31 @@ function EventosMinisterios() {
         if (diferenciaEstado !== 0) return diferenciaEstado;
 
         if (a.estado === "pasado") {
-          return new Date(b.fechaOrden) - new Date(a.fechaOrden);
+          return (
+            new Date(obtenerFechaOrdenEvento(b)) -
+            new Date(obtenerFechaOrdenEvento(a))
+          );
         }
 
-        return new Date(a.fechaOrden) - new Date(b.fechaOrden);
+        return (
+          new Date(obtenerFechaOrdenEvento(a)) -
+          new Date(obtenerFechaOrdenEvento(b))
+        );
       });
     }
 
     if (pestanaActiva === "pasado") {
       return [...lista].sort(
-        (a, b) => new Date(b.fechaOrden) - new Date(a.fechaOrden)
+        (a, b) =>
+          new Date(obtenerFechaOrdenEvento(b)) -
+          new Date(obtenerFechaOrdenEvento(a))
       );
     }
 
     return [...lista].sort(
-      (a, b) => new Date(a.fechaOrden) - new Date(b.fechaOrden)
+      (a, b) =>
+        new Date(obtenerFechaOrdenEvento(a)) -
+        new Date(obtenerFechaOrdenEvento(b))
     );
   };
 
@@ -423,22 +394,23 @@ function EventosMinisterios() {
   };
 
   const filtrarPorRangoFechas = (evento) => {
-    const fechaEvento = evento.fechaOrden;
+    const inicioEvento = evento.fechaInicio;
+    const finalEvento = evento.fechaFinal || evento.fechaInicio;
 
     if (filtroFechaInicio && filtroFechaFinal) {
-      return fechaEvento >= filtroFechaInicio && fechaEvento <= filtroFechaFinal;
+      return inicioEvento <= filtroFechaFinal && finalEvento >= filtroFechaInicio;
     }
 
-    if (filtroFechaInicio) return fechaEvento >= filtroFechaInicio;
-    if (filtroFechaFinal) return fechaEvento <= filtroFechaFinal;
+    if (filtroFechaInicio) return finalEvento >= filtroFechaInicio;
+    if (filtroFechaFinal) return inicioEvento <= filtroFechaFinal;
 
     return true;
   };
 
   const eventosPorPestana =
     pestanaActiva === "todos"
-      ? eventos
-      : eventos.filter((evento) => evento.estado === pestanaActiva);
+      ? eventosActualizados
+      : eventosActualizados.filter((evento) => evento.estado === pestanaActiva);
 
   const eventosFiltrados = ordenarEventos(
     eventosPorPestana.filter(
@@ -519,6 +491,22 @@ function EventosMinisterios() {
 
     restaurarScrollPc(scrollObjetivo);
   };
+
+  useEffect(() => {
+    if (!mostrarModalPc) return;
+
+    const cerrarConEscape = (e) => {
+      if (e.key === "Escape") {
+        cerrarModal();
+      }
+    };
+
+    window.addEventListener("keydown", cerrarConEscape);
+
+    return () => {
+      window.removeEventListener("keydown", cerrarConEscape);
+    };
+  }, [mostrarModalPc, cerrarModal]);
 
   const consultarWhatsApp = (evento = eventoSeleccionado) => {
     if (!evento) return;
@@ -859,7 +847,7 @@ function EventosMinisterios() {
                         calendarioAbierto === "inicio"
                           ? "calendario-wrapper-activo"
                           : ""
-                      }`}
+                      } ${errorFechas ? "date-picker-error" : ""}`}
                     >
                       <CalendarioPersonalizado
                         valor={fechaInicio}
@@ -902,7 +890,7 @@ function EventosMinisterios() {
                         calendarioAbierto === "final"
                           ? "calendario-wrapper-activo"
                           : ""
-                      }`}
+                      } ${errorFechas ? "date-picker-error" : ""}`}
                     >
                       <CalendarioPersonalizado
                         valor={fechaFinal}
@@ -935,10 +923,15 @@ function EventosMinisterios() {
                 <div className="filter-actions">
                   <button
                     type="button"
-                    className="filter-btn"
+                    className={`filter-btn ${
+                      errorFechas ? "filter-btn-error" : ""
+                    }`}
                     onClick={aplicarFiltroFechas}
+                    title={errorFechas || undefined}
                   >
-                    Buscar por fecha
+                    {errorFechas
+                      ? "Corrige el rango de fechas"
+                      : "Buscar por fecha"}
                   </button>
                 </div>
               </div>

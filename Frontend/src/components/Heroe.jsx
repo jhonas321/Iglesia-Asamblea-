@@ -9,22 +9,141 @@ import hero4 from "/images/imagen4.jfif";
 
 import { eventos } from "../data/eventosData";
 
+const TIEMPO_CAMBIO_HERO = 6000;
+
+const obtenerFechaActualInput = () => {
+  const hoy = new Date();
+
+  const anio = hoy.getFullYear();
+  const mes = String(hoy.getMonth() + 1).padStart(2, "0");
+  const dia = String(hoy.getDate()).padStart(2, "0");
+
+  return `${anio}-${mes}-${dia}`;
+};
+
+const crearFechaLocalDesdeInput = (fechaInput) => {
+  const [anio, mes, dia] = fechaInput.split("-").map(Number);
+  return new Date(anio, mes - 1, dia);
+};
+
+const obtenerNombreMes = (numeroMes) => {
+  const meses = [
+    "Enero",
+    "Febrero",
+    "Marzo",
+    "Abril",
+    "Mayo",
+    "Junio",
+    "Julio",
+    "Agosto",
+    "Septiembre",
+    "Octubre",
+    "Noviembre",
+    "Diciembre",
+  ];
+
+  return meses[numeroMes];
+};
+
+const formatearFechaEvento = (fechaInput) => {
+  const fecha = crearFechaLocalDesdeInput(fechaInput);
+
+  const dia = String(fecha.getDate()).padStart(2, "0");
+  const mes = obtenerNombreMes(fecha.getMonth());
+  const anio = fecha.getFullYear();
+
+  return `${dia} ${mes} ${anio}`;
+};
+
+const formatearRangoFechaEvento = (fechaInicio, fechaFinal) => {
+  const inicio = crearFechaLocalDesdeInput(fechaInicio);
+  const final = crearFechaLocalDesdeInput(fechaFinal || fechaInicio);
+
+  const mismoDia =
+    inicio.getFullYear() === final.getFullYear() &&
+    inicio.getMonth() === final.getMonth() &&
+    inicio.getDate() === final.getDate();
+
+  if (mismoDia) {
+    return formatearFechaEvento(fechaInicio);
+  }
+
+  const mismoMes =
+    inicio.getFullYear() === final.getFullYear() &&
+    inicio.getMonth() === final.getMonth();
+
+  if (mismoMes) {
+    const diaInicio = String(inicio.getDate()).padStart(2, "0");
+    const diaFinal = String(final.getDate()).padStart(2, "0");
+    const mes = obtenerNombreMes(inicio.getMonth());
+    const anio = inicio.getFullYear();
+
+    return `${diaInicio} al ${diaFinal} ${mes} ${anio}`;
+  }
+
+  const mismoAnio = inicio.getFullYear() === final.getFullYear();
+
+  if (mismoAnio) {
+    const diaInicio = String(inicio.getDate()).padStart(2, "0");
+    const mesInicio = obtenerNombreMes(inicio.getMonth());
+    const diaFinal = String(final.getDate()).padStart(2, "0");
+    const mesFinal = obtenerNombreMes(final.getMonth());
+    const anio = inicio.getFullYear();
+
+    return `${diaInicio} ${mesInicio} al ${diaFinal} ${mesFinal} ${anio}`;
+  }
+
+  return `${formatearFechaEvento(fechaInicio)} al ${formatearFechaEvento(
+    fechaFinal
+  )}`;
+};
+
+const obtenerEstadoEvento = (evento, fechaActual) => {
+  const fechaInicio = evento.fechaInicio;
+  const fechaFinal = evento.fechaFinal || evento.fechaInicio;
+
+  if (fechaActual < fechaInicio) return "proximo";
+  if (fechaActual > fechaFinal) return "pasado";
+
+  return "enCurso";
+};
+
+const obtenerFechaOrdenEvento = (evento) => {
+  return evento.fechaInicio;
+};
+
 function Heroe() {
   const navigate = useNavigate();
 
   const heroImages = [hero1, hero2, hero3, hero4];
 
-  const eventosDestacados = useMemo(() => {
-    const eventosEnCurso = eventos
-      .filter((evento) => evento.estado === "enCurso")
-      .sort((a, b) => new Date(a.fechaOrden) - new Date(b.fechaOrden));
+  const fechaActual = obtenerFechaActualInput();
 
-    const eventosProximos = eventos
+  const eventosDestacados = useMemo(() => {
+    const eventosActualizados = eventos.map((evento) => ({
+      ...evento,
+      fecha: formatearRangoFechaEvento(evento.fechaInicio, evento.fechaFinal),
+      estado: obtenerEstadoEvento(evento, fechaActual),
+    }));
+
+    const eventosEnCurso = eventosActualizados
+      .filter((evento) => evento.estado === "enCurso")
+      .sort(
+        (a, b) =>
+          new Date(obtenerFechaOrdenEvento(a)) -
+          new Date(obtenerFechaOrdenEvento(b))
+      );
+
+    const eventosProximos = eventosActualizados
       .filter((evento) => evento.estado === "proximo")
-      .sort((a, b) => new Date(a.fechaOrden) - new Date(b.fechaOrden));
+      .sort(
+        (a, b) =>
+          new Date(obtenerFechaOrdenEvento(a)) -
+          new Date(obtenerFechaOrdenEvento(b))
+      );
 
     return [...eventosEnCurso, ...eventosProximos];
-  }, []);
+  }, [fechaActual]);
 
   const hayEventosDestacados = eventosDestacados.length > 0;
 
@@ -39,14 +158,20 @@ function Heroe() {
     : null;
 
   useEffect(() => {
+    if (heroIndex >= fondosHero.length) {
+      setHeroIndex(0);
+    }
+  }, [fondosHero.length, heroIndex]);
+
+  useEffect(() => {
     if (fondosHero.length <= 1) return;
 
-    const interval = setInterval(() => {
+    const timeout = setTimeout(() => {
       setHeroIndex((prev) => (prev + 1) % fondosHero.length);
-    }, 6500);
+    }, TIEMPO_CAMBIO_HERO);
 
-    return () => clearInterval(interval);
-  }, [fondosHero.length]);
+    return () => clearTimeout(timeout);
+  }, [heroIndex, fondosHero.length]);
 
   const textoEstado = (estado) => {
     if (estado === "enCurso") return "En curso";

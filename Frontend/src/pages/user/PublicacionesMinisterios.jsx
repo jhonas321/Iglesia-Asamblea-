@@ -96,7 +96,7 @@ const publicacionesBase = [
     id: 1,
     ministerio: "Jóvenes",
     titulo: "Noche de adoración juvenil",
-    fecha: "25 Mayo 2026",
+    fecha: "25 Mayo 2027",
     hora: "19:00",
     lugar: "Auditorio principal",
     descripcion:
