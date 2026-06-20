@@ -1,12 +1,12 @@
 export const eventos = [
   {
     id: 1,
-    titulo: "Semana de oración ministerial",
+    titulo: "Convencion Nacional Electoral",
     ministerio: "Ministerios Generales",
-    fechaInicio: "2026-05-20",
+    fechaInicio: "2026-05-22",
     fechaFinal: "2026-05-24",
-    hora: "19:30",
-    lugar: "Templo principal",
+    hora: "19:00",
+    lugar: "Coliseo polifuncional Chacacollo",
     descripcion:
       "Semana dedicada a la oración, intercesión y fortalecimiento espiritual de los ministerios.",
     detalles:
