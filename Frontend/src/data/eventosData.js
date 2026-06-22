@@ -223,7 +223,7 @@ export const eventos = [
     descripcion:
       "Un encuentro especial para compartir, fortalecer la amistad y vivir un momento de compañerismo en un ambiente alegre, familiar y espiritual.",
     detalles:
-      "Esta actividad está pensada para reunir a amigos, familias y hermanos de la iglesia en una jornada de integración. Será un espacio para conocerse mejor, participar en momentos de convivencia, disfrutar juntos y fortalecer la fe a través de un mensaje de ánimo y unidad. Ideal para invitar a nuevas personas y compartir un tiempo agradable en comunidad.",
+      "Una actividad especial para compartir entre amigos, convivir en un ambiente alegre y fortalecer la unidad. Será un momento para integrarse, conocer nuevas personas y disfrutar juntos de una experiencia edificante para la fe y la comunidad.",
     imagen:
       "/images/evento16.jpeg",
   },
