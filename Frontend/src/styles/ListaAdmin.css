@@ -1,0 +1,193 @@
+
+.lista-admin {
+    width: 100%;
+    margin-top: 24px;
+  }
+  
+  .lista-admin-table-wrapper {
+    width: 100%;
+    overflow-x: auto;
+    background: #ffffff;
+    border-radius: 18px;
+    border: 1px solid #e5e7eb;
+    box-shadow: 0 12px 32px rgba(15, 23, 42, 0.08);
+  }
+  
+  .lista-admin-table {
+    width: 100%;
+    border-collapse: collapse;
+    min-width: 780px;
+  }
+  
+  .lista-admin-table thead {
+    background: #f8fafc;
+  }
+  
+  .lista-admin-table th {
+    padding: 17px 20px;
+    text-align: left;
+    color: #0f172a;
+    font-size: 14px;
+    font-weight: 800;
+    border-bottom: 1px solid #e5e7eb;
+    white-space: nowrap;
+  }
+  
+  .lista-admin-table td {
+    padding: 17px 20px;
+    color: #475569;
+    font-size: 14px;
+    font-weight: 500;
+    border-bottom: 1px solid #eef2f7;
+    vertical-align: middle;
+  }
+  
+  .lista-admin-table tbody tr {
+    transition: background 0.25s ease;
+  }
+  
+  .lista-admin-table tbody tr:hover {
+    background: #f8fafc;
+  }
+  
+  .lista-admin-table tbody tr:last-child td {
+    border-bottom: none;
+  }
+  
+  .lista-admin-actions-th {
+    text-align: center;
+  }
+  
+  .lista-admin-actions {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 9px;
+  }
+  
+  .lista-admin-btn {
+    width: 36px;
+    height: 36px;
+    border: none;
+    border-radius: 11px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: transform 0.2s ease, background 0.2s ease, color 0.2s ease;
+  }
+  
+  .lista-admin-btn:hover {
+    transform: translateY(-2px);
+  }
+  
+  .lista-admin-btn.view {
+    background: #e0f2fe;
+    color: #0369a1;
+  }
+  
+  .lista-admin-btn.view:hover {
+    background: #bae6fd;
+  }
+  
+  .lista-admin-btn.edit {
+    background: #fef3c7;
+    color: #b45309;
+  }
+  
+  .lista-admin-btn.edit:hover {
+    background: #fde68a;
+  }
+  
+  .lista-admin-btn.delete {
+    background: #fee2e2;
+    color: #b91c1c;
+  }
+  
+  .lista-admin-btn.delete:hover {
+    background: #fecaca;
+  }
+  
+  .lista-admin-empty {
+    padding: 38px 20px;
+    text-align: center;
+    color: #64748b;
+    font-size: 15px;
+    font-weight: 600;
+  }
+  
+  @media (max-width: 768px) {
+    .lista-admin-table-wrapper {
+      background: transparent;
+      border: none;
+      box-shadow: none;
+      overflow: visible;
+    }
+  
+    .lista-admin-table {
+      min-width: 0;
+      border-collapse: separate;
+      border-spacing: 0 14px;
+    }
+  
+    .lista-admin-table thead {
+      display: none;
+    }
+  
+    .lista-admin-table,
+    .lista-admin-table tbody,
+    .lista-admin-table tr,
+    .lista-admin-table td {
+      display: block;
+      width: 100%;
+    }
+  
+    .lista-admin-table tbody tr {
+      background: #ffffff;
+      border: 1px solid #e5e7eb;
+      border-radius: 18px;
+      padding: 14px;
+      box-shadow: 0 10px 25px rgba(15, 23, 42, 0.08);
+    }
+  
+    .lista-admin-table tbody tr:hover {
+      background: #ffffff;
+    }
+  
+    .lista-admin-table td {
+      padding: 12px 6px;
+      border-bottom: 1px solid #eef2f7;
+      display: flex;
+      justify-content: space-between;
+      gap: 18px;
+      text-align: right;
+      font-size: 14px;
+    }
+  
+    .lista-admin-table td::before {
+      content: attr(data-label);
+      color: #0f172a;
+      font-weight: 800;
+      text-align: left;
+    }
+  
+    .lista-admin-table td:last-child {
+      border-bottom: none;
+    }
+  
+    .lista-admin-actions {
+      justify-content: flex-end;
+    }
+  
+    .lista-admin-empty {
+      display: block;
+      background: #ffffff;
+      border-radius: 18px;
+      border: 1px solid #e5e7eb;
+      box-shadow: 0 10px 25px rgba(15, 23, 42, 0.08);
+    }
+  
+    .lista-admin-empty::before {
+      display: none;
+    }
+  }

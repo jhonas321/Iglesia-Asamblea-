@@ -212,4 +212,19 @@ export const eventos = [
       "Juntos en oración. Actividad realizada el día sábado a horas 19:00. Pasaje bíblico: Confesaos vuestras ofensas unos a otros, y orad unos por otros, para que seáis sanados. La oración eficaz del justo puede mucho. Santiago 5:16.",
     imagen: "/images/evento15.jpeg",
   },
+  {
+    id: 16,
+    titulo: "Fiesta de los Amigos",
+    ministerio: "Ministerio General",
+    fechaInicio: "2026-06-27",
+    fechaFinal: "2026-06-27",
+    hora: "11:00 - 18:00",
+    lugar: "Iglesia Quillacollo",
+    descripcion:
+      "Un encuentro especial para compartir, fortalecer la amistad y vivir un momento de compañerismo en un ambiente alegre, familiar y espiritual.",
+    detalles:
+      "Esta actividad está pensada para reunir a amigos, familias y hermanos de la iglesia en una jornada de integración. Será un espacio para conocerse mejor, participar en momentos de convivencia, disfrutar juntos y fortalecer la fe a través de un mensaje de ánimo y unidad. Ideal para invitar a nuevas personas y compartir un tiempo agradable en comunidad.",
+    imagen:
+      "/images/evento16.jpeg",
+  },
 ];

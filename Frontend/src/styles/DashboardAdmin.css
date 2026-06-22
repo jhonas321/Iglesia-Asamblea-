@@ -1,0 +1,115 @@
+.dashboard-admin,
+.dashboard-admin * {
+  box-sizing: border-box;
+}
+
+.dashboard-admin {
+  min-height: 100vh;
+  background: #f4f7fb;
+  color: #0f172a;
+}
+
+/* CONTENIDO PRINCIPAL */
+.dashboard-admin-content {
+  min-height: 100vh;
+  margin-left: 270px;
+  padding: 0;
+  background: linear-gradient(
+      135deg,
+      rgba(248, 250, 252, 1) 0%,
+      rgba(241, 245, 249, 1) 45%,
+      rgba(226, 232, 240, 1) 100%
+    );
+  overflow-x: hidden;
+  position: relative;
+}
+
+/* EFECTO SUAVE DECORATIVO */
+.dashboard-admin-content::before {
+  content: "";
+  position: fixed;
+  top: -130px;
+  right: -120px;
+  width: 370px;
+  height: 370px;
+  background: radial-gradient(
+    circle,
+    rgba(212, 175, 55, 0.18),
+    transparent 65%
+  );
+  pointer-events: none;
+  z-index: 0;
+}
+
+.dashboard-admin-content::after {
+  content: "";
+  position: fixed;
+  bottom: -140px;
+  left: 220px;
+  width: 400px;
+  height: 400px;
+  background: radial-gradient(
+    circle,
+    rgba(47, 79, 127, 0.14),
+    transparent 68%
+  );
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* CONTENIDO ENCIMA DEL FONDO */
+.dashboard-admin-content > * {
+  position: relative;
+  z-index: 1;
+}
+
+/* SCROLLBAR ELEGANTE */
+.dashboard-admin-content::-webkit-scrollbar {
+  width: 8px;
+}
+
+.dashboard-admin-content::-webkit-scrollbar-track {
+  background: #e2e8f0;
+}
+
+.dashboard-admin-content::-webkit-scrollbar-thumb {
+  background: rgba(47, 79, 127, 0.35);
+  border-radius: 999px;
+}
+
+.dashboard-admin-content::-webkit-scrollbar-thumb:hover {
+  background: rgba(47, 79, 127, 0.55);
+}
+
+/* RESPONSIVE */
+@media (max-width: 900px) {
+  .dashboard-admin-content {
+    margin-left: 240px;
+  }
+
+  .dashboard-admin-content::after {
+    left: 180px;
+  }
+}
+
+@media (max-width: 650px) {
+  .dashboard-admin-content {
+    margin-left: 76px;
+  }
+
+  .dashboard-admin-content::after {
+    left: 40px;
+  }
+}
+
+@media (max-width: 480px) {
+  .dashboard-admin-content::before {
+    width: 260px;
+    height: 260px;
+  }
+
+  .dashboard-admin-content::after {
+    width: 280px;
+    height: 280px;
+  }
+}

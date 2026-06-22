@@ -67,7 +67,7 @@ const Sidebar = () => {
       return currentPath === "/admin" || currentPath === "/admin/dashboard";
     }
 
-    return currentPath.includes(path);
+    return currentPath === path || currentPath.startsWith(`${path}/`);
   };
 
   const handleLogout = () => {

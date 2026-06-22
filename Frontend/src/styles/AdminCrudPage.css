@@ -1,0 +1,136 @@
+.admin-crud-page {
+    width: 100%;
+    min-height: 100vh;
+  }
+  
+  .admin-crud-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 24px;
+    margin-bottom: 28px;
+  }
+  
+  .admin-crud-label {
+    display: inline-block;
+    margin-bottom: 8px;
+    color: #d4af37;
+    font-size: 13px;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 0.9px;
+  }
+  
+  .admin-crud-header h1 {
+    margin: 0;
+    color: #0f172a;
+    font-size: 34px;
+    font-weight: 900;
+    line-height: 1.1;
+  }
+  
+  .admin-crud-header p {
+    max-width: 560px;
+    margin: 10px 0 0;
+    color: #64748b;
+    font-size: 15px;
+    font-weight: 500;
+    line-height: 1.6;
+  }
+  
+  .admin-create-btn {
+    border: none;
+    outline: none;
+    min-height: 46px;
+    padding: 0 20px;
+    border-radius: 14px;
+    background: linear-gradient(135deg, #0f172a, #1e293b);
+    color: #ffffff;
+    font-size: 14px;
+    font-weight: 800;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 9px;
+    white-space: nowrap;
+    box-shadow: 0 14px 30px rgba(15, 23, 42, 0.22);
+    transition: transform 0.25s ease, box-shadow 0.25s ease, background 0.25s ease;
+  }
+  
+  .admin-create-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 18px 38px rgba(15, 23, 42, 0.28);
+    background: linear-gradient(135deg, #111827, #334155);
+  }
+  
+  .admin-create-btn:active {
+    transform: translateY(0);
+  }
+  
+  .admin-status {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 86px;
+    padding: 7px 11px;
+    border-radius: 999px;
+    font-size: 12px;
+    font-weight: 800;
+    text-transform: capitalize;
+  }
+  
+  .admin-status.proximo {
+    background: #e0f2fe;
+    color: #0369a1;
+  }
+  
+  .admin-status.en-curso {
+    background: #dcfce7;
+    color: #15803d;
+  }
+  
+  .admin-status.publicado {
+    background: #dcfce7;
+    color: #15803d;
+  }
+  
+  .admin-status.borrador {
+    background: #fef3c7;
+    color: #b45309;
+  }
+  
+  .admin-status.pasado {
+    background: #f1f5f9;
+    color: #475569;
+  }
+  
+  @media (max-width: 900px) {
+    .admin-crud-header {
+      align-items: flex-start;
+      flex-direction: column;
+    }
+  
+    .admin-create-btn {
+      width: 100%;
+    }
+  }
+  
+  @media (max-width: 600px) {
+    .admin-crud-header {
+      margin-bottom: 20px;
+    }
+  
+    .admin-crud-header h1 {
+      font-size: 28px;
+    }
+  
+    .admin-crud-header p {
+      font-size: 14px;
+    }
+  
+    .admin-create-btn {
+      min-height: 44px;
+      border-radius: 12px;
+    }
+  }
