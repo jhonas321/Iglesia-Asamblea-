@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
+import { CalendarDays } from "lucide-react";
 import "../styles/heroe.css";
 
 import hero1 from "/images/imagen1.jfif";
@@ -304,7 +305,14 @@ function Heroe() {
 
                         <h3>{evento.titulo}</h3>
 
-                        <p>📅 {evento.fecha}</p>
+                        <p className="event-date-line">
+                          <CalendarDays
+                            size={16}
+                            strokeWidth={2}
+                            aria-hidden="true"
+                          />
+                          <span>{evento.fecha}</span>
+                        </p>
 
                         {index === heroIndex && (
                           <Link
