@@ -17,7 +17,7 @@ import { useNavigate, useParams, useSearchParams } from "react-router-dom";
 
 import Paginacion from "../../components/ui/Paginacion";
 import CalendarioPersonalizado from "../../components/CalendarioPersonalizado";
-import { publicaciones } from "../../data/publicacionesData";
+import { obtenerPublicacionesGuardadas } from "../../data/adminStorage";
 
 const meses = {
   enero: 0,
@@ -55,7 +55,7 @@ const crearFechaDesdeTexto = (dia, mesTexto, anio) => {
 };
 
 const obtenerRangoFecha = (fechaTexto) => {
-  const fechaLimpia = limpiarTexto(fechaTexto.trim());
+  const fechaLimpia = limpiarTexto(String(fechaTexto || "").trim());
 
   const rango = fechaLimpia.match(
     /(\d{1,2})\s+al\s+(\d{1,2})\s+([a-zñ]+)\s+(\d{4})/
@@ -196,6 +196,8 @@ const PUBLICACIONES_POR_PAGINA = 8;
 const FOTOS_POR_PAGINA = 8;
 
 function PublicacionesMinisterios() {
+  const publicaciones = useMemo(() => obtenerPublicacionesGuardadas(), []);
+
   const navigate = useNavigate();
   const { id } = useParams();
 
@@ -205,7 +207,7 @@ function PublicacionesMinisterios() {
     if (!id) return null;
 
     return publicaciones.find((pub) => pub.id === Number(id)) || null;
-  }, [id]);
+  }, [id, publicaciones]);
 
   const [busqueda, setBusqueda] = useState("");
   const [filtroTexto, setFiltroTexto] = useState("");
@@ -265,12 +267,14 @@ function PublicacionesMinisterios() {
   useEffect(() => {
     if (!publicacionSeleccionada) return;
 
+    const fotos = publicacionSeleccionada.fotos || [];
+
+    if (fotos.length === 0) return;
+
     setFotoActual(0);
 
     const intervalo = setInterval(() => {
-      setFotoActual((actual) =>
-        actual === publicacionSeleccionada.fotos.length - 1 ? 0 : actual + 1
-      );
+      setFotoActual((actual) => (actual === fotos.length - 1 ? 0 : actual + 1));
     }, 3500);
 
     return () => clearInterval(intervalo);
@@ -312,6 +316,7 @@ function PublicacionesMinisterios() {
   useEffect(() => {
     if (!publicacionSeleccionada) return;
 
+    const fotos = publicacionSeleccionada.fotos || [];
     const fotoParametro = searchParams.get("foto");
 
     if (fotoParametro === null) {
@@ -321,11 +326,7 @@ function PublicacionesMinisterios() {
 
     const indiceFoto = Number(fotoParametro);
 
-    if (
-      Number.isNaN(indiceFoto) ||
-      indiceFoto < 0 ||
-      indiceFoto >= publicacionSeleccionada.fotos.length
-    ) {
+    if (Number.isNaN(indiceFoto) || indiceFoto < 0 || indiceFoto >= fotos.length) {
       const nuevosParametros = new URLSearchParams(searchParams);
       nuevosParametros.delete("foto");
 
@@ -334,7 +335,7 @@ function PublicacionesMinisterios() {
       return;
     }
 
-    setFotoModal(publicacionSeleccionada.fotos[indiceFoto]);
+    setFotoModal(fotos[indiceFoto]);
   }, [publicacionSeleccionada, searchParams, setSearchParams]);
 
   useEffect(() => {
@@ -376,7 +377,7 @@ function PublicacionesMinisterios() {
         [url]: datos,
       }));
     });
-  }, [datosVideos]);
+  }, [datosVideos, publicaciones]);
 
   const obtenerDatosVideo = (videoTrailer) => {
     const datosGenerados = datosVideos[videoTrailer.url];
@@ -392,7 +393,7 @@ function PublicacionesMinisterios() {
     return [...publicaciones].sort(
       (a, b) => obtenerFechaOrden(b.fecha) - obtenerFechaOrden(a.fecha)
     );
-  }, []);
+  }, [publicaciones]);
 
   const publicacionesFiltradas = useMemo(() => {
     const textoBusqueda = limpiarTexto(filtroTexto.trim());

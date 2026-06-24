@@ -43,9 +43,9 @@ const Sidebar = () => {
       icon: <Clock size={20} />,
     },
     {
-      id: "ministerios",
-      label: "Ministerios",
-      path: "/admin/ministerios",
+      id: "organigrama",
+      label: "Organigrama",
+      path: "/admin/organigrama",
       icon: <Users size={20} />,
     },
     {

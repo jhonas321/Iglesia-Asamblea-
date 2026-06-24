@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import "../styles/horarios-seccion.css";
 
 import {
@@ -7,45 +7,100 @@ import {
   FaUserFriends,
   FaHome,
   FaChevronDown,
+  FaMusic,
+  FaChild,
+  FaUsers,
+  FaHandsHelping,
+  FaHandHoldingHeart,
+  FaDove,
+  FaHeart,
+  FaMicrophone,
+  FaGuitar,
+  FaDrum,
+  FaSeedling,
+  FaCoffee,
+  FaUtensils,
+  FaCalendarAlt,
+  FaStar,
+  FaSun,
+  FaMoon,
+  FaGift,
+  FaBell,
+  FaPeopleCarry,
+  FaGraduationCap,
+  FaLightbulb,
+  FaFire,
+  FaLeaf,
+  FaHandshake,
+  FaCommentDots,
+  FaBullhorn,
+  FaSmile,
 } from "react-icons/fa";
+
+import { obtenerHorariosGuardados } from "../data/adminStorage";
+
+const iconosHorario = {
+  oracion: <FaPrayingHands />,
+  ensenanza: <FaBookOpen />,
+  jovenes: <FaUserFriends />,
+  principal: <FaHome />,
+  alabanza: <FaMusic />,
+  adoracion: <FaHeart />,
+  ninos: <FaChild />,
+  familias: <FaUsers />,
+  servicio: <FaHandsHelping />,
+  ayuda: <FaHandHoldingHeart />,
+  espiritu: <FaDove />,
+  predica: <FaMicrophone />,
+  musica: <FaGuitar />,
+  bateria: <FaDrum />,
+  crecimiento: <FaSeedling />,
+  comunion: <FaCoffee />,
+  cena: <FaUtensils />,
+  especial: <FaCalendarAlt />,
+  celebracion: <FaStar />,
+  manana: <FaSun />,
+  noche: <FaMoon />,
+  ofrenda: <FaGift />,
+  aviso: <FaBell />,
+  apoyo: <FaPeopleCarry />,
+  estudio: <FaGraduationCap />,
+  reflexion: <FaLightbulb />,
+  vigilia: <FaFire />,
+  naturaleza: <FaLeaf />,
+  amistad: <FaHandshake />,
+  charla: <FaCommentDots />,
+  evangelismo: <FaBullhorn />,
+  alegria: <FaSmile />,
+};
+
+const ordenarHorarios = (horarios) => {
+  const ordenDias = {
+    Lunes: 1,
+    Martes: 2,
+    Miércoles: 3,
+    Jueves: 4,
+    Viernes: 5,
+    Sábado: 6,
+    Domingo: 7,
+  };
+
+  return [...horarios].sort((a, b) => {
+    const ordenA = ordenDias[a.dia] || 99;
+    const ordenB = ordenDias[b.dia] || 99;
+
+    if (ordenA !== ordenB) return ordenA - ordenB;
+
+    return String(a.hora || "").localeCompare(String(b.hora || ""));
+  });
+};
 
 function HorariosSeccion() {
   const [horarioActivo, setHorarioActivo] = useState("");
 
-  const horarios = [
-    {
-      id: "lunes",
-      dia: "Lunes",
-      actividad: "Oración",
-      hora: "19:00",
-      icono: <FaPrayingHands />,
-      descripcion: "Un tiempo especial para buscar la presencia de Dios.",
-    },
-    {
-      id: "viernes",
-      dia: "Viernes",
-      actividad: "Culto de Enseñanza",
-      hora: "19:30",
-      icono: <FaBookOpen />,
-      descripcion: "Aprendemos juntos la palabra de Dios con fe y propósito.",
-    },
-    {
-      id: "sabado",
-      dia: "Sábado",
-      actividad: "Reunión de Jóvenes",
-      hora: "19:30",
-      icono: <FaUserFriends />,
-      descripcion: "Un espacio para jóvenes con alabanza, amistad y reflexión.",
-    },
-    {
-      id: "domingo",
-      dia: "Domingo",
-      actividad: "Culto General",
-      hora: "19:00",
-      icono: <FaHome />,
-      descripcion: "Celebramos juntos como familia en la presencia de Dios.",
-    },
-  ];
+  const horarios = useMemo(() => {
+    return ordenarHorarios(obtenerHorariosGuardados());
+  }, []);
 
   const alternarHorario = (id) => {
     setHorarioActivo((actual) => (actual === id ? "" : id));
@@ -77,7 +132,9 @@ function HorariosSeccion() {
               onClick={() => alternarHorario(item.id)}
             >
               <div className="schedule-card-top">
-                <div className="schedule-icon">{item.icono}</div>
+                <div className="schedule-icon">
+                  {iconosHorario[item.iconoTipo] || <FaHome />}
+                </div>
 
                 <div className="schedule-day">
                   <span>{item.dia}</span>

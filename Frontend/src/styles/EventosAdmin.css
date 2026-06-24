@@ -1,0 +1,68 @@
+/* =========================================
+   CRUD EVENTOS - AJUSTES PROPIOS
+========================================= */
+
+/* Modal del ojito exclusivo para eventos */
+.admin-evento-public-preview-modal {
+  width: min(980px, calc(100vw - 48px));
+}
+
+/* Vista previa dentro del modal de crear/editar */
+.admin-preview-page-shell .evento-detalle-card {
+  width: 100% !important;
+  max-width: 1100px !important;
+  min-height: 520px !important;
+  margin: 0 auto !important;
+}
+
+/* Vista previa al presionar el ojito */
+.admin-evento-public-preview-modal .evento-detalle-card {
+  width: 100%;
+  max-width: 980px;
+  margin: 0 auto;
+}
+
+/* Por seguridad: oculta botones públicos dentro del admin */
+.admin-preview-page-shell .evento-detalle-actions,
+.admin-evento-public-preview-modal .evento-detalle-actions {
+  display: none !important;
+}
+
+/* Evita que la vista previa del evento se pegue a los bordes */
+.admin-evento-public-preview-modal .admin-public-preview-content {
+  width: 100%;
+}
+
+/* =========================================
+   RESPONSIVE EVENTOS ADMIN
+========================================= */
+
+@media (max-width: 992px) {
+  .admin-evento-public-preview-modal {
+    width: min(760px, calc(100vw - 36px));
+    max-height: calc(100vh - 36px);
+  }
+}
+
+@media (max-width: 768px) {
+  .admin-evento-public-preview-modal {
+    width: 100%;
+    max-height: 94vh;
+    border-radius: 22px 22px 0 0;
+  }
+
+  .admin-evento-public-preview-modal .evento-detalle-card {
+    border-radius: 22px 22px 0 0;
+  }
+
+  .admin-preview-page-shell .evento-detalle-card {
+    min-height: auto !important;
+  }
+}
+
+@media (max-width: 480px) {
+  .admin-evento-public-preview-modal {
+    max-height: 96vh;
+    border-radius: 18px 18px 0 0;
+  }
+}

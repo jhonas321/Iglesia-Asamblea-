@@ -1,136 +1,597 @@
 .admin-crud-page {
-    width: 100%;
-    min-height: 100vh;
+  width: 100%;
+  min-height: 100vh;
+}
+
+.admin-crud-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 24px;
+  margin-bottom: 28px;
+}
+
+.admin-crud-label {
+  display: inline-block;
+  margin-bottom: 8px;
+  color: #d4af37;
+  font-size: 13px;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.9px;
+}
+
+.admin-crud-header h1 {
+  margin: 0;
+  color: #0f172a;
+  font-size: 34px;
+  font-weight: 900;
+  line-height: 1.1;
+}
+
+.admin-crud-header p {
+  max-width: 560px;
+  margin: 10px 0 0;
+  color: #64748b;
+  font-size: 15px;
+  font-weight: 500;
+  line-height: 1.6;
+}
+
+.admin-create-btn {
+  border: none;
+  outline: none;
+  min-height: 46px;
+  padding: 0 20px;
+  border-radius: 14px;
+  background: linear-gradient(135deg, #0f172a, #1e293b);
+  color: #ffffff;
+  font-size: 14px;
+  font-weight: 800;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 9px;
+  white-space: nowrap;
+  box-shadow: 0 14px 30px rgba(15, 23, 42, 0.22);
+  transition: transform 0.25s ease, box-shadow 0.25s ease, background 0.25s ease;
+}
+
+.admin-create-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 18px 38px rgba(15, 23, 42, 0.28);
+  background: linear-gradient(135deg, #111827, #334155);
+}
+
+.admin-status {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 86px;
+  padding: 7px 11px;
+  border-radius: 999px;
+  font-size: 12px;
+  font-weight: 800;
+  text-transform: capitalize;
+}
+
+.admin-status.proximo {
+  background: #e0f2fe;
+  color: #0369a1;
+}
+
+.admin-status.en-curso {
+  background: #dcfce7;
+  color: #15803d;
+}
+
+.admin-status.publicado {
+  background: #dcfce7;
+  color: #15803d;
+}
+
+.admin-status.borrador {
+  background: #fef3c7;
+  color: #b45309;
+}
+
+.admin-status.pasado {
+  background: #f1f5f9;
+  color: #475569;
+}
+
+/* =========================
+   MODAL GENERAL ADMIN
+========================= */
+
+.admin-form-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 999999;
+  background: rgba(7, 16, 29, 0.78);
+  backdrop-filter: blur(8px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+  overscroll-behavior: contain;
+}
+
+.admin-form-modal {
+  width: min(1180px, calc(100vw - 48px));
+  height: calc(100vh - 48px);
+  max-height: calc(100vh - 48px);
+  overflow-y: auto;
+  overflow-x: hidden;
+  background: #ffffff;
+  border-radius: 24px;
+  box-shadow: 0 24px 90px rgba(0, 0, 0, 0.42);
+  padding: 26px;
+  position: relative;
+}
+
+.admin-form-modal-wide {
+  width: min(1180px, calc(100vw - 48px));
+}
+
+.admin-form-modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 18px;
+  margin-bottom: 22px;
+}
+
+.admin-form-modal-header h2 {
+  margin: 4px 0 0;
+  font-size: 1.75rem;
+  color: #07101d;
+}
+
+.admin-form-close {
+  width: 42px;
+  height: 42px;
+  border: none;
+  border-radius: 14px;
+  background: #f1f3f7;
+  color: #07101d;
+  display: grid;
+  place-items: center;
+  cursor: pointer;
+  transition: 0.2s ease;
+  flex-shrink: 0;
+}
+
+.admin-form-close:hover {
+  background: #e6e9f0;
+  transform: scale(1.04);
+}
+
+.admin-form-layout {
+  display: block;
+}
+
+.admin-form {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+  min-width: 0;
+}
+
+.admin-form-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 16px;
+}
+
+.admin-form label {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  min-width: 0;
+}
+
+.admin-form label span {
+  font-size: 0.88rem;
+  font-weight: 800;
+  color: #263247;
+}
+
+.admin-form input,
+.admin-form textarea {
+  width: 100%;
+  min-width: 0;
+  border: 1px solid #d7dce7;
+  border-radius: 14px;
+  padding: 13px 14px;
+  font-size: 0.95rem;
+  color: #07101d;
+  background: #ffffff;
+  outline: none;
+  transition: 0.2s ease;
+  font-family: inherit;
+}
+
+.admin-form textarea {
+  resize: vertical;
+  min-height: 90px;
+}
+
+.admin-form input:focus,
+.admin-form textarea:focus {
+  border-color: #d4af37;
+  box-shadow: 0 0 0 4px rgba(212, 175, 55, 0.16);
+}
+
+.admin-form-error {
+  padding: 13px 15px;
+  border-radius: 14px;
+  background: #fff0f0;
+  color: #b42318;
+  border: 1px solid #ffcdca;
+  font-weight: 800;
+  font-size: 0.93rem;
+}
+
+.admin-file-upload {
+  border: 1.5px dashed #c8cfdd;
+  border-radius: 16px;
+  background: #f8fafc;
+  padding: 16px;
+  display: grid !important;
+  grid-template-columns: auto 1fr;
+  gap: 12px !important;
+  align-items: center;
+  cursor: pointer;
+  color: #263247;
+  transition: 0.2s ease;
+  position: relative;
+}
+
+.admin-file-upload:hover {
+  border-color: #d4af37;
+  background: #fffaf0;
+}
+
+.admin-file-upload strong {
+  display: block;
+  color: #07101d;
+  font-size: 0.95rem;
+}
+
+.admin-file-upload small {
+  display: block;
+  color: #667085;
+  font-size: 0.82rem;
+  margin-top: 3px;
+}
+
+.admin-file-upload input[type="file"] {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  cursor: pointer;
+}
+
+.admin-form-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+  margin-top: 6px;
+}
+
+.admin-form-cancel,
+.admin-form-save {
+  border: none;
+  border-radius: 14px;
+  padding: 13px 20px;
+  font-weight: 900;
+  cursor: pointer;
+  transition: 0.2s ease;
+}
+
+.admin-form-cancel {
+  background: #eef1f6;
+  color: #263247;
+}
+
+.admin-form-save {
+  background: #d4af37;
+  color: #07101d;
+}
+
+.admin-form-cancel:hover,
+.admin-form-save:hover {
+  transform: translateY(-1px);
+  filter: brightness(0.97);
+}
+
+/* =========================
+   PESTAÑAS FORMULARIO / VISTA PREVIA
+========================= */
+
+.admin-editor-tabs {
+  width: 100%;
+  display: flex;
+  gap: 12px;
+  margin: 0 0 22px;
+  padding: 6px;
+  border-radius: 18px;
+  background: #f1f5f9;
+}
+
+.admin-editor-tab {
+  flex: 1;
+  min-height: 46px;
+  border: none;
+  border-radius: 14px;
+  background: transparent;
+  color: #475569;
+  font-size: 0.95rem;
+  font-weight: 900;
+  font-family: inherit;
+  cursor: pointer;
+  transition: 0.25s ease;
+}
+
+.admin-editor-tab:hover {
+  background: #ffffff;
+  color: #17253f;
+}
+
+.admin-editor-tab.active {
+  background: linear-gradient(135deg, #17253f, #3f62b8);
+  color: #ffffff;
+  box-shadow: 0 12px 24px rgba(23, 37, 63, 0.2);
+}
+
+.admin-editor-body {
+  width: 100%;
+  min-height: calc(100vh - 230px);
+}
+
+.admin-editor-form-wrap {
+  width: 100%;
+}
+
+.admin-preview-page-shell {
+  width: 100%;
+  min-height: calc(100vh - 250px);
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  padding: 4px 0 0;
+}
+
+/* =========================
+   VISTA PREVIA DEL OJITO
+========================= */
+
+.admin-public-preview-modal {
+  position: relative;
+  width: min(1120px, calc(100vw - 48px));
+  max-height: calc(100vh - 48px);
+  overflow-y: auto;
+  overflow-x: hidden;
+  border-radius: 28px;
+  animation: adminPublicPreviewUp 0.25s ease;
+}
+
+.admin-public-preview-content {
+  width: 100%;
+  position: relative;
+}
+
+.admin-public-preview-close {
+  position: absolute !important;
+  top: 16px !important;
+  right: 16px !important;
+  z-index: 100 !important;
+  width: 46px;
+  height: 46px;
+  border: none;
+  border-radius: 50%;
+  background: #ffffff;
+  color: #17253f;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  box-shadow: 0 14px 34px rgba(0, 0, 0, 0.28);
+  transition: background 0.25s ease, color 0.25s ease, transform 0.25s ease;
+}
+
+.admin-public-preview-close:hover {
+  background: #3f62b8;
+  color: #ffffff;
+  transform: scale(1.05);
+}
+
+.admin-preview-empty-image {
+  width: 100%;
+  min-height: 260px;
+  display: grid;
+  place-items: center;
+  color: #ffffff;
+  font-weight: 900;
+  text-align: center;
+  background: linear-gradient(135deg, #17253f, #3f62b8);
+}
+
+@keyframes adminPublicPreviewUp {
+  from {
+    opacity: 0;
+    transform: translateY(16px) scale(0.98);
   }
-  
+
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+/* =========================
+   RESPONSIVE GENERAL
+========================= */
+
+@media (max-width: 1280px) {
+  .admin-form-modal,
+  .admin-form-modal-wide {
+    width: min(1000px, calc(100vw - 40px));
+  }
+}
+
+@media (max-width: 992px) {
+  .admin-public-preview-modal {
+    width: min(760px, calc(100vw - 36px));
+    max-height: calc(100vh - 36px);
+  }
+}
+
+@media (max-width: 900px) {
   .admin-crud-header {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 24px;
-    margin-bottom: 28px;
+    align-items: flex-start;
+    flex-direction: column;
   }
-  
-  .admin-crud-label {
-    display: inline-block;
-    margin-bottom: 8px;
-    color: #d4af37;
-    font-size: 13px;
-    font-weight: 800;
-    text-transform: uppercase;
-    letter-spacing: 0.9px;
-  }
-  
-  .admin-crud-header h1 {
-    margin: 0;
-    color: #0f172a;
-    font-size: 34px;
-    font-weight: 900;
-    line-height: 1.1;
-  }
-  
-  .admin-crud-header p {
-    max-width: 560px;
-    margin: 10px 0 0;
-    color: #64748b;
-    font-size: 15px;
-    font-weight: 500;
-    line-height: 1.6;
-  }
-  
+
   .admin-create-btn {
-    border: none;
-    outline: none;
-    min-height: 46px;
-    padding: 0 20px;
-    border-radius: 14px;
-    background: linear-gradient(135deg, #0f172a, #1e293b);
-    color: #ffffff;
+    width: 100%;
+  }
+
+  .admin-form-overlay {
+    padding: 16px;
+  }
+
+  .admin-form-modal,
+  .admin-form-modal-wide {
+    width: calc(100vw - 32px);
+    max-height: calc(100vh - 32px);
+    padding: 22px;
+  }
+}
+
+@media (max-width: 768px) {
+  .admin-form-overlay {
+    padding: 10px;
+    align-items: flex-end;
+  }
+
+  .admin-form-modal,
+  .admin-form-modal-wide {
+    width: 100%;
+    height: 94vh !important;
+    max-height: 94vh !important;
+    border-radius: 22px 22px 0 0;
+    padding: 20px;
+  }
+
+  .admin-form-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .admin-form-modal-header h2 {
+    font-size: 1.4rem;
+  }
+
+  .admin-form-actions {
+    flex-direction: column-reverse;
+  }
+
+  .admin-form-cancel,
+  .admin-form-save {
+    width: 100%;
+  }
+
+  .admin-editor-tabs {
+    gap: 8px;
+    padding: 5px;
+  }
+
+  .admin-editor-tab {
+    min-height: 42px;
+    font-size: 0.84rem;
+  }
+
+  .admin-editor-body {
+    min-height: auto;
+  }
+
+  .admin-preview-page-shell {
+    min-height: auto;
+  }
+
+  .admin-public-preview-modal {
+    width: 100%;
+    max-height: 94vh;
+    border-radius: 22px 22px 0 0;
+  }
+
+  .admin-public-preview-close {
+    top: 12px !important;
+    right: 12px !important;
+    width: 42px;
+    height: 42px;
+  }
+}
+
+@media (max-width: 600px) {
+  .admin-crud-header {
+    margin-bottom: 20px;
+  }
+
+  .admin-crud-header h1 {
+    font-size: 28px;
+  }
+
+  .admin-crud-header p {
     font-size: 14px;
-    font-weight: 800;
-    cursor: pointer;
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    gap: 9px;
-    white-space: nowrap;
-    box-shadow: 0 14px 30px rgba(15, 23, 42, 0.22);
-    transition: transform 0.25s ease, box-shadow 0.25s ease, background 0.25s ease;
   }
-  
-  .admin-create-btn:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 18px 38px rgba(15, 23, 42, 0.28);
-    background: linear-gradient(135deg, #111827, #334155);
+
+  .admin-create-btn {
+    min-height: 44px;
+    border-radius: 12px;
   }
-  
-  .admin-create-btn:active {
-    transform: translateY(0);
+
+  .admin-form-modal,
+  .admin-form-modal-wide {
+    padding: 16px;
   }
-  
-  .admin-status {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    min-width: 86px;
-    padding: 7px 11px;
-    border-radius: 999px;
-    font-size: 12px;
-    font-weight: 800;
-    text-transform: capitalize;
+
+  .admin-form-modal-header {
+    gap: 12px;
   }
-  
-  .admin-status.proximo {
-    background: #e0f2fe;
-    color: #0369a1;
+
+  .admin-form-close {
+    width: 38px;
+    height: 38px;
+    border-radius: 12px;
   }
-  
-  .admin-status.en-curso {
-    background: #dcfce7;
-    color: #15803d;
+}
+
+@media (max-width: 480px) {
+  .admin-public-preview-modal {
+    max-height: 96vh;
+    border-radius: 18px 18px 0 0;
   }
-  
-  .admin-status.publicado {
-    background: #dcfce7;
-    color: #15803d;
+
+  .admin-public-preview-close {
+    width: 40px;
+    height: 40px;
   }
-  
-  .admin-status.borrador {
-    background: #fef3c7;
-    color: #b45309;
+}
+
+@media (max-width: 420px) {
+  .admin-form-overlay {
+    padding: 0;
   }
-  
-  .admin-status.pasado {
-    background: #f1f5f9;
-    color: #475569;
+
+  .admin-form-modal,
+  .admin-form-modal-wide {
+    width: 100%;
+    height: 96vh !important;
+    max-height: 96vh !important;
+    border-radius: 18px 18px 0 0;
   }
-  
-  @media (max-width: 900px) {
-    .admin-crud-header {
-      align-items: flex-start;
-      flex-direction: column;
-    }
-  
-    .admin-create-btn {
-      width: 100%;
-    }
-  }
-  
-  @media (max-width: 600px) {
-    .admin-crud-header {
-      margin-bottom: 20px;
-    }
-  
-    .admin-crud-header h1 {
-      font-size: 28px;
-    }
-  
-    .admin-crud-header p {
-      font-size: 14px;
-    }
-  
-    .admin-create-btn {
-      min-height: 44px;
-      border-radius: 12px;
-    }
-  }
+}

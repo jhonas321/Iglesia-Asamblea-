@@ -15,7 +15,7 @@ import {
 
 import CalendarioPersonalizado from "../../components/CalendarioPersonalizado";
 import Paginacion from "../../components/ui/Paginacion";
-import { eventos } from "../../data/eventosData";
+import { obtenerEventosGuardados } from "../../data/adminStorage";
 import "../../styles/eventos-ministerios.css";
 
 const obtenerVistaTabletOCelular = () => {
@@ -128,6 +128,7 @@ function EventosMinisterios() {
   const { id } = useParams();
   const navigate = useNavigate();
 
+  const eventos = useMemo(() => obtenerEventosGuardados(), []);
   const fechaActual = obtenerFechaActualInput();
 
   const eventosActualizados = useMemo(() => {
@@ -136,7 +137,7 @@ function EventosMinisterios() {
       fecha: formatearRangoFechaEvento(evento.fechaInicio, evento.fechaFinal),
       estado: obtenerEstadoEvento(evento, fechaActual),
     }));
-  }, [fechaActual]);
+  }, [eventos, fechaActual]);
 
   const [eventoSeleccionado, setEventoSeleccionado] = useState(null);
   const [pestanaActiva, setPestanaActiva] = useState("todos");
@@ -506,7 +507,7 @@ function EventosMinisterios() {
     return () => {
       window.removeEventListener("keydown", cerrarConEscape);
     };
-  }, [mostrarModalPc, cerrarModal]);
+  }, [mostrarModalPc]);
 
   const consultarWhatsApp = (evento = eventoSeleccionado) => {
     if (!evento) return;

@@ -1,177 +1,8 @@
+import { useMemo } from "react";
 import { FaRegUser, FaRegUserCircle } from "react-icons/fa";
 import "../../styles/organigrama.css";
 
-const secciones = [
-  {
-    titulo: "Pastorado",
-    descripcion: "Dirección espiritual y guía principal de la iglesia.",
-    tipo: "principal",
-    miembros: [
-      {
-        cargo: "Pastor General",
-        nombre: "Pastor Mario Rodriguez Flores",
-        genero: "hombre",
-      },
-    ],
-  },
-
-  {
-    titulo: "Dorcas",
-    descripcion: "Ministerio de mujeres al servicio de la iglesia.",
-    miembros: [
-      {
-        cargo: "Presidenta",
-        nombre: "Olga Quispe",
-        genero: "mujer",
-      },
-      {
-        cargo: "Vicepresidenta",
-        nombre: "Francisca Choque",
-        genero: "mujer",
-      },
-      {
-        cargo: "Tesorera",
-        nombre: "Rebeca Rodríguez",
-        genero: "mujer",
-      },
-      {
-        cargo: "Subtesorera",
-        nombre: "Natividad Alejandro",
-        genero: "mujer",
-      },
-      {
-        cargo: "Secretaria",
-        nombre: "Flora Sotori",
-        genero: "mujer",
-      },
-      {
-        cargo: "Subsecretaria",
-        nombre: "Victoria Bustamante",
-        genero: "mujer",
-      },
-    ],
-  },
-
-  {
-    titulo: "Apostólicos",
-    descripcion: "Equipo de liderazgo y apoyo espiritual apostólico.",
-    miembros: [
-      {
-        cargo: "Presidente",
-        nombre: "Orlando Soliz",
-        genero: "hombre",
-      },
-      {
-        cargo: "Vicepresidente",
-        nombre: "Felix Romero",
-        genero: "hombre",
-      },
-      {
-        cargo: "Tesorero",
-        nombre: "Fabián Saliz",
-        genero: "hombre",
-      },
-      {
-        cargo: "Secretario",
-        nombre: "Ariel Sánchez",
-        genero: "hombre",
-      },
-    ],
-  },
-
-  {
-    titulo: "Ministerio de Alabanza",
-    descripcion:
-      "Equipo encargado de dirigir la adoración, la música y el ambiente espiritual durante los cultos.",
-    miembros: [
-      {
-        cargo: "Líder de Alabanza",
-        nombre: "David Mamani",
-        genero: "hombre",
-      },
-      {
-        cargo: "Vocalista",
-        nombre: "Ana Quispe",
-        genero: "mujer",
-      },
-      {
-        cargo: "Guitarrista",
-        nombre: "Carlos Rojas",
-        genero: "hombre",
-      },
-      {
-        cargo: "Baterista",
-        nombre: "Luis Fernández",
-        genero: "hombre",
-      },
-      {
-        cargo: "Tecladista",
-        nombre: "María López",
-        genero: "mujer",
-      },
-    ],
-  },
-
-  {
-    titulo: "Ministerio de Niños",
-    descripcion:
-      "Formación espiritual, enseñanza bíblica y cuidado de los niños.",
-    miembros: [
-      {
-        cargo: "Maestra Encargada",
-        nombre: "Marlene Sotori",
-        genero: "mujer",
-      },
-      {
-        cargo: "Maestra Encargada",
-        nombre: "Adriana Torrez",
-        genero: "mujer",
-      },
-    ],
-  },
-
-  {
-    titulo: "Pandero",
-    descripcion: "Equipo de danza y adoración con panderos.",
-    miembros: [
-      {
-        cargo: "Integrante de Pandero",
-        nombre: "Adriana",
-        genero: "mujer",
-      },
-      {
-        cargo: "Líder de Pandero",
-        nombre: "Carla",
-        genero: "mujer",
-      },
-      {
-        cargo: "Integrante de Pandero",
-        nombre: "Rocío",
-        genero: "mujer",
-      },
-      {
-        cargo: "Integrante de Pandero",
-        nombre: "Nicol",
-        genero: "mujer",
-      },
-      {
-        cargo: "Integrante de Pandero",
-        nombre: "Mayte",
-        genero: "mujer",
-      },
-      {
-        cargo: "Integrante de Pandero",
-        nombre: "Damaris",
-        genero: "mujer",
-      },
-      {
-        cargo: "Integrante de Pandero",
-        nombre: "Areli",
-        genero: "mujer",
-      },
-    ],
-  },
-];
+import { obtenerOrganigramaGuardado } from "../../data/adminStorage";
 
 function Avatar({ genero = "hombre", nombre = "", principal = false }) {
   const esMujer = genero === "mujer";
@@ -191,6 +22,10 @@ function Avatar({ genero = "hombre", nombre = "", principal = false }) {
 }
 
 function Organigrama() {
+  const secciones = useMemo(() => {
+    return obtenerOrganigramaGuardado();
+  }, []);
+
   const pastorado = secciones.find((seccion) => seccion.tipo === "principal");
   const pastorPrincipal = pastorado?.miembros?.[0];
 
@@ -239,7 +74,7 @@ function Organigrama() {
 
       <div className="organigrama-ministerios">
         {ministerios.map((seccion, index) => (
-          <div className="organigrama-seccion" key={seccion.titulo}>
+          <div className="organigrama-seccion" key={seccion.id}>
             <div className="organigrama-seccion-header">
               <div className="organigrama-numero">
                 {String(index + 1).padStart(2, "0")}
@@ -257,10 +92,7 @@ function Organigrama() {
 
             <div className="organigrama-grid">
               {seccion.miembros.map((miembro) => (
-                <div
-                  className="organigrama-card"
-                  key={`${miembro.nombre}-${miembro.cargo}`}
-                >
+                <div className="organigrama-card" key={miembro.id}>
                   <Avatar genero={miembro.genero} nombre={miembro.nombre} />
 
                   <div className="organigrama-info">
