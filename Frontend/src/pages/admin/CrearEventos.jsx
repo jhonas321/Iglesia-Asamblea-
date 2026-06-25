@@ -543,22 +543,28 @@ const CrearEventos = () => {
 
         <label>
           <span>Fecha inicial *</span>
-          <input
-            type="date"
-            name="fechaInicio"
-            value={formulario.fechaInicio}
-            onChange={actualizarCampo}
-          />
+
+          <div className="admin-date-wrap">
+            <input
+              type="date"
+              name="fechaInicio"
+              value={formulario.fechaInicio}
+              onChange={actualizarCampo}
+            />
+          </div>
         </label>
 
         <label>
           <span>Fecha final</span>
-          <input
-            type="date"
-            name="fechaFinal"
-            value={formulario.fechaFinal}
-            onChange={actualizarCampo}
-          />
+
+          <div className="admin-date-wrap">
+            <input
+              type="date"
+              name="fechaFinal"
+              value={formulario.fechaFinal}
+              onChange={actualizarCampo}
+            />
+          </div>
         </label>
 
         <label>
