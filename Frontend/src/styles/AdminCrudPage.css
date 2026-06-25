@@ -135,23 +135,39 @@
   width: min(1180px, calc(100vw - 48px));
 }
 
+.admin-form-modal,
+.admin-form-modal *,
+.admin-public-preview-modal,
+.admin-public-preview-modal * {
+  box-sizing: border-box;
+}
+
 .admin-form-modal-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: flex-start;
-  gap: 18px;
+  width: 100%;
+  display: grid !important;
+  grid-template-columns: minmax(0, 1fr) 42px;
+  align-items: start;
+  gap: 12px;
   margin-bottom: 22px;
+}
+
+.admin-form-modal-header > div {
+  min-width: 0;
 }
 
 .admin-form-modal-header h2 {
   margin: 4px 0 0;
   font-size: 1.75rem;
   color: #07101d;
+  line-height: 1.2;
 }
 
 .admin-form-close {
+  position: static !important;
   width: 42px;
   height: 42px;
+  min-width: 42px;
+  margin: 0 !important;
   border: none;
   border-radius: 14px;
   background: #f1f3f7;
@@ -160,7 +176,10 @@
   place-items: center;
   cursor: pointer;
   transition: 0.2s ease;
+  justify-self: end;
+  align-self: start;
   flex-shrink: 0;
+  z-index: 20;
 }
 
 .admin-form-close:hover {
@@ -234,6 +253,63 @@
   font-weight: 800;
   font-size: 0.93rem;
 }
+
+/* =========================
+   SELECT PERSONALIZADO
+   Solo afecta select envuelto en .admin-select-wrap
+========================= */
+
+.admin-select-wrap {
+  position: relative;
+  width: 100%;
+}
+
+.admin-select-wrap::after {
+  content: "";
+  position: absolute;
+  top: 50%;
+  right: 18px;
+  width: 9px;
+  height: 9px;
+  border-right: 2px solid #17253f;
+  border-bottom: 2px solid #17253f;
+  transform: translateY(-65%) rotate(45deg);
+  pointer-events: none;
+}
+
+.admin-form-select {
+  width: 100%;
+  min-width: 0;
+  border: 1px solid #d7dce7;
+  border-radius: 14px;
+  padding: 13px 14px;
+  font-size: 0.95rem;
+  color: #07101d;
+  background: #ffffff;
+  outline: none;
+  transition: 0.2s ease;
+  font-family: inherit;
+}
+
+.admin-form-select:focus {
+  border-color: #d4af37;
+  box-shadow: 0 0 0 4px rgba(212, 175, 55, 0.16);
+}
+
+.admin-select-wrap .admin-form-select {
+  appearance: none;
+  -webkit-appearance: none;
+  padding-right: 48px !important;
+  background: #ffffff;
+}
+
+.admin-select-wrap .admin-form-select::-ms-expand {
+  display: none;
+}
+
+/* =========================
+   FILE UPLOAD
+========================= */
 
 .admin-file-upload {
   border: 1.5px dashed #c8cfdd;
@@ -480,19 +556,35 @@
 
   .admin-form-modal,
   .admin-form-modal-wide {
-    width: 100%;
+    width: calc(100vw - 20px) !important;
+    max-width: calc(100vw - 20px) !important;
     height: 94vh !important;
     max-height: 94vh !important;
     border-radius: 22px 22px 0 0;
-    padding: 20px;
+    padding: 20px 16px !important;
   }
 
   .admin-form-grid {
     grid-template-columns: 1fr;
   }
 
+  .admin-form-modal-header {
+    grid-template-columns: minmax(0, 1fr) 40px;
+    gap: 10px;
+  }
+
   .admin-form-modal-header h2 {
     font-size: 1.4rem;
+  }
+
+  .admin-form-close {
+    width: 40px;
+    height: 40px;
+    min-width: 40px;
+  }
+
+  .admin-select-wrap::after {
+    right: 16px;
   }
 
   .admin-form-actions {
@@ -560,12 +652,13 @@
   }
 
   .admin-form-modal-header {
-    gap: 12px;
+    gap: 10px;
   }
 
   .admin-form-close {
     width: 38px;
     height: 38px;
+    min-width: 38px;
     border-radius: 12px;
   }
 }
@@ -589,9 +682,25 @@
 
   .admin-form-modal,
   .admin-form-modal-wide {
-    width: 100%;
+    width: calc(100vw - 16px) !important;
+    max-width: calc(100vw - 16px) !important;
     height: 96vh !important;
     max-height: 96vh !important;
     border-radius: 18px 18px 0 0;
+    padding: 18px 14px !important;
+  }
+
+  .admin-form-modal-header {
+    grid-template-columns: minmax(0, 1fr) 38px;
+  }
+
+  .admin-form-close {
+    width: 38px;
+    height: 38px;
+    min-width: 38px;
+  }
+
+  .admin-select-wrap::after {
+    right: 14px;
   }
 }

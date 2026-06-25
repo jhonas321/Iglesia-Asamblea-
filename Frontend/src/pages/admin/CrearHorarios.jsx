@@ -536,18 +536,21 @@ const CrearHorarios = () => {
       <div className="admin-form-grid">
         <label>
           <span>Día *</span>
-          <select
-            name="dia"
-            value={formulario.dia}
-            onChange={actualizarCampo}
-            className="admin-form-select"
-          >
-            {diasSemana.map((dia) => (
-              <option value={dia} key={dia}>
-                {dia}
-              </option>
-            ))}
-          </select>
+
+          <div className="admin-select-wrap">
+            <select
+              name="dia"
+              value={formulario.dia}
+              onChange={actualizarCampo}
+              className="admin-form-select"
+            >
+              {diasSemana.map((dia) => (
+                <option value={dia} key={dia}>
+                  {dia}
+                </option>
+              ))}
+            </select>
+          </div>
         </label>
 
         <label>

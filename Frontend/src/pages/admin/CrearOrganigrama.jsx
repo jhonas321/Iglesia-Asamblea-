@@ -207,7 +207,9 @@ const CrearOrganigrama = () => {
   };
 
   const validarFormulario = () => {
-    if (!formulario.titulo.trim()) return "El título de la sección es obligatorio.";
+    if (!formulario.titulo.trim())
+      return "El título de la sección es obligatorio.";
+
     if (!formulario.descripcion.trim())
       return "La descripción de la sección es obligatoria.";
 
@@ -474,15 +476,18 @@ const CrearOrganigrama = () => {
 
         <label>
           <span>Tipo *</span>
-          <select
-            name="tipo"
-            value={formulario.tipo}
-            onChange={actualizarCampo}
-            className="admin-form-select"
-          >
-            <option value="normal">Normal</option>
-            <option value="principal">Principal</option>
-          </select>
+
+          <div className="admin-select-wrap">
+            <select
+              name="tipo"
+              value={formulario.tipo}
+              onChange={actualizarCampo}
+              className="admin-form-select"
+            >
+              <option value="normal">Normal</option>
+              <option value="principal">Principal</option>
+            </select>
+          </div>
         </label>
       </div>
 
@@ -548,16 +553,23 @@ const CrearOrganigrama = () => {
 
                 <label>
                   <span>Género *</span>
-                  <select
-                    value={miembro.genero}
-                    onChange={(e) =>
-                      actualizarMiembro(miembro.id, "genero", e.target.value)
-                    }
-                    className="admin-form-select"
-                  >
-                    <option value="hombre">Hombre</option>
-                    <option value="mujer">Mujer</option>
-                  </select>
+
+                  <div className="admin-select-wrap">
+                    <select
+                      value={miembro.genero}
+                      onChange={(e) =>
+                        actualizarMiembro(
+                          miembro.id,
+                          "genero",
+                          e.target.value
+                        )
+                      }
+                      className="admin-form-select"
+                    >
+                      <option value="hombre">Hombre</option>
+                      <option value="mujer">Mujer</option>
+                    </select>
+                  </div>
                 </label>
               </div>
 
@@ -576,7 +588,11 @@ const CrearOrganigrama = () => {
       </div>
 
       <div className="admin-form-actions">
-        <button type="button" className="admin-form-cancel" onClick={cerrarModal}>
+        <button
+          type="button"
+          className="admin-form-cancel"
+          onClick={cerrarModal}
+        >
           Cancelar
         </button>
 
