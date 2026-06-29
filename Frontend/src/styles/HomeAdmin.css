@@ -1,6 +1,6 @@
 .home-admin {
+  width: 100%;
   min-height: 100vh;
-  margin-left: 270px;
   padding: 32px;
   background: radial-gradient(
       circle at top right,
@@ -364,7 +364,6 @@
 
 @media (max-width: 900px) {
   .home-admin {
-    margin-left: 240px;
     padding: 24px;
   }
 
@@ -375,7 +374,6 @@
 
 @media (max-width: 650px) {
   .home-admin {
-    margin-left: 76px;
     padding: 18px;
   }
 

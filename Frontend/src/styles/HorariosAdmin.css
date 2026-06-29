@@ -1,0 +1,368 @@
+/* =========================================
+   CRUD HORARIOS - SELECT Y VISTA PREVIA
+========================================= */
+
+.admin-form-select {
+  width: 100%;
+  min-width: 0;
+  border: 1px solid #d7dce7;
+  border-radius: 14px;
+  padding: 13px 14px;
+  font-size: 0.95rem;
+  color: #07101d;
+  background: #ffffff;
+  outline: none;
+  transition: 0.2s ease;
+  font-family: inherit;
+}
+
+.admin-form-select:focus {
+  border-color: #d4af37;
+  box-shadow: 0 0 0 4px rgba(212, 175, 55, 0.16);
+}
+
+.admin-horario-public-preview-modal {
+  width: min(920px, calc(100vw - 48px));
+}
+
+.admin-schedule-preview {
+  width: 100%;
+  padding: 56px 22px;
+  border-radius: 28px;
+}
+
+.admin-schedule-preview::before {
+  inset: 12px;
+  border-radius: 24px;
+}
+
+.admin-schedule-preview .schedule-container {
+  max-width: 760px;
+}
+
+.admin-schedule-preview .section-title {
+  margin-bottom: 34px;
+}
+
+.admin-schedule-preview .section-title h2 {
+  font-size: clamp(1.8rem, 3vw, 2.4rem);
+}
+
+.admin-schedule-preview .section-title p {
+  font-size: 0.95rem;
+}
+
+.admin-schedule-preview .schedule-grid {
+  grid-template-columns: minmax(260px, 330px);
+  justify-content: center;
+}
+
+.admin-schedule-preview .schedule-card {
+  min-height: 305px;
+}
+
+/* =========================================
+   SELECTOR DE ICONOS - CRUD HORARIOS
+========================================= */
+
+.admin-icon-picker {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.admin-icon-picker > span {
+  color: #07101d;
+  font-size: 0.95rem;
+  font-weight: 900;
+}
+
+.admin-icon-picker-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(118px, 1fr));
+  gap: 12px;
+}
+
+.admin-icon-option {
+  min-height: 92px;
+  border: 1px solid #d7dce7;
+  border-radius: 16px;
+  background: #ffffff;
+  color: #17253f;
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 9px;
+  font-family: inherit;
+  transition: transform 0.2s ease, border-color 0.2s ease,
+    background 0.2s ease, box-shadow 0.2s ease;
+}
+
+.admin-icon-option:hover {
+  transform: translateY(-2px);
+  border-color: #3f62b8;
+  background: #f4f7ff;
+  box-shadow: 0 10px 24px rgba(15, 23, 42, 0.08);
+}
+
+.admin-icon-option.active {
+  border-color: #d4af37;
+  background: linear-gradient(135deg, #17253f, #3f62b8);
+  color: #ffffff;
+  box-shadow: 0 14px 30px rgba(63, 98, 184, 0.28);
+}
+
+.admin-icon-option-icon {
+  width: 38px;
+  height: 38px;
+  border-radius: 14px;
+  background: #eef4ff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #17253f;
+  font-size: 1.15rem;
+}
+
+.admin-icon-option.active .admin-icon-option-icon {
+  background: rgba(255, 255, 255, 0.16);
+  color: #d4af37;
+}
+
+.admin-icon-option small {
+  font-size: 0.78rem;
+  font-weight: 900;
+  text-align: center;
+}
+
+/* =========================================
+   RESPONSIVE
+========================================= */
+
+@media (max-width: 768px) {
+  .admin-horario-public-preview-modal {
+    width: 100%;
+  }
+
+  .admin-schedule-preview {
+    padding: 48px 16px;
+    border-radius: 22px 22px 0 0;
+  }
+
+  .admin-schedule-preview .schedule-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .admin-icon-picker-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+/* =========================================
+   FIX HORARIOS - VISTA PREVIA EN PANTALLA PEQUEÑA
+========================================= */
+
+@media (max-width: 560px) {
+  .admin-schedule-preview {
+    padding: 40px 14px !important;
+    border-radius: 22px !important;
+  }
+
+  .admin-schedule-preview::before {
+    inset: 10px !important;
+    border-radius: 20px !important;
+  }
+
+  .admin-schedule-preview .schedule-container {
+    max-width: 100% !important;
+  }
+
+  .admin-schedule-preview .section-title {
+    margin-bottom: 26px !important;
+  }
+
+  .admin-schedule-preview .section-title h2 {
+    font-size: 1.65rem !important;
+    line-height: 1.18 !important;
+  }
+
+  .admin-schedule-preview .section-title p {
+    font-size: 0.9rem !important;
+    line-height: 1.55 !important;
+  }
+
+  .admin-schedule-preview .schedule-grid {
+    grid-template-columns: 1fr !important;
+    gap: 14px !important;
+  }
+
+  .admin-schedule-preview .schedule-card {
+    min-height: auto !important;
+    padding: 22px !important;
+    border-radius: 22px !important;
+    display: flex !important;
+    flex-direction: column !important;
+    cursor: default !important;
+  }
+
+  .admin-schedule-preview .schedule-card:hover {
+    transform: none !important;
+  }
+
+  .admin-schedule-preview .schedule-card-top {
+    display: flex !important;
+    align-items: center !important;
+    justify-content: space-between !important;
+    grid-template-columns: none !important;
+    gap: 12px !important;
+    padding: 0 !important;
+    margin-bottom: 22px !important;
+  }
+
+  .admin-schedule-preview .schedule-icon {
+    width: 54px !important;
+    height: 54px !important;
+    min-width: 54px !important;
+    border-radius: 18px !important;
+  }
+
+  .admin-schedule-preview .schedule-icon svg {
+    width: 24px !important;
+    height: 24px !important;
+  }
+
+  .admin-schedule-preview .schedule-day {
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    padding: 8px 14px !important;
+    border-radius: 999px !important;
+    margin-left: auto !important;
+  }
+
+  .admin-schedule-preview .schedule-mobile-main,
+  .admin-schedule-preview .schedule-mobile-time,
+  .admin-schedule-preview .schedule-accordion-toggle {
+    display: none !important;
+  }
+
+  .admin-schedule-preview .schedule-card-body {
+    max-height: none !important;
+    opacity: 1 !important;
+    overflow: visible !important;
+    padding: 0 !important;
+  }
+
+  .admin-schedule-preview .schedule-card-body h3 {
+    display: block !important;
+    margin: 0 0 10px !important;
+    font-size: 1.15rem !important;
+  }
+
+  .admin-schedule-preview .schedule-card-body p {
+    font-size: 0.92rem !important;
+    line-height: 1.6 !important;
+  }
+
+  .admin-schedule-preview .schedule-card-footer {
+    position: static !important;
+    display: flex !important;
+    align-items: end !important;
+    justify-content: space-between !important;
+    margin-top: 22px !important;
+    padding-top: 16px !important;
+    left: auto !important;
+    right: auto !important;
+    bottom: auto !important;
+  }
+
+  .admin-schedule-preview .schedule-card-footer strong {
+    font-size: 1.45rem !important;
+  }
+}
+
+@media (max-width: 420px) {
+  .admin-icon-picker-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 390px) {
+  .admin-schedule-preview {
+    padding: 34px 12px !important;
+  }
+
+  .admin-schedule-preview .section-title h2 {
+    font-size: 1.5rem !important;
+  }
+
+  .admin-schedule-preview .section-title p {
+    font-size: 0.86rem !important;
+  }
+
+  .admin-schedule-preview .schedule-card {
+    padding: 18px !important;
+    border-radius: 20px !important;
+  }
+
+  .admin-schedule-preview .schedule-card-top {
+    margin-bottom: 18px !important;
+  }
+
+  .admin-schedule-preview .schedule-icon {
+    width: 48px !important;
+    height: 48px !important;
+    min-width: 48px !important;
+  }
+
+  .admin-schedule-preview .schedule-icon svg {
+    width: 21px !important;
+    height: 21px !important;
+  }
+
+  .admin-schedule-preview .schedule-day {
+    padding: 7px 12px !important;
+    font-size: 0.78rem !important;
+  }
+
+  .admin-schedule-preview .schedule-card-footer strong {
+    font-size: 1.32rem !important;
+  }
+}
+
+
+/* =========================================
+   FIX HORARIOS - CENTRAR MODAL EN CELULAR
+========================================= */
+
+.admin-horario-preview-overlay {
+  align-items: center !important;
+  justify-content: center !important;
+}
+
+@media (max-width: 768px) {
+  .admin-horario-preview-overlay {
+    align-items: center !important;
+    justify-content: center !important;
+    padding: 14px !important;
+  }
+
+  .admin-horario-preview-overlay .admin-horario-public-preview-modal {
+    width: min(620px, 100%) !important;
+    max-height: calc(100vh - 28px) !important;
+    border-radius: 22px !important;
+  }
+}
+
+@media (max-width: 480px) {
+  .admin-horario-preview-overlay {
+    padding: 10px !important;
+  }
+
+  .admin-horario-preview-overlay .admin-horario-public-preview-modal {
+    max-height: calc(100vh - 20px) !important;
+    border-radius: 20px !important;
+  }
+}

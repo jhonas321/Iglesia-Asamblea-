@@ -10,7 +10,32 @@ import {
   FaEnvelope,
 } from "react-icons/fa";
 
+import { obtenerHorariosGuardados } from "../data/adminStorage";
+
+const ordenarHorariosFooter = (horarios) => {
+  const ordenDias = {
+    Lunes: 1,
+    Martes: 2,
+    Miércoles: 3,
+    Jueves: 4,
+    Viernes: 5,
+    Sábado: 6,
+    Domingo: 7,
+  };
+
+  return [...horarios].sort((a, b) => {
+    const ordenA = ordenDias[a.dia] || 99;
+    const ordenB = ordenDias[b.dia] || 99;
+
+    if (ordenA !== ordenB) return ordenA - ordenB;
+
+    return String(a.hora || "").localeCompare(String(b.hora || ""));
+  });
+};
+
 function Footer() {
+  const horariosFooter = ordenarHorariosFooter(obtenerHorariosGuardados());
+
   return (
     <footer className="footer">
       <div className="footer-container">
@@ -26,10 +51,28 @@ function Footer() {
         <div className="footer-col">
           <h4>Horarios</h4>
 
-          <p>Lunes - Oración 19:00</p>
-          <p>Viernes - Culto de Enseñanza 19:30</p>
-          <p>Sábado - Reunión de Jóvenes 19:30</p>
-          <p>Domingo - Culto General 19:00</p>
+          <div className="footer-schedule-list">
+            {horariosFooter.length > 0 ? (
+              horariosFooter.map((horario) => (
+                <div className="footer-schedule-item" key={horario.id}>
+                  <div className="footer-schedule-info">
+                    <span className="footer-schedule-day">{horario.dia}</span>
+                    <span className="footer-schedule-name">
+                      {horario.actividad}
+                    </span>
+                  </div>
+
+                  <strong className="footer-schedule-time">
+                    {horario.hora}
+                  </strong>
+                </div>
+              ))
+            ) : (
+              <p className="footer-schedule-empty">
+                No hay horarios registrados.
+              </p>
+            )}
+          </div>
         </div>
 
         <div className="footer-col">

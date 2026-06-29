@@ -32,6 +32,59 @@
   max-width: 310px;
 }
 
+/* HORARIOS */
+
+.footer-schedule-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.footer-schedule-item {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 14px;
+  padding-bottom: 10px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.footer-schedule-item:last-child {
+  border-bottom: none;
+  padding-bottom: 0;
+}
+
+.footer-schedule-info {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  min-width: 0;
+}
+
+.footer-schedule-day {
+  color: #d4af37;
+  font-size: 0.82rem;
+  font-weight: 900;
+  line-height: 1.2;
+}
+
+.footer-schedule-name {
+  color: #e5e7eb;
+  font-size: 0.92rem;
+  line-height: 1.35;
+}
+
+.footer-schedule-time {
+  color: #ffffff;
+  font-size: 0.95rem;
+  font-weight: 900;
+  white-space: nowrap;
+}
+
+.footer-schedule-empty {
+  color: #d7d7d7;
+}
+
 /* CONTACTO */
 
 .footer-contact-list {
@@ -224,39 +277,62 @@
     margin: 0 auto;
   }
 
-  /* CONTACTO ORDENADO */
+  /* HORARIOS MOBILE */
+
+  .footer-schedule-list {
+    width: min(310px, 100%);
+    margin: 0 auto;
+    gap: 10px;
+  }
+
+  .footer-schedule-item {
+    text-align: left;
+    gap: 12px;
+  }
+
+  .footer-schedule-day {
+    font-size: 0.8rem;
+  }
+
+  .footer-schedule-name {
+    font-size: 0.88rem;
+  }
+
+  .footer-schedule-time {
+    font-size: 0.9rem;
+  }
 
   /* CONTACTO ORDENADO */
 
-.footer-contact-list {
-  width: fit-content;
-  max-width: 100%;
-  margin: 0 auto;
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  gap: 12px;
-}
+  .footer-contact-list {
+    width: fit-content;
+    max-width: 100%;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 12px;
+  }
 
-.footer-contact-item {
-  width: fit-content;
-  justify-content: flex-start;
-  text-align: left;
-  gap: 12px;
-  font-size: 0.88rem;
-  line-height: 1.35;
-}
+  .footer-contact-item {
+    width: fit-content;
+    justify-content: flex-start;
+    text-align: left;
+    gap: 12px;
+    font-size: 0.88rem;
+    line-height: 1.35;
+  }
 
-.footer-contact-item span:last-child {
-  white-space: nowrap;
-}
+  .footer-contact-item span:last-child {
+    white-space: nowrap;
+  }
 
-.footer-contact-circle {
-  width: 34px;
-  height: 34px;
-  min-width: 34px;
-  font-size: 14px;
-}
+  .footer-contact-circle {
+    width: 34px;
+    height: 34px;
+    min-width: 34px;
+    font-size: 14px;
+  }
 
   /* REDES MÁS ORDENADAS */
 
@@ -296,5 +372,3 @@
     line-height: 1.5;
   }
 }
-
-

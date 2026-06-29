@@ -1,0 +1,229 @@
+/* =========================================
+   CRUD ORGANIGRAMA - AJUSTES PROPIOS
+========================================= */
+
+.admin-organigrama-public-preview-modal {
+    width: min(1180px, calc(100vw - 48px));
+  }
+  
+  .admin-organigrama-public-preview-modal .admin-public-preview-content {
+    width: 100%;
+  }
+  
+  .admin-organigrama-preview {
+    width: 100%;
+    min-height: auto !important;
+    padding: 78px 22px 70px !important;
+    border-radius: 28px;
+    scroll-margin-top: 0 !important;
+  }
+  
+  .admin-preview-page-shell .admin-organigrama-preview {
+    max-width: 1120px;
+    margin: 0 auto;
+  }
+  
+  .admin-organigrama-preview .organigrama-hero {
+    margin-bottom: 42px;
+  }
+  
+  .admin-organigrama-preview .organigrama-ministerios {
+    max-width: 1000px;
+  }
+  
+  .admin-organigrama-preview .organigrama-seccion {
+    padding: 24px;
+  }
+  
+  .admin-organigrama-preview .organigrama-grid {
+    grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
+  }
+  
+  /* =========================================
+     FORMULARIO DE MIEMBROS
+  ========================================= */
+  
+  .admin-members-box {
+    border: 1px solid #d7dce7;
+    border-radius: 20px;
+    background: #f8fafc;
+    padding: 18px;
+  }
+  
+  .admin-members-header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 18px;
+    margin-bottom: 18px;
+  }
+  
+  .admin-members-header h3 {
+    margin: 0 0 6px;
+    color: #07101d;
+    font-size: 1.12rem;
+    font-weight: 900;
+  }
+  
+  .admin-members-header p {
+    margin: 0;
+    color: #64748b;
+    font-size: 0.9rem;
+    line-height: 1.5;
+  }
+  
+  .admin-member-add-btn {
+    border: none;
+    border-radius: 14px;
+    background: linear-gradient(135deg, #17253f, #3f62b8);
+    color: #ffffff;
+    min-height: 42px;
+    padding: 0 15px;
+    font-size: 0.86rem;
+    font-weight: 900;
+    font-family: inherit;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    white-space: nowrap;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+  }
+  
+  .admin-member-add-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 12px 24px rgba(63, 98, 184, 0.24);
+  }
+  
+  .admin-members-list {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+  }
+  
+  .admin-member-item {
+    display: grid;
+    grid-template-columns: 48px 1fr 42px;
+    gap: 14px;
+    align-items: center;
+    padding: 14px;
+    border-radius: 18px;
+    background: #ffffff;
+    border: 1px solid #e2e8f0;
+    box-shadow: 0 8px 20px rgba(15, 23, 42, 0.04);
+  }
+  
+  .admin-member-index {
+    width: 42px;
+    height: 42px;
+    border-radius: 14px;
+    background: #eef4ff;
+    color: #3f62b8;
+    display: grid;
+    place-items: center;
+    font-weight: 900;
+    font-size: 0.82rem;
+  }
+  
+  .admin-member-fields {
+    display: grid;
+    grid-template-columns: 1.2fr 1.2fr 0.8fr;
+    gap: 12px;
+  }
+  
+  .admin-member-delete-btn {
+    width: 42px;
+    height: 42px;
+    border: none;
+    border-radius: 14px;
+    background: #fee2e2;
+    color: #b91c1c;
+    display: grid;
+    place-items: center;
+    cursor: pointer;
+    transition: 0.2s ease;
+  }
+  
+  .admin-member-delete-btn:hover:not(:disabled) {
+    background: #ef4444;
+    color: #ffffff;
+    transform: translateY(-2px);
+  }
+  
+  .admin-member-delete-btn:disabled {
+    opacity: 0.45;
+    cursor: not-allowed;
+  }
+  
+  /* =========================================
+     RESPONSIVE ORGANIGRAMA ADMIN
+  ========================================= */
+  
+  @media (max-width: 992px) {
+    .admin-organigrama-public-preview-modal {
+      width: min(820px, calc(100vw - 36px));
+      max-height: calc(100vh - 36px);
+    }
+  
+    .admin-member-fields {
+      grid-template-columns: 1fr;
+    }
+  
+    .admin-member-item {
+      align-items: flex-start;
+    }
+  }
+  
+  @media (max-width: 768px) {
+    .admin-organigrama-public-preview-modal {
+      width: 100%;
+      max-height: 94vh;
+      border-radius: 22px 22px 0 0;
+    }
+  
+    .admin-organigrama-preview {
+      padding: 66px 16px 60px !important;
+      border-radius: 22px 22px 0 0;
+    }
+  
+    .admin-members-header {
+      flex-direction: column;
+    }
+  
+    .admin-member-add-btn {
+      width: 100%;
+      justify-content: center;
+    }
+  
+    .admin-member-item {
+      grid-template-columns: 1fr;
+    }
+  
+    .admin-member-index {
+      width: 100%;
+    }
+  
+    .admin-member-delete-btn {
+      width: 100%;
+    }
+  }
+  
+  @media (max-width: 480px) {
+    .admin-organigrama-public-preview-modal {
+      max-height: 96vh;
+      border-radius: 18px 18px 0 0;
+    }
+  
+    .admin-organigrama-preview {
+      padding: 58px 12px 50px !important;
+      border-radius: 18px 18px 0 0;
+    }
+  
+    .admin-members-box {
+      padding: 14px;
+    }
+  
+    .admin-member-item {
+      padding: 12px;
+    }
+  }

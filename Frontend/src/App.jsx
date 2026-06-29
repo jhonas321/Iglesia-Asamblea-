@@ -7,10 +7,10 @@ const App = () => {
   return (
     <div className="app-container">
       <div className="content">
-        {/* <Routes>
+        <Routes>
           <Route path="/*" element={<DashboardAdmin />} />
-        </Routes> */}
-        <AppUsuario />
+        </Routes>
+        {/* <AppUsuario /> */}
       </div>
     </div>
   );
