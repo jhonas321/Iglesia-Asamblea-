@@ -95,6 +95,7 @@ const normalizarEventos = (lista) => {
     ...evento,
     fechaFinal: evento.fechaFinal || evento.fechaInicio,
     detalles: evento.detalles || evento.descripcion || "",
+    whatsappNumero: evento.whatsappNumero || "",
   }));
 };
 

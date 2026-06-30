@@ -8,6 +8,8 @@ import {
   Clock,
   MapPin,
 } from "lucide-react";
+import PhoneInput from "react-phone-input-2";
+import "react-phone-input-2/lib/style.css";
 
 import ListaAdmin from "../../components/admin/ListaAdmin";
 import {
@@ -178,6 +180,7 @@ const crearFormularioEventoVacio = () => ({
   fechaFinal: "",
   hora: "",
   lugar: "",
+  whatsappNumero: "",
   descripcion: "",
   detalles: "",
   imagen: "",
@@ -212,6 +215,10 @@ const normalizarHoraInput = (hora) => {
   if (periodo === "am" && horas === 12) horas = 0;
 
   return `${String(horas).padStart(2, "0")}:${minutos}`;
+};
+
+const limpiarNumeroWhatsApp = (numero) => {
+  return String(numero || "").replace(/\D/g, "");
 };
 
 const obtenerDiasCalendario = (fechaBase) => {
@@ -386,6 +393,15 @@ const CrearEventos = () => {
     setErrorFormulario("");
   };
 
+  const actualizarWhatsapp = (valor) => {
+    setFormulario((actual) => ({
+      ...actual,
+      whatsappNumero: valor,
+    }));
+
+    setErrorFormulario("");
+  };
+
   const cerrarModal = useCallback(() => {
     setModalAbierto(false);
     setEventoEditandoId(null);
@@ -529,7 +545,7 @@ const CrearEventos = () => {
       }));
 
       setErrorFormulario("");
-    } catch (error) {
+    } catch {
       setErrorFormulario("No se pudo cargar la imagen.");
     }
   };
@@ -542,6 +558,7 @@ const CrearEventos = () => {
       fechaFinal: evento.fechaFinal || evento.fechaInicio || "",
       hora: normalizarHoraInput(evento.hora),
       lugar: evento.lugar || "",
+      whatsappNumero: evento.whatsappNumero || "",
       descripcion: evento.descripcion || "",
       detalles: evento.detalles || "",
       imagen: evento.imagen || "",
@@ -559,6 +576,8 @@ const CrearEventos = () => {
   };
 
   const validarFormulario = () => {
+    const numeroWhatsApp = limpiarNumeroWhatsApp(formulario.whatsappNumero);
+
     if (!formulario.titulo.trim()) return "El título es obligatorio.";
     if (!formulario.ministerio.trim()) return "El ministerio es obligatorio.";
     if (!formulario.fechaInicio) return "La fecha inicial es obligatoria.";
@@ -567,6 +586,10 @@ const CrearEventos = () => {
     if (!formulario.descripcion.trim())
       return "La descripción corta es obligatoria.";
     if (!formulario.imagen.trim()) return "La imagen o afiche es obligatorio.";
+
+    if (numeroWhatsApp && numeroWhatsApp.length < 8) {
+      return "El número de WhatsApp no es válido.";
+    }
 
     if (
       formulario.fechaInicio &&
@@ -597,6 +620,7 @@ const CrearEventos = () => {
       fechaFinal: formulario.fechaFinal || formulario.fechaInicio,
       hora: formulario.hora.trim(),
       lugar: formulario.lugar.trim(),
+      whatsappNumero: limpiarNumeroWhatsApp(formulario.whatsappNumero),
       descripcion: formulario.descripcion.trim(),
       detalles: formulario.detalles.trim() || formulario.descripcion.trim(),
       imagen: formulario.imagen.trim(),
@@ -1001,6 +1025,30 @@ const CrearEventos = () => {
           />
         </label>
       </div>
+
+      <label>
+        <span>Número de WhatsApp</span>
+
+        <div className="admin-phone-wrapper">
+          <PhoneInput
+            country="bo"
+            value={formulario.whatsappNumero}
+            onChange={actualizarWhatsapp}
+            enableSearch={false}
+            countryCodeEditable={false}
+            specialLabel=""
+            placeholder="Ej: 79386322"
+            inputProps={{
+              name: "whatsappNumero",
+              autoComplete: "off",
+            }}
+            containerClass="admin-phone-input-container"
+            inputClass="admin-phone-input-field"
+            buttonClass="admin-phone-input-button"
+            dropdownClass="admin-phone-dropdown"
+          />
+        </div>
+      </label>
 
       <label>
         <span>Imagen o afiche por URL *</span>

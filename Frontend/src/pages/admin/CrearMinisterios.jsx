@@ -1,9 +1,9 @@
 import { useEffect, useMemo, useState } from "react";
+import { createPortal } from "react-dom";
 import {
   Edit,
   Layers,
   PlusCircle,
-  Save,
   Search,
   Trash2,
   X,
@@ -44,6 +44,53 @@ const CrearMinisterios = () => {
 
     return () => clearTimeout(timeout);
   }, [guardado]);
+
+  useEffect(() => {
+    if (!modalAbierto) return;
+
+    const scrollY = window.scrollY;
+
+    const body = document.body;
+    const html = document.documentElement;
+
+    const estilosAnteriores = {
+      bodyOverflow: body.style.overflow,
+      bodyPosition: body.style.position,
+      bodyTop: body.style.top,
+      bodyWidth: body.style.width,
+      htmlOverflow: html.style.overflow,
+    };
+
+    body.style.overflow = "hidden";
+    body.style.position = "fixed";
+    body.style.top = `-${scrollY}px`;
+    body.style.width = "100%";
+    html.style.overflow = "hidden";
+
+    return () => {
+      body.style.overflow = estilosAnteriores.bodyOverflow;
+      body.style.position = estilosAnteriores.bodyPosition;
+      body.style.top = estilosAnteriores.bodyTop;
+      body.style.width = estilosAnteriores.bodyWidth;
+      html.style.overflow = estilosAnteriores.htmlOverflow;
+
+      window.scrollTo(0, scrollY);
+    };
+  }, [modalAbierto]);
+
+  useEffect(() => {
+    if (!modalAbierto) return;
+
+    const cerrarConEscape = (e) => {
+      if (e.key === "Escape") cerrarModal();
+    };
+
+    window.addEventListener("keydown", cerrarConEscape);
+
+    return () => {
+      window.removeEventListener("keydown", cerrarConEscape);
+    };
+  }, [modalAbierto]);
 
   const ministeriosFiltrados = useMemo(() => {
     const texto = busqueda.trim().toLowerCase();
@@ -171,6 +218,80 @@ const CrearMinisterios = () => {
     setGuardado(true);
   };
 
+  const modalMinisterios = (
+    <div
+      className="admin-form-overlay admin-ministerios-overlay"
+      onClick={cerrarModal}
+    >
+      <form
+        className="admin-form-modal admin-ministerios-modal"
+        onSubmit={guardarFormulario}
+        onClick={(e) => e.stopPropagation()}
+      >
+        <div className="admin-form-modal-header">
+          <div>
+            <span className="admin-crud-label">
+              {modoEdicion ? "Editar registro" : "Nuevo registro"}
+            </span>
+
+            <h2>{modoEdicion ? "Editar ministerio" : "Crear ministerio"}</h2>
+          </div>
+
+          <button
+            type="button"
+            className="admin-form-close"
+            onClick={cerrarModal}
+            aria-label="Cerrar"
+          >
+            <X size={22} />
+          </button>
+        </div>
+
+        {error && <div className="admin-form-error">{error}</div>}
+
+        <div className="admin-form-grid single">
+          <label>
+            <span>Nombre del ministerio</span>
+
+            <input
+              type="text"
+              name="nombre"
+              value={formulario.nombre}
+              onChange={actualizarCampo}
+              placeholder="Ej: Jóvenes"
+            />
+          </label>
+
+          <label>
+            <span>Descripción</span>
+
+            <textarea
+              name="descripcion"
+              value={formulario.descripcion}
+              onChange={actualizarCampo}
+              placeholder="Describe brevemente este ministerio..."
+              rows="5"
+            />
+          </label>
+        </div>
+
+        <div className="admin-form-actions">
+          <button
+            type="button"
+            className="admin-form-cancel"
+            onClick={cerrarModal}
+          >
+            Cancelar
+          </button>
+
+          <button type="submit" className="admin-form-save">
+            {modoEdicion ? "Guardar cambios" : "Guardar ministerio"}
+          </button>
+        </div>
+      </form>
+    </div>
+  );
+
   return (
     <section className="admin-crud-page">
       <div className="admin-crud-header">
@@ -252,75 +373,7 @@ const CrearMinisterios = () => {
         )}
       </div>
 
-      {modalAbierto && (
-        <div className="admin-form-overlay">
-          <form className="admin-form-modal" onSubmit={guardarFormulario}>
-            <div className="admin-form-modal-header">
-              <div>
-                <span className="admin-crud-label">
-                  {modoEdicion ? "Editar registro" : "Nuevo registro"}
-                </span>
-
-                <h2>
-                  {modoEdicion ? "Editar ministerio" : "Crear ministerio"}
-                </h2>
-              </div>
-
-              <button
-                type="button"
-                className="admin-form-close"
-                onClick={cerrarModal}
-                aria-label="Cerrar"
-              >
-                <X size={22} />
-              </button>
-            </div>
-
-            {error && <div className="admin-form-error">{error}</div>}
-
-            <div className="admin-form-grid single">
-              <label>
-                <span>Nombre del ministerio</span>
-
-                <input
-                  type="text"
-                  name="nombre"
-                  value={formulario.nombre}
-                  onChange={actualizarCampo}
-                  placeholder="Ej: Jóvenes"
-                />
-              </label>
-
-              <label>
-                <span>Descripción</span>
-
-                <textarea
-                  name="descripcion"
-                  value={formulario.descripcion}
-                  onChange={actualizarCampo}
-                  placeholder="Describe brevemente este ministerio..."
-                  rows="5"
-                />
-              </label>
-            </div>
-
-            <div className="admin-form-actions">
-              <button
-                type="button"
-                className="admin-form-cancel"
-                onClick={cerrarModal}
-              >
-                Cancelar
-              </button>
-
-              <button type="submit" className="admin-form-save">
-                <Save size={18} />
-                Guardar ministerio
-              </button>
-            </div>
-          </form>
-        </div>
-      )}
+      {modalAbierto && createPortal(modalMinisterios, document.body)}
     </section>
   );
 };

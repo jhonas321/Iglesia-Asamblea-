@@ -16,6 +16,8 @@
   display: flex;
   flex-direction: column;
   gap: 26px;
+  overflow: visible;
+  position: relative;
 }
 
 /* =========================
@@ -32,6 +34,8 @@
   border-radius: 22px;
   background: linear-gradient(135deg, #f8fafc, #edf4ff);
   border: 1px solid #dbe3ef;
+  position: relative;
+  z-index: 1;
 }
 
 .admin-contact-card .admin-crud-label {
@@ -92,6 +96,13 @@
   background: #ffffff;
   border: 1px solid #e2e8f0;
   box-shadow: 0 10px 26px rgba(15, 23, 42, 0.04);
+  overflow: visible;
+  position: relative;
+  z-index: 1;
+}
+
+.admin-contact-section:has(.flag-dropdown.open) {
+  z-index: 1000;
 }
 
 .admin-contact-section h2 {
@@ -111,9 +122,12 @@
   display: flex;
   flex-direction: column;
   gap: 8px;
+  overflow: visible;
+  position: relative;
+  min-width: 0;
 }
 
-.admin-contact-card label span {
+.admin-contact-card label > span {
   color: #263247;
   font-size: 0.86rem;
   font-weight: 800;
@@ -122,6 +136,7 @@
 .admin-contact-card input,
 .admin-contact-card textarea {
   width: 100%;
+  min-width: 0;
   border: 1px solid #d7dce7;
   border-radius: 15px;
   padding: 13px 14px;
@@ -152,6 +167,178 @@
   box-shadow: 0 0 0 4px rgba(23, 37, 63, 0.12);
 }
 
+/* Grid propio para Contactos */
+.admin-contact-card .admin-form-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 16px;
+  width: 100%;
+}
+
+/* =========================
+   TELÉFONOS CON BANDERAS
+========================= */
+
+.admin-contact-phone-label {
+  grid-column: 1 / -1;
+  width: 100%;
+}
+
+.admin-contact-phone-wrapper {
+  width: 100%;
+  position: relative;
+  z-index: 1;
+}
+
+.admin-contact-phone-wrapper:focus-within {
+  z-index: 10000;
+}
+
+.admin-contact-phone-container {
+  width: 100% !important;
+  position: relative !important;
+  z-index: 1 !important;
+}
+
+.admin-contact-phone-container .form-control,
+.admin-contact-phone-container input.form-control,
+.admin-contact-phone-field {
+  width: 100% !important;
+  min-width: 0 !important;
+  height: 48px !important;
+  border: 1px solid #d7dce7 !important;
+  border-radius: 15px !important;
+  padding-left: 56px !important;
+  padding-right: 14px !important;
+  font-size: 0.95rem !important;
+  font-family: inherit !important;
+  font-weight: 400 !important;
+  color: #07101d !important;
+  background: #f8fafc !important;
+  box-shadow: none !important;
+  outline: none !important;
+  transition: 0.2s ease !important;
+}
+
+.admin-contact-phone-container .form-control:hover,
+.admin-contact-phone-container input.form-control:hover,
+.admin-contact-phone-field:hover {
+  border-color: #cbd5e1 !important;
+  box-shadow: none !important;
+  outline: none !important;
+}
+
+.admin-contact-phone-container .form-control:focus,
+.admin-contact-phone-container .form-control:focus-visible,
+.admin-contact-phone-container input.form-control:focus,
+.admin-contact-phone-container input.form-control:focus-visible,
+.admin-contact-phone-field:focus,
+.admin-contact-phone-field:focus-visible {
+  background: #ffffff !important;
+  border-color: #d4af37 !important;
+  box-shadow: 0 0 0 3px rgba(212, 175, 55, 0.15) !important;
+  outline: none !important;
+}
+
+.admin-contact-phone-container .flag-dropdown {
+  border: 1px solid #d7dce7 !important;
+  border-right: none !important;
+  border-radius: 15px 0 0 15px !important;
+  background: #ffffff !important;
+  box-shadow: none !important;
+  outline: none !important;
+  z-index: 10001 !important;
+}
+
+.admin-contact-phone-container .flag-dropdown.open,
+.admin-contact-phone-container .flag-dropdown:focus,
+.admin-contact-phone-container .flag-dropdown:focus-visible {
+  border-color: #d4af37 !important;
+  border-right: none !important;
+  box-shadow: none !important;
+  outline: none !important;
+}
+
+.admin-contact-phone-container .selected-flag {
+  width: 46px !important;
+  border-radius: 15px 0 0 15px !important;
+  background: transparent !important;
+  outline: none !important;
+  box-shadow: none !important;
+}
+
+.admin-contact-phone-container .selected-flag:hover,
+.admin-contact-phone-container .selected-flag:focus,
+.admin-contact-phone-container .selected-flag:focus-visible,
+.admin-contact-phone-container .flag-dropdown.open .selected-flag {
+  background: #f8fafc !important;
+  outline: none !important;
+  box-shadow: none !important;
+}
+
+/* =========================
+   LISTA DE PAÍSES
+========================= */
+
+.admin-contact-phone-dropdown {
+  width: 320px !important;
+  max-width: min(320px, calc(100vw - 48px)) !important;
+  max-height: 220px !important;
+  overflow-y: auto !important;
+  overflow-x: hidden !important;
+  left: 0 !important;
+  right: auto !important;
+  margin-top: 8px !important;
+  border-radius: 14px !important;
+  border: 1px solid #d7dce7 !important;
+  background: #ffffff !important;
+  box-shadow: 0 18px 36px rgba(15, 23, 42, 0.16) !important;
+  font-family: inherit !important;
+  z-index: 100000 !important;
+}
+
+.admin-contact-phone-dropdown .country {
+  width: 100% !important;
+  min-height: 38px !important;
+  padding: 9px 12px !important;
+  display: flex !important;
+  align-items: center !important;
+  gap: 8px !important;
+  color: #07101d !important;
+  font-size: 0.88rem !important;
+  font-weight: 400 !important;
+  white-space: nowrap !important;
+}
+
+.admin-contact-phone-dropdown .country:hover {
+  background: #f8fafc !important;
+}
+
+.admin-contact-phone-dropdown .country.highlight {
+  background: #eef4ff !important;
+}
+
+.admin-contact-phone-dropdown .country-name {
+  color: #07101d !important;
+  font-weight: 500 !important;
+  overflow: hidden !important;
+  text-overflow: ellipsis !important;
+}
+
+.admin-contact-phone-dropdown .dial-code {
+  color: #64748b !important;
+  font-weight: 500 !important;
+  margin-left: auto !important;
+}
+
+.admin-contact-phone-dropdown .flag {
+  flex-shrink: 0 !important;
+}
+
+.admin-contact-phone-dropdown .search {
+  display: none !important;
+}
+
 /* =========================
    MODO VISUALIZACIÓN
 ========================= */
@@ -173,6 +360,7 @@
   justify-content: center;
   gap: 8px;
   transition: 0.2s ease;
+  min-width: 0;
 }
 
 .admin-contact-view-item:hover {
@@ -197,6 +385,7 @@
   font-weight: 400;
   line-height: 1.45;
   overflow-wrap: anywhere;
+  word-break: break-word;
 }
 
 .admin-contact-view-item p.admin-contact-empty {
@@ -277,6 +466,16 @@
    RESPONSIVE
 ========================= */
 
+@media (max-width: 1100px) {
+  .admin-contact-card .admin-form-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .admin-contact-view-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
 @media (max-width: 900px) {
   .admin-contact-card {
     padding: 22px;
@@ -322,10 +521,6 @@
     font-size: 1.05rem;
   }
 
-  .admin-contact-view-grid {
-    grid-template-columns: 1fr;
-  }
-
   .admin-contact-actions {
     flex-direction: column-reverse;
   }
@@ -333,6 +528,23 @@
   .admin-contact-reset,
   .admin-contact-save {
     width: 100%;
+  }
+
+  .admin-contact-phone-dropdown {
+    width: 300px !important;
+    max-width: calc(100vw - 48px) !important;
+    max-height: 210px !important;
+  }
+}
+
+@media (max-width: 600px) {
+  .admin-contact-phone-container .form-control {
+    font-size: 0.92rem !important;
+  }
+
+  .admin-contact-phone-dropdown {
+    width: 280px !important;
+    max-width: calc(100vw - 40px) !important;
   }
 }
 
@@ -350,4 +562,76 @@
   .admin-contact-view-item {
     padding: 14px;
   }
+
+  .admin-contact-phone-dropdown {
+    width: 260px !important;
+    max-width: calc(100vw - 34px) !important;
+    max-height: 200px !important;
+  }
+}
+
+/* =========================
+   FOOTER - CAMPOS MÁS LARGOS
+========================= */
+
+.admin-contact-footer-grid {
+  grid-template-columns: 1fr !important;
+  max-width: 760px;
+}
+
+.admin-contact-footer-grid > label,
+.admin-contact-footer-grid > .admin-contact-phone-label,
+.admin-contact-footer-grid > .admin-contact-view-item {
+  width: 100%;
+  max-width: 760px;
+}
+
+.admin-contact-footer-grid .admin-contact-phone-wrapper {
+  width: 100%;
+}
+
+.admin-contact-footer-grid .admin-contact-phone-container,
+.admin-contact-footer-grid .admin-contact-phone-container .form-control,
+.admin-contact-footer-grid .admin-contact-phone-field {
+  width: 100% !important;
+}
+
+
+/* =========================
+   FOOTER - CAMPOS AL 100%
+========================= */
+
+.admin-contact-footer-section {
+  width: 100%;
+}
+
+.admin-contact-footer-section .admin-contact-footer-grid {
+  width: 100% !important;
+  max-width: none !important;
+  display: grid !important;
+  grid-template-columns: 1fr !important;
+  gap: 16px !important;
+}
+
+/* Sobrescribe cualquier max-width anterior */
+.admin-contact-card .admin-contact-footer-grid > label,
+.admin-contact-card .admin-contact-footer-grid > .admin-contact-phone-label,
+.admin-contact-card .admin-contact-footer-grid > .admin-contact-view-item {
+  width: 100% !important;
+  max-width: none !important;
+}
+
+/* Inputs normales del Footer */
+.admin-contact-footer-grid input {
+  width: 100% !important;
+  max-width: none !important;
+}
+
+/* Teléfono del Footer */
+.admin-contact-footer-grid .admin-contact-phone-wrapper,
+.admin-contact-footer-grid .admin-contact-phone-container,
+.admin-contact-footer-grid .admin-contact-phone-container .form-control,
+.admin-contact-footer-grid .admin-contact-phone-field {
+  width: 100% !important;
+  max-width: none !important;
 }

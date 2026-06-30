@@ -15,7 +15,10 @@ import {
 
 import CalendarioPersonalizado from "../../components/CalendarioPersonalizado";
 import Paginacion from "../../components/ui/Paginacion";
-import { obtenerEventosGuardados } from "../../data/adminStorage";
+import {
+  obtenerContactoGuardado,
+  obtenerEventosGuardados,
+} from "../../data/adminStorage";
 import "../../styles/eventos-ministerios.css";
 
 const obtenerVistaTabletOCelular = () => {
@@ -124,11 +127,16 @@ const obtenerFechaOrdenEvento = (evento) => {
   return evento.fechaInicio;
 };
 
+const limpiarNumeroWhatsApp = (numero) => {
+  return String(numero || "").replace(/\D/g, "");
+};
+
 function EventosMinisterios() {
   const { id } = useParams();
   const navigate = useNavigate();
 
   const eventos = useMemo(() => obtenerEventosGuardados(), []);
+  const contacto = useMemo(() => obtenerContactoGuardado(), []);
   const fechaActual = obtenerFechaActualInput();
 
   const eventosActualizados = useMemo(() => {
@@ -514,9 +522,15 @@ function EventosMinisterios() {
 
     const mensaje = `Hola, quisiera consultar sobre el evento "${evento.titulo}" del ${evento.fecha} a horas ${evento.hora}, en ${evento.lugar}.`;
 
-    const url = `https://wa.me/?text=${encodeURIComponent(mensaje)}`;
+    const numeroEvento = limpiarNumeroWhatsApp(evento.whatsappNumero);
+    const numeroGeneral = limpiarNumeroWhatsApp(contacto.whatsappNumero);
+    const numeroWhatsApp = numeroEvento || numeroGeneral;
 
-    window.open(url, "_blank");
+    const url = numeroWhatsApp
+      ? `https://wa.me/${numeroWhatsApp}?text=${encodeURIComponent(mensaje)}`
+      : `https://wa.me/?text=${encodeURIComponent(mensaje)}`;
+
+    window.open(url, "_blank", "noopener,noreferrer");
   };
 
   const limpiarNombreArchivo = (texto) => {
