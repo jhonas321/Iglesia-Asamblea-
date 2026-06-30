@@ -1,7 +1,10 @@
 import { House, HandHeart, MapPin, Phone, PhoneCall } from "lucide-react";
+import { obtenerContactoGuardado } from "../data/adminStorage";
 import "../styles/contacto-seccion.css";
 
 function ContactoSeccion() {
+  const contacto = obtenerContactoGuardado();
+
   return (
     <section className="contact" id="contacto">
       <div className="contact-bg contact-bg-one"></div>
@@ -34,12 +37,12 @@ function ContactoSeccion() {
             <div className="contact-list">
               <div className="contact-item">
                 <div className="contact-icon">
-                <House size={24} strokeWidth={2.3} />
+                  <House size={24} strokeWidth={2.3} />
                 </div>
 
                 <div>
                   <span>Nombre</span>
-                  <p>Asamblea Apostólica de la Fe en Cristo Jesús</p>
+                  <p>{contacto.nombreIglesia}</p>
                 </div>
               </div>
 
@@ -50,7 +53,7 @@ function ContactoSeccion() {
 
                 <div>
                   <span>Dirección</span>
-                  <p>Calle Santa Cruz entre Calama</p>
+                  <p>{contacto.direccion}</p>
                 </div>
               </div>
 
@@ -61,7 +64,7 @@ function ContactoSeccion() {
 
                 <div>
                   <span>Teléfono</span>
-                  <p>+591 70000000</p>
+                  <p>{contacto.telefono}</p>
                 </div>
               </div>
             </div>
@@ -75,9 +78,9 @@ function ContactoSeccion() {
             <h3>Queremos conocerte</h3>
 
             <p>
-              Puedes visitarnos en nuestras reuniones o comunicarte con nosotros.
-              Estamos listos para recibirte con cariño y compartir un tiempo de
-              bendición.
+              Puedes visitarnos en nuestras reuniones o comunicarte con
+              nosotros. Estamos listos para recibirte con cariño y compartir un
+              tiempo de bendición.
             </p>
           </div>
         </div>

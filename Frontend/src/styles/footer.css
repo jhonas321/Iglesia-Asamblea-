@@ -167,6 +167,13 @@
   white-space: nowrap;
 }
 
+.x-twitter-icon {
+  font-size: 17px;
+  font-weight: 900;
+  line-height: 1;
+  display: inline-block;
+}
+
 /* FACEBOOK */
 
 .social-link.facebook:hover .circle {
@@ -217,6 +224,32 @@
 
 .social-link.tiktok:hover .social-text {
   color: #ffffff;
+}
+
+/* X / TWITTER */
+
+.social-link.twitter:hover .circle {
+  background: #000000;
+  color: white;
+  transform: translateY(-3px);
+  box-shadow: 0 0 12px #ffffff;
+}
+
+.social-link.twitter:hover .social-text {
+  color: #ffffff;
+}
+
+/* TELEGRAM */
+
+.social-link.telegram:hover .circle {
+  background: #229ed9;
+  color: white;
+  transform: translateY(-3px);
+  box-shadow: 0 0 12px #229ed9;
+}
+
+.social-link.telegram:hover .social-text {
+  color: #229ed9;
 }
 
 /* COPYRIGHT */
@@ -359,6 +392,10 @@
     min-width: 34px;
     min-height: 34px;
     font-size: 14px;
+  }
+
+  .x-twitter-icon {
+    font-size: 15px;
   }
 
   .social-text {

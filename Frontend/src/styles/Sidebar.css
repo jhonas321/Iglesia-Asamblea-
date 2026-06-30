@@ -25,6 +25,7 @@
 }
 
 /* HEADER */
+
 .sidebar-header {
   display: flex;
   align-items: center;
@@ -42,6 +43,20 @@
   display: flex;
   align-items: center;
   justify-content: center;
+  flex-shrink: 0;
+}
+
+.sidebar-logo-image {
+  overflow: hidden;
+  background: #ffffff;
+  border: 1px solid rgba(212, 175, 55, 0.35);
+}
+
+.sidebar-logo-image img {
+  width: 78%;
+  height: 78%;
+  object-fit: contain;
+  display: block;
 }
 
 .sidebar-brand h2 {
@@ -61,6 +76,7 @@
 }
 
 /* USER */
+
 .sidebar-user {
   display: flex;
   align-items: center;
@@ -81,6 +97,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
+  flex-shrink: 0;
 }
 
 .sidebar-user-info h3 {
@@ -97,6 +114,7 @@
 }
 
 /* MENU */
+
 .sidebar-menu {
   flex: 1;
   overflow-y: auto;
@@ -172,6 +190,7 @@
 }
 
 /* FOOTER */
+
 .sidebar-footer {
   padding-top: 18px;
   margin-top: 18px;
@@ -205,6 +224,7 @@
 }
 
 /* RESPONSIVE */
+
 @media (max-width: 900px) {
   .sidebar {
     width: 240px;
@@ -251,5 +271,16 @@
 
   .sidebar-link.active::before {
     height: 22px;
+  }
+
+  .sidebar-logo {
+    width: 42px;
+    height: 42px;
+    border-radius: 13px;
+  }
+
+  .sidebar-logo-image img {
+    width: 78%;
+    height: 78%;
   }
 }
