@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 import { PlusCircle, X, Trash2, UserPlus } from "lucide-react";
 import { FaRegUser, FaRegUserCircle } from "react-icons/fa";
@@ -6,6 +6,7 @@ import { FaRegUser, FaRegUserCircle } from "react-icons/fa";
 import ListaAdmin from "../../components/admin/ListaAdmin";
 import {
   guardarOrganigrama,
+  obtenerMinisteriosGuardados,
   obtenerOrganigramaGuardado,
 } from "../../data/adminStorage";
 
@@ -13,8 +14,30 @@ import "../../styles/AdminCrudPage.css";
 import "../../styles/organigrama.css";
 import "../../styles/OrganigramaAdmin.css";
 
+const opcionesTipoSeccion = [
+  {
+    value: "normal",
+    label: "Normal",
+  },
+  {
+    value: "principal",
+    label: "Principal",
+  },
+];
+
+const opcionesGenero = [
+  {
+    value: "hombre",
+    label: "Hombre",
+  },
+  {
+    value: "mujer",
+    label: "Mujer",
+  },
+];
+
 const crearMiembroVacio = () => ({
-  id: `miembro-${Date.now()}`,
+  id: `miembro-${Date.now()}-${Math.random().toString(36).slice(2)}`,
   cargo: "",
   nombre: "",
   genero: "hombre",
@@ -26,6 +49,19 @@ const crearFormularioOrganigramaVacio = () => ({
   tipo: "normal",
   miembros: [crearMiembroVacio()],
 });
+
+const obtenerTextoTipo = (tipo) => {
+  return (
+    opcionesTipoSeccion.find((opcion) => opcion.value === tipo)?.label ||
+    "Normal"
+  );
+};
+
+const obtenerTextoGenero = (genero) => {
+  return (
+    opcionesGenero.find((opcion) => opcion.value === genero)?.label || "Hombre"
+  );
+};
 
 function Avatar({ genero = "hombre", nombre = "", principal = false }) {
   const esMujer = genero === "mujer";
@@ -45,9 +81,17 @@ function Avatar({ genero = "hombre", nombre = "", principal = false }) {
 }
 
 const CrearOrganigrama = () => {
+  const ministerioBoxRef = useRef(null);
+  const tipoBoxRef = useRef(null);
+  const generoBoxRefs = useRef({});
+
   const [organigramaAdmin, setOrganigramaAdmin] = useState(() =>
     obtenerOrganigramaGuardado()
   );
+
+  const ministeriosDisponibles = useMemo(() => {
+    return obtenerMinisteriosGuardados();
+  }, []);
 
   const [modalAbierto, setModalAbierto] = useState(false);
   const [modoFormulario, setModoFormulario] = useState("crear");
@@ -58,7 +102,40 @@ const CrearOrganigrama = () => {
   );
   const [errorFormulario, setErrorFormulario] = useState("");
 
+  const [ministerioAbierto, setMinisterioAbierto] = useState(false);
+  const [tipoAbierto, setTipoAbierto] = useState(false);
+  const [generoAbiertoId, setGeneroAbiertoId] = useState(null);
+
   const esModoVista = modoFormulario === "ver";
+
+  const ministeriosOpciones = useMemo(() => {
+    const nombresRegistrados = ministeriosDisponibles
+      .map((ministerio) => ministerio.nombre)
+      .filter(Boolean);
+
+    const existeSeleccionActual = nombresRegistrados.some(
+      (nombre) => nombre === formulario.titulo
+    );
+
+    if (formulario.titulo && !existeSeleccionActual) {
+      return [
+        {
+          id: `ministerio-actual-${formulario.titulo}`,
+          nombre: formulario.titulo,
+          descripcion: "",
+        },
+        ...ministeriosDisponibles,
+      ];
+    }
+
+    return ministeriosDisponibles;
+  }, [ministeriosDisponibles, formulario.titulo]);
+
+  const cerrarSelectores = useCallback(() => {
+    setMinisterioAbierto(false);
+    setTipoAbierto(false);
+    setGeneroAbiertoId(null);
+  }, []);
 
   const organigramaProcesado = useMemo(() => {
     return [...organigramaAdmin].sort((a, b) => {
@@ -68,6 +145,56 @@ const CrearOrganigrama = () => {
     });
   }, [organigramaAdmin]);
 
+  const abrirMinisterio = () => {
+    setMinisterioAbierto((actual) => !actual);
+    setTipoAbierto(false);
+    setGeneroAbiertoId(null);
+  };
+
+  const seleccionarMinisterio = (nombreMinisterio) => {
+    setFormulario((actual) => ({
+      ...actual,
+      titulo: nombreMinisterio,
+    }));
+
+    setMinisterioAbierto(false);
+    setErrorFormulario("");
+  };
+
+  const abrirTipo = () => {
+    setTipoAbierto((actual) => !actual);
+    setMinisterioAbierto(false);
+    setGeneroAbiertoId(null);
+  };
+
+  const seleccionarTipo = (tipo) => {
+    setFormulario((actual) => ({
+      ...actual,
+      tipo,
+    }));
+
+    setTipoAbierto(false);
+    setErrorFormulario("");
+  };
+
+  const abrirGenero = (idMiembro) => {
+    setGeneroAbiertoId((actual) => (actual === idMiembro ? null : idMiembro));
+    setMinisterioAbierto(false);
+    setTipoAbierto(false);
+  };
+
+  const seleccionarGenero = (idMiembro, genero) => {
+    actualizarMiembro(idMiembro, "genero", genero);
+    setGeneroAbiertoId(null);
+  };
+
+  const manejarTeclaCampo = (e, accion) => {
+    if (e.key !== "Enter" && e.key !== " ") return;
+
+    e.preventDefault();
+    accion();
+  };
+
   const cerrarModal = useCallback(() => {
     setModalAbierto(false);
     setModoFormulario("crear");
@@ -75,7 +202,31 @@ const CrearOrganigrama = () => {
     setSeccionEditandoId(null);
     setFormulario(crearFormularioOrganigramaVacio());
     setErrorFormulario("");
-  }, []);
+    cerrarSelectores();
+  }, [cerrarSelectores]);
+
+  useEffect(() => {
+    if (!modalAbierto) return;
+
+    const cerrarAlHacerClickFuera = (e) => {
+      const clickEnMinisterio = ministerioBoxRef.current?.contains(e.target);
+      const clickEnTipo = tipoBoxRef.current?.contains(e.target);
+
+      const clickEnGenero = Object.values(generoBoxRefs.current).some(
+        (elemento) => elemento?.contains(e.target)
+      );
+
+      if (!clickEnMinisterio && !clickEnTipo && !clickEnGenero) {
+        cerrarSelectores();
+      }
+    };
+
+    document.addEventListener("mousedown", cerrarAlHacerClickFuera);
+
+    return () => {
+      document.removeEventListener("mousedown", cerrarAlHacerClickFuera);
+    };
+  }, [modalAbierto, cerrarSelectores]);
 
   useEffect(() => {
     if (!modalAbierto) return;
@@ -125,7 +276,7 @@ const CrearOrganigrama = () => {
   }, [modalAbierto, cerrarModal]);
 
   const columnasOrganigrama = [
-    { key: "titulo", label: "Sección" },
+    { key: "titulo", label: "Ministerio" },
     { key: "descripcion", label: "Descripción" },
     {
       key: "tipo",
@@ -192,26 +343,34 @@ const CrearOrganigrama = () => {
         miembros: actual.miembros.filter((miembro) => miembro.id !== idMiembro),
       };
     });
+
+    if (generoAbiertoId === idMiembro) {
+      setGeneroAbiertoId(null);
+    }
   };
 
   const cargarFormularioSeccion = (seccion) => {
     setFormulario({
       titulo: seccion.titulo || "",
       descripcion: seccion.descripcion || "",
-      tipo: seccion.tipo || "normal",
+      tipo: seccion.tipo === "principal" ? "principal" : "normal",
       miembros:
         Array.isArray(seccion.miembros) && seccion.miembros.length > 0
-          ? seccion.miembros
+          ? seccion.miembros.map((miembro) => ({
+              id: miembro.id || `miembro-${Date.now()}-${Math.random()}`,
+              cargo: miembro.cargo || "",
+              nombre: miembro.nombre || "",
+              genero: miembro.genero === "mujer" ? "mujer" : "hombre",
+            }))
           : [crearMiembroVacio()],
     });
   };
 
   const validarFormulario = () => {
-    if (!formulario.titulo.trim())
-      return "El título de la sección es obligatorio.";
+    if (!formulario.titulo.trim()) return "El ministerio es obligatorio.";
 
     if (!formulario.descripcion.trim())
-      return "La descripción de la sección es obligatoria.";
+      return "La descripción del ministerio es obligatoria.";
 
     const miembrosValidos = formulario.miembros.filter(
       (miembro) => miembro.nombre.trim() && miembro.cargo.trim()
@@ -236,7 +395,7 @@ const CrearOrganigrama = () => {
       );
 
       if (yaExistePrincipal)
-        return "Solo puede existir una sección principal en el organigrama.";
+        return "Solo puede existir un ministerio principal en el organigrama.";
     }
 
     return "";
@@ -248,6 +407,7 @@ const CrearOrganigrama = () => {
     setSeccionEditandoId(null);
     setFormulario(crearFormularioOrganigramaVacio());
     setErrorFormulario("");
+    cerrarSelectores();
     setModalAbierto(true);
   };
 
@@ -316,6 +476,7 @@ const CrearOrganigrama = () => {
     setSeccionEditandoId(seccion.id);
     cargarFormularioSeccion(seccion);
     setErrorFormulario("");
+    cerrarSelectores();
     setModalAbierto(true);
   };
 
@@ -325,12 +486,13 @@ const CrearOrganigrama = () => {
     setSeccionEditandoId(seccion.id);
     cargarFormularioSeccion(seccion);
     setErrorFormulario("");
+    cerrarSelectores();
     setModalAbierto(true);
   };
 
   const handleEliminar = (seccion) => {
     const confirmar = window.confirm(
-      `¿Seguro que quieres eliminar la sección "${seccion.titulo}"?`
+      `¿Seguro que quieres eliminar el ministerio "${seccion.titulo}" del organigrama?`
     );
 
     if (!confirmar) return;
@@ -344,9 +506,10 @@ const CrearOrganigrama = () => {
   const obtenerSeccionesVistaPrevia = () => {
     const seccionPreview = {
       id: seccionEditandoId || "preview-organigrama",
-      titulo: formulario.titulo || "Nueva sección",
+      titulo: formulario.titulo || "Nuevo ministerio",
       descripcion:
-        formulario.descripcion || "Descripción de la sección del organigrama.",
+        formulario.descripcion ||
+        "Descripción del ministerio dentro del organigrama.",
       tipo: formulario.tipo || "normal",
       miembros: formulario.miembros.map((miembro, index) => ({
         id: miembro.id || `preview-miembro-${index}`,
@@ -457,36 +620,99 @@ const CrearOrganigrama = () => {
   };
 
   const formularioOrganigrama = (
-    <form className="admin-form" onSubmit={guardarFormulario}>
+    <form
+      className="admin-form"
+      onSubmit={guardarFormulario}
+      autoComplete="off"
+    >
       {errorFormulario && (
         <div className="admin-form-error">{errorFormulario}</div>
       )}
 
       <div className="admin-form-grid">
         <label>
-          <span>Título de sección *</span>
-          <input
-            type="text"
-            name="titulo"
-            value={formulario.titulo}
-            onChange={actualizarCampo}
-            placeholder="Ej: Dorcas"
-          />
+          <span>Ministerio *</span>
+
+          <div
+            className={`admin-custom-select ${
+              ministerioAbierto ? "is-open" : ""
+            }`}
+            ref={ministerioBoxRef}
+          >
+            <button
+              type="button"
+              className={`admin-custom-select-control ${
+                formulario.titulo ? "has-value" : ""
+              }`}
+              onClick={abrirMinisterio}
+              onKeyDown={(e) => manejarTeclaCampo(e, abrirMinisterio)}
+            >
+              <span>{formulario.titulo || "Selecciona un ministerio"}</span>
+            </button>
+
+            {ministerioAbierto && (
+              <div className="admin-custom-select-menu">
+                {ministeriosOpciones.length > 0 ? (
+                  ministeriosOpciones.map((ministerio) => (
+                    <button
+                      type="button"
+                      className={`admin-custom-select-option ${
+                        formulario.titulo === ministerio.nombre ? "active" : ""
+                      }`}
+                      onClick={() => seleccionarMinisterio(ministerio.nombre)}
+                      key={ministerio.id || ministerio.nombre}
+                    >
+                      {ministerio.nombre}
+                    </button>
+                  ))
+                ) : (
+                  <button
+                    type="button"
+                    className="admin-custom-select-option"
+                    disabled
+                  >
+                    Primero crea un ministerio
+                  </button>
+                )}
+              </div>
+            )}
+          </div>
         </label>
 
         <label>
           <span>Tipo *</span>
 
-          <div className="admin-select-wrap">
-            <select
-              name="tipo"
-              value={formulario.tipo}
-              onChange={actualizarCampo}
-              className="admin-form-select"
+          <div
+            className={`admin-custom-select ${tipoAbierto ? "is-open" : ""}`}
+            ref={tipoBoxRef}
+          >
+            <button
+              type="button"
+              className={`admin-custom-select-control ${
+                formulario.tipo ? "has-value" : ""
+              }`}
+              onClick={abrirTipo}
+              onKeyDown={(e) => manejarTeclaCampo(e, abrirTipo)}
             >
-              <option value="normal">Normal</option>
-              <option value="principal">Principal</option>
-            </select>
+              <span>{obtenerTextoTipo(formulario.tipo)}</span>
+            </button>
+
+            {tipoAbierto && (
+              <div className="admin-custom-select-menu">
+                {opcionesTipoSeccion.map((opcion) => (
+                  <button
+                    type="button"
+                    className={`admin-custom-select-option ${
+                      formulario.tipo === opcion.value ? "active" : ""
+                    }`}
+                    onClick={() => seleccionarTipo(opcion.value)}
+                    key={opcion.value}
+                  >
+                    {opcion.label}
+                  </button>
+                ))}
+              </div>
+            )}
           </div>
         </label>
       </div>
@@ -499,6 +725,7 @@ const CrearOrganigrama = () => {
           onChange={actualizarCampo}
           placeholder="Ej: Ministerio de mujeres al servicio de la iglesia."
           rows="4"
+          autoComplete="off"
         />
       </label>
 
@@ -536,6 +763,7 @@ const CrearOrganigrama = () => {
                       actualizarMiembro(miembro.id, "nombre", e.target.value)
                     }
                     placeholder="Ej: Olga Quispe"
+                    autoComplete="off"
                   />
                 </label>
 
@@ -548,27 +776,52 @@ const CrearOrganigrama = () => {
                       actualizarMiembro(miembro.id, "cargo", e.target.value)
                     }
                     placeholder="Ej: Presidenta"
+                    autoComplete="off"
                   />
                 </label>
 
                 <label>
                   <span>Género *</span>
 
-                  <div className="admin-select-wrap">
-                    <select
-                      value={miembro.genero}
-                      onChange={(e) =>
-                        actualizarMiembro(
-                          miembro.id,
-                          "genero",
-                          e.target.value
-                        )
+                  <div
+                    className={`admin-custom-select ${
+                      generoAbiertoId === miembro.id ? "is-open" : ""
+                    }`}
+                    ref={(elemento) => {
+                      generoBoxRefs.current[miembro.id] = elemento;
+                    }}
+                  >
+                    <button
+                      type="button"
+                      className={`admin-custom-select-control ${
+                        miembro.genero ? "has-value" : ""
+                      }`}
+                      onClick={() => abrirGenero(miembro.id)}
+                      onKeyDown={(e) =>
+                        manejarTeclaCampo(e, () => abrirGenero(miembro.id))
                       }
-                      className="admin-form-select"
                     >
-                      <option value="hombre">Hombre</option>
-                      <option value="mujer">Mujer</option>
-                    </select>
+                      <span>{obtenerTextoGenero(miembro.genero)}</span>
+                    </button>
+
+                    {generoAbiertoId === miembro.id && (
+                      <div className="admin-custom-select-menu">
+                        {opcionesGenero.map((opcion) => (
+                          <button
+                            type="button"
+                            className={`admin-custom-select-option ${
+                              miembro.genero === opcion.value ? "active" : ""
+                            }`}
+                            onClick={() =>
+                              seleccionarGenero(miembro.id, opcion.value)
+                            }
+                            key={opcion.value}
+                          >
+                            {opcion.label}
+                          </button>
+                        ))}
+                      </div>
+                    )}
                   </div>
                 </label>
               </div>
@@ -597,7 +850,7 @@ const CrearOrganigrama = () => {
         </button>
 
         <button type="submit" className="admin-form-save">
-          {modoFormulario === "editar" ? "Guardar cambios" : "Crear sección"}
+          {modoFormulario === "editar" ? "Guardar cambios" : "Crear ministerio"}
         </button>
       </div>
     </form>
@@ -639,8 +892,8 @@ const CrearOrganigrama = () => {
 
             <h2>
               {modoFormulario === "editar"
-                ? "Editar sección"
-                : "Crear sección"}
+                ? "Editar ministerio"
+                : "Crear ministerio"}
             </h2>
           </div>
 
@@ -696,14 +949,14 @@ const CrearOrganigrama = () => {
           <span className="admin-crud-label">Gestión administrativa</span>
           <h1>Organigrama</h1>
           <p>
-            Administra la estructura de liderazgo, secciones y miembros de la
+            Administra la estructura de liderazgo, ministerios y miembros de la
             iglesia.
           </p>
         </div>
 
         <button type="button" className="admin-create-btn" onClick={handleCrear}>
           <PlusCircle size={20} />
-          <span>Crear sección</span>
+          <span>Crear ministerio</span>
         </button>
       </div>
 
@@ -713,7 +966,7 @@ const CrearOrganigrama = () => {
         onVer={handleVer}
         onEditar={handleEditar}
         onEliminar={handleEliminar}
-        mensajeVacio="No hay secciones registradas."
+        mensajeVacio="No hay ministerios registrados en el organigrama."
       />
 
       {modalAbierto &&

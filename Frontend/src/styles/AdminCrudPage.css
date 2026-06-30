@@ -81,11 +81,7 @@
   color: #0369a1;
 }
 
-.admin-status.en-curso {
-  background: #dcfce7;
-  color: #15803d;
-}
-
+.admin-status.en-curso,
 .admin-status.publicado {
   background: #dcfce7;
   color: #15803d;
@@ -198,6 +194,10 @@
   display: block;
 }
 
+/* =========================
+   FORMULARIO GENERAL
+========================= */
+
 .admin-form {
   width: 100%;
   display: flex;
@@ -212,21 +212,29 @@
   gap: 16px;
 }
 
-.admin-form label {
+.admin-form-grid.single {
+  grid-template-columns: 1fr;
+}
+
+.admin-form label,
+.admin-form-grid label {
   display: flex;
   flex-direction: column;
   gap: 8px;
   min-width: 0;
 }
 
-.admin-form label span {
+.admin-form label > span,
+.admin-form-grid label > span {
+  color: #263247;
   font-size: 0.88rem;
   font-weight: 800;
-  color: #263247;
 }
 
 .admin-form input,
-.admin-form textarea {
+.admin-form textarea,
+.admin-form-grid input,
+.admin-form-grid textarea {
   width: 100%;
   min-width: 0;
   border: 1px solid #d7dce7;
@@ -238,15 +246,27 @@
   outline: none;
   transition: 0.2s ease;
   font-family: inherit;
+  font-weight: 400;
 }
 
-.admin-form textarea {
-  resize: vertical;
-  min-height: 90px;
+.admin-form textarea,
+.admin-form-grid textarea {
+  resize: none;
+  min-height: 120px;
+  line-height: 1.5;
+}
+
+.admin-form input::placeholder,
+.admin-form textarea::placeholder,
+.admin-form-grid input::placeholder,
+.admin-form-grid textarea::placeholder {
+  color: #94a3b8;
 }
 
 .admin-form input:focus,
-.admin-form textarea:focus {
+.admin-form textarea:focus,
+.admin-form-grid input:focus,
+.admin-form-grid textarea:focus {
   border-color: #d4af37;
   box-shadow: 0 0 0 4px rgba(212, 175, 55, 0.16);
 }
@@ -262,98 +282,270 @@
 }
 
 /* =========================
-   SELECT PERSONALIZADO
-   Solo afecta select envuelto en .admin-select-wrap
+   SELECT / FECHA / HORA PROPIOS
 ========================= */
 
-.admin-select-wrap {
+.admin-custom-select,
+.admin-picker-wrapper {
+  width: 100%;
   position: relative;
-  width: 100%;
+  z-index: 1;
 }
 
-.admin-select-wrap::after {
-  content: "";
-  position: absolute;
-  top: 50%;
-  right: 18px;
-  width: 9px;
-  height: 9px;
-  border-right: 2px solid #17253f;
-  border-bottom: 2px solid #17253f;
-  transform: translateY(-65%) rotate(45deg);
-  pointer-events: none;
-  z-index: 2;
+.admin-custom-select.is-open,
+.admin-picker-wrapper.is-open {
+  z-index: 1000000;
 }
 
-.admin-form-select {
+.admin-custom-select-control,
+.admin-picker-field {
   width: 100%;
+  height: 46px;
   min-width: 0;
   border: 1px solid #d7dce7;
   border-radius: 14px;
-  padding: 13px 14px;
-  font-size: 0.95rem;
-  color: #07101d;
+  padding: 0 14px;
   background: #ffffff;
-  outline: none;
-  transition: 0.2s ease;
+  color: #94a3b8;
   font-family: inherit;
+  font-size: 0.95rem;
+  font-weight: 400 !important;
+  text-align: left;
+  outline: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  transition: 0.2s ease;
+  overflow: hidden;
 }
 
-.admin-form-select:focus {
+.admin-custom-select-control:hover,
+.admin-picker-field:hover {
+  border-color: #cbd5e1;
+}
+
+.admin-custom-select-control:focus,
+.admin-picker-field:focus {
   border-color: #d4af37;
   box-shadow: 0 0 0 4px rgba(212, 175, 55, 0.16);
 }
 
-.admin-select-wrap .admin-form-select {
-  appearance: none;
-  -webkit-appearance: none;
-  padding-right: 48px !important;
+.admin-custom-select-control span,
+.admin-picker-field > span {
+  width: 100%;
+  display: block;
+  color: #94a3b8 !important;
+  font-family: inherit !important;
+  font-size: 0.95rem !important;
+  font-weight: 400 !important;
+  line-height: 1.2;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.admin-custom-select-control.has-value span,
+.admin-picker-field.has-value > span {
+  color: #475569 !important;
+  font-weight: 400 !important;
+}
+
+.admin-custom-select-menu,
+.admin-calendar-panel,
+.admin-time-panel {
+  position: absolute;
+  top: calc(100% + 7px);
+  left: 0;
+  z-index: 1000001;
   background: #ffffff;
+  border: 1px solid #d7dce7;
+  border-radius: 16px;
+  box-shadow: 0 18px 42px rgba(15, 23, 42, 0.18);
 }
 
-.admin-select-wrap .admin-form-select::-ms-expand {
-  display: none;
-}
-
-/* =========================
-   FECHAS CON ICONO DE CALENDARIO
-   Solo afecta input date envuelto en .admin-date-wrap
-========================= */
-
-.admin-date-wrap {
-  position: relative;
-  width: 100%;
-}
-
-.admin-date-wrap input[type="date"] {
-  width: 100%;
-  padding-right: 52px !important;
-}
-
-.admin-date-wrap input[type="date"]::-webkit-calendar-picker-indicator {
-  opacity: 0;
-  position: absolute;
+.admin-custom-select-menu {
   right: 0;
-  width: 52px;
-  height: 100%;
-  cursor: pointer;
-  z-index: 3;
+  padding: 6px;
+  max-height: 220px;
+  overflow-y: auto;
 }
 
-.admin-date-wrap::after {
-  content: "";
-  position: absolute;
-  top: 50%;
-  right: 17px;
-  width: 19px;
-  height: 19px;
-  transform: translateY(-50%);
-  pointer-events: none;
-  z-index: 2;
-  background-image: url("data:image/svg+xml,%3Csvg width='22' height='22' viewBox='0 0 24 24' fill='none' stroke='%2317253f' stroke-width='2.3' stroke-linecap='round' stroke-linejoin='round' xmlns='http://www.w3.org/2000/svg'%3E%3Crect x='3' y='4' width='18' height='18' rx='2' ry='2'/%3E%3Cline x1='16' y1='2' x2='16' y2='6'/%3E%3Cline x1='8' y1='2' x2='8' y2='6'/%3E%3Cline x1='3' y1='10' x2='21' y2='10'/%3E%3C/svg%3E");
-  background-size: 19px 19px;
-  background-repeat: no-repeat;
-  background-position: center;
+.admin-custom-select-option {
+  width: 100%;
+  min-height: 38px;
+  border: none;
+  border-radius: 10px;
+  padding: 9px 11px;
+  background: transparent;
+  color: #475569;
+  font-family: inherit;
+  font-size: 0.92rem;
+  font-weight: 400 !important;
+  text-align: left;
+  cursor: pointer;
+  transition: 0.18s ease;
+}
+
+.admin-custom-select-option:hover,
+.admin-custom-select-option.active {
+  background: #f1f5f9;
+  color: #07101d;
+}
+
+/* CALENDARIO PROPIO */
+
+.admin-calendar-panel {
+  width: 290px;
+  padding: 14px;
+}
+
+.admin-calendar-header {
+  display: grid;
+  grid-template-columns: 36px 1fr 36px;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 10px;
+}
+
+.admin-calendar-header strong {
+  color: #07101d;
+  font-size: 0.92rem;
+  font-weight: 800;
+  text-align: center;
+}
+
+.admin-calendar-header button,
+.admin-calendar-footer button {
+  border: none;
+  border-radius: 10px;
+  background: #f1f5f9;
+  color: #17253f;
+  font-family: inherit;
+  font-weight: 800;
+  cursor: pointer;
+  transition: 0.18s ease;
+}
+
+.admin-calendar-header button {
+  height: 34px;
+  font-size: 1.2rem;
+}
+
+.admin-calendar-header button:hover,
+.admin-calendar-footer button:hover {
+  background: #e2e8f0;
+}
+
+.admin-calendar-weekdays,
+.admin-calendar-days {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 5px;
+}
+
+.admin-calendar-weekdays {
+  margin-bottom: 6px;
+}
+
+.admin-calendar-weekdays span {
+  color: #64748b;
+  font-size: 0.72rem;
+  font-weight: 800;
+  text-align: center;
+}
+
+.admin-calendar-days button {
+  height: 32px;
+  border: none;
+  border-radius: 9px;
+  background: transparent;
+  color: #263247;
+  font-family: inherit;
+  font-size: 0.82rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: 0.18s ease;
+}
+
+.admin-calendar-days button:hover {
+  background: #eef2ff;
+  color: #17253f;
+}
+
+.admin-calendar-days button.outside {
+  color: #94a3b8;
+}
+
+.admin-calendar-days button.today {
+  background: #fef3c7;
+  color: #92400e;
+}
+
+.admin-calendar-days button.active {
+  background: #17253f;
+  color: #ffffff;
+}
+
+.admin-calendar-footer {
+  display: flex;
+  justify-content: space-between;
+  gap: 8px;
+  margin-top: 12px;
+}
+
+.admin-calendar-footer button {
+  min-height: 34px;
+  padding: 0 12px;
+  font-size: 0.82rem;
+}
+
+/* HORA PROPIA */
+
+.admin-time-panel {
+  width: 260px;
+  padding: 14px;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+
+.admin-time-column {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.admin-time-column strong {
+  color: #07101d;
+  font-size: 0.86rem;
+  font-weight: 800;
+}
+
+.admin-time-column > div {
+  max-height: 190px;
+  overflow-y: auto;
+  display: grid;
+  gap: 5px;
+  padding-right: 4px;
+}
+
+.admin-time-column button {
+  min-height: 32px;
+  border: none;
+  border-radius: 9px;
+  background: transparent;
+  color: #475569;
+  font-family: inherit;
+  font-size: 0.86rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: 0.18s ease;
+}
+
+.admin-time-column button:hover,
+.admin-time-column button.active {
+  background: #17253f;
+  color: #ffffff;
 }
 
 /* =========================
@@ -557,6 +749,67 @@
   }
 }
 
+/* =============================
+   BUSCADOR ADMIN
+============================= */
+
+.admin-crud-toolbar {
+  width: 100%;
+  margin: 0 0 22px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.admin-search-box {
+  width: min(420px, 100%);
+  height: 46px;
+  background: #ffffff;
+  border: 1px solid #d7dce7;
+  border-radius: 16px;
+  padding: 0 14px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  color: #64748b;
+  box-shadow: 0 10px 24px rgba(15, 23, 42, 0.06);
+  transition: 0.2s ease;
+}
+
+.admin-search-box svg {
+  min-width: 18px;
+  color: #94a3b8;
+  transition: 0.2s ease;
+}
+
+.admin-search-box input {
+  width: 100%;
+  height: 100%;
+  border: none;
+  outline: none;
+  background: transparent;
+  color: #07101d;
+  font-family: inherit;
+  font-size: 0.95rem;
+  font-weight: 600;
+}
+
+.admin-search-box input::placeholder {
+  color: #94a3b8;
+  font-weight: 600;
+}
+
+.admin-search-box:focus-within {
+  border-color: #d4af37;
+  box-shadow: 0 0 0 4px rgba(212, 175, 55, 0.16),
+    0 12px 26px rgba(15, 23, 42, 0.08);
+}
+
+.admin-search-box:focus-within svg {
+  color: #d4af37;
+}
+
 /* =========================
    RESPONSIVE GENERAL
 ========================= */
@@ -645,14 +898,6 @@
     transform: none !important;
   }
 
-  .admin-select-wrap::after {
-    right: 16px;
-  }
-
-  .admin-date-wrap::after {
-    right: 16px;
-  }
-
   .admin-form-actions {
     flex-direction: column-reverse;
   }
@@ -692,6 +937,46 @@
     right: 12px !important;
     width: 42px;
     height: 42px;
+  }
+
+  .admin-crud-toolbar {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 12px;
+    margin-bottom: 18px;
+  }
+
+  .admin-search-box {
+    width: 100%;
+    height: 44px;
+    border-radius: 14px;
+  }
+
+  .admin-search-box input {
+    font-size: 0.9rem;
+  }
+
+  .admin-custom-select-control,
+  .admin-picker-field {
+    height: 44px;
+    font-size: 0.9rem;
+    border-radius: 14px;
+  }
+
+  .admin-custom-select-control span,
+  .admin-picker-field > span {
+    font-size: 0.9rem !important;
+  }
+
+  .admin-calendar-panel,
+  .admin-time-panel {
+    width: min(290px, calc(100vw - 52px));
+  }
+
+  .admin-form-grid input,
+  .admin-form-grid textarea {
+    font-size: 0.9rem;
+    padding: 12px 13px;
   }
 }
 
@@ -761,12 +1046,6 @@
     height: 40px !important;
     min-width: 40px !important;
   }
-
-  .admin-select-wrap::after {
-    right: 14px;
-  }
-
-  .admin-date-wrap::after {
-    right: 14px;
-  }
 }
+
+

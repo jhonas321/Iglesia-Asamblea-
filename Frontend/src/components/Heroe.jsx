@@ -3,12 +3,8 @@ import { Link, useNavigate } from "react-router-dom";
 import { CalendarDays } from "lucide-react";
 import "../styles/heroe.css";
 
-import hero1 from "/images/imagen1.jfif";
-import hero2 from "/images/imagen2.jfif";
-import hero3 from "/images/imagen3.jfif";
-import hero4 from "/images/imagen4.jfif";
-
 import { eventos } from "../data/eventosData";
+import { obtenerHeroFotosGuardadas } from "../data/adminStorage";
 
 const TIEMPO_CAMBIO_HERO = 6000;
 
@@ -116,7 +112,9 @@ const obtenerFechaOrdenEvento = (evento) => {
 function Heroe() {
   const navigate = useNavigate();
 
-  const heroImages = [hero1, hero2, hero3, hero4];
+  const heroImages = obtenerHeroFotosGuardadas()
+    .map((foto) => foto.imagen)
+    .filter(Boolean);
 
   const fechaActual = obtenerFechaActualInput();
 
@@ -148,14 +146,12 @@ function Heroe() {
 
   const hayEventosDestacados = eventosDestacados.length > 0;
 
-  const fondosHero = hayEventosDestacados
-    ? eventosDestacados.map((evento) => evento.imagen)
-    : heroImages;
+  const fondosHero = heroImages;
 
   const [heroIndex, setHeroIndex] = useState(0);
 
   const eventoActivo = hayEventosDestacados
-    ? eventosDestacados[heroIndex]
+    ? eventosDestacados[heroIndex % eventosDestacados.length]
     : null;
 
   useEffect(() => {
@@ -205,10 +201,10 @@ function Heroe() {
   };
 
   const obtenerClaseTarjeta = (index) => {
-    if (index === heroIndex) return "card-active";
+    if (index === heroIndex % eventosDestacados.length) return "card-active";
 
     const total = eventosDestacados.length;
-    const diferencia = (index - heroIndex + total) % total;
+    const diferencia = (index - (heroIndex % total) + total) % total;
 
     if (diferencia === 1) return "card-next";
     if (diferencia === 2) return "card-back";
@@ -314,7 +310,7 @@ function Heroe() {
                           <span>{evento.fecha}</span>
                         </p>
 
-                        {index === heroIndex && (
+                        {index === heroIndex % eventosDestacados.length && (
                           <Link
                             to={`/ministerios/eventos/${evento.id}`}
                             className="event-stack-btn"

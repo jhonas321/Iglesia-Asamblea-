@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 import {
   PlusCircle,
@@ -15,6 +15,7 @@ import {
 import ListaAdmin from "../../components/admin/ListaAdmin";
 import {
   guardarPublicaciones,
+  obtenerMinisteriosGuardados,
   obtenerPublicacionesGuardadas,
 } from "../../data/adminStorage";
 
@@ -135,6 +136,14 @@ const fechaDateAInput = (fecha) => {
 const crearFechaLocalDesdeInput = (fechaInput) => {
   const [anio, mes, dia] = fechaInput.split("-").map(Number);
   return new Date(anio, mes - 1, dia);
+};
+
+const formatearFechaCampo = (fechaInput) => {
+  if (!fechaInput) return "";
+
+  const [anio, mes, dia] = fechaInput.split("-");
+
+  return `${dia}/${mes}/${anio}`;
 };
 
 const formatearFechaPublicacion = (fechaInput) => {
@@ -304,10 +313,71 @@ const quitarCategoria = (publicacion) => {
   return resto;
 };
 
+const normalizarHoraInput = (hora) => {
+  if (!hora) return "";
+
+  const horaLimpia = String(hora).trim();
+
+  if (/^\d{2}:\d{2}$/.test(horaLimpia)) return horaLimpia;
+
+  const match = horaLimpia.match(/^(\d{1,2}):(\d{2})\s*(am|pm)$/i);
+
+  if (!match) return "";
+
+  let horas = Number(match[1]);
+  const minutos = match[2];
+  const periodo = match[3].toLowerCase();
+
+  if (periodo === "pm" && horas < 12) horas += 12;
+  if (periodo === "am" && horas === 12) horas = 0;
+
+  return `${String(horas).padStart(2, "0")}:${minutos}`;
+};
+
+const obtenerDiasCalendario = (fechaBase) => {
+  const anio = fechaBase.getFullYear();
+  const mes = fechaBase.getMonth();
+
+  const primerDiaMes = new Date(anio, mes, 1);
+  const desfaseLunes = (primerDiaMes.getDay() + 6) % 7;
+
+  const dias = [];
+
+  for (let i = 0; i < 42; i += 1) {
+    const fecha = new Date(anio, mes, 1 - desfaseLunes + i);
+
+    dias.push({
+      fecha,
+      fechaInput: fechaDateAInput(fecha),
+      dia: fecha.getDate(),
+      esMesActual: fecha.getMonth() === mes,
+    });
+  }
+
+  return dias;
+};
+
+const HORAS = Array.from({ length: 24 }, (_, index) =>
+  String(index).padStart(2, "0")
+);
+
+const MINUTOS = Array.from({ length: 12 }, (_, index) =>
+  String(index * 5).padStart(2, "0")
+);
+
 const CrearPublicacion = () => {
+  const ministerioBoxRef = useRef(null);
+  const fechaInicioBoxRef = useRef(null);
+  const fechaFinalBoxRef = useRef(null);
+  const horaBoxRef = useRef(null);
+
   const [publicacionesAdmin, setPublicacionesAdmin] = useState(() =>
     obtenerPublicacionesGuardadas().map(quitarCategoria)
   );
+
+  const ministeriosDisponibles = useMemo(() => {
+    return obtenerMinisteriosGuardados();
+  }, []);
 
   const [modalAbierto, setModalAbierto] = useState(false);
   const [modoFormulario, setModoFormulario] = useState("crear");
@@ -320,10 +390,117 @@ const CrearPublicacion = () => {
   const [fotoActualPreview, setFotoActualPreview] = useState(0);
   const [videoModalPreview, setVideoModalPreview] = useState(null);
 
+  const [ministerioAbierto, setMinisterioAbierto] = useState(false);
+  const [calendarioAbierto, setCalendarioAbierto] = useState(null);
+  const [mesCalendario, setMesCalendario] = useState(() =>
+    crearFechaLocalDesdeInput(obtenerFechaActualInput())
+  );
+  const [horaAbierta, setHoraAbierta] = useState(false);
+  const [horaTemporal, setHoraTemporal] = useState({
+    hora: "18",
+    minuto: "00",
+  });
+
   const esModoVista = modoFormulario === "ver";
 
   const videoTrailerSubidoDesdePc =
     formulario.videoTrailerUrl.startsWith("data:video");
+
+  const cerrarSelectores = useCallback(() => {
+    setMinisterioAbierto(false);
+    setCalendarioAbierto(null);
+    setHoraAbierta(false);
+  }, []);
+
+  const abrirMinisterio = () => {
+    setMinisterioAbierto((actual) => !actual);
+    setCalendarioAbierto(null);
+    setHoraAbierta(false);
+  };
+
+  const abrirCalendario = (campo) => {
+    const fechaCampo = formulario[campo] || obtenerFechaActualInput();
+
+    setMesCalendario(crearFechaLocalDesdeInput(fechaCampo));
+    setCalendarioAbierto((actual) => (actual === campo ? null : campo));
+    setMinisterioAbierto(false);
+    setHoraAbierta(false);
+  };
+
+  const abrirSelectorHora = () => {
+    const horaActual = formulario.hora || "18:00";
+    const [hora, minuto] = horaActual.split(":");
+
+    setHoraTemporal({
+      hora: hora || "18",
+      minuto: minuto || "00",
+    });
+
+    setHoraAbierta((actual) => !actual);
+    setMinisterioAbierto(false);
+    setCalendarioAbierto(null);
+  };
+
+  const seleccionarMinisterio = (nombreMinisterio) => {
+    setFormulario((actual) => ({
+      ...actual,
+      ministerio: nombreMinisterio,
+    }));
+
+    setMinisterioAbierto(false);
+    setErrorFormulario("");
+  };
+
+  const seleccionarFecha = (campo, fechaInput) => {
+    setFormulario((actual) => ({
+      ...actual,
+      [campo]: fechaInput,
+    }));
+
+    setCalendarioAbierto(null);
+    setErrorFormulario("");
+  };
+
+  const limpiarFechaFinal = () => {
+    setFormulario((actual) => ({
+      ...actual,
+      fechaFinal: "",
+    }));
+
+    setCalendarioAbierto(null);
+    setErrorFormulario("");
+  };
+
+  const seleccionarHora = (hora) => {
+    setHoraTemporal((actual) => ({
+      ...actual,
+      hora,
+    }));
+  };
+
+  const seleccionarMinuto = (minuto) => {
+    const horaFinal = `${horaTemporal.hora}:${minuto}`;
+
+    setFormulario((actual) => ({
+      ...actual,
+      hora: horaFinal,
+    }));
+
+    setHoraTemporal((actual) => ({
+      ...actual,
+      minuto,
+    }));
+
+    setHoraAbierta(false);
+    setErrorFormulario("");
+  };
+
+  const manejarTeclaCampo = (e, accion) => {
+    if (e.key !== "Enter" && e.key !== " ") return;
+
+    e.preventDefault();
+    accion();
+  };
 
   const cerrarModal = useCallback(() => {
     setModalAbierto(false);
@@ -333,7 +510,8 @@ const CrearPublicacion = () => {
     setPanelActivo("formulario");
     setFotoActualPreview(0);
     setVideoModalPreview(null);
-  }, []);
+    cerrarSelectores();
+  }, [cerrarSelectores]);
 
   const cerrarVideoPreview = () => {
     setVideoModalPreview(null);
@@ -349,6 +527,32 @@ const CrearPublicacion = () => {
     setVideoModalPreview(null);
     setErrorFormulario("");
   };
+
+  useEffect(() => {
+    if (!modalAbierto) return;
+
+    const cerrarAlHacerClickFuera = (e) => {
+      const clickEnMinisterio = ministerioBoxRef.current?.contains(e.target);
+      const clickEnFechaInicio = fechaInicioBoxRef.current?.contains(e.target);
+      const clickEnFechaFinal = fechaFinalBoxRef.current?.contains(e.target);
+      const clickEnHora = horaBoxRef.current?.contains(e.target);
+
+      if (
+        !clickEnMinisterio &&
+        !clickEnFechaInicio &&
+        !clickEnFechaFinal &&
+        !clickEnHora
+      ) {
+        cerrarSelectores();
+      }
+    };
+
+    document.addEventListener("mousedown", cerrarAlHacerClickFuera);
+
+    return () => {
+      document.removeEventListener("mousedown", cerrarAlHacerClickFuera);
+    };
+  }, [modalAbierto, cerrarSelectores]);
 
   useEffect(() => {
     if (!modalAbierto) return;
@@ -584,7 +788,7 @@ const CrearPublicacion = () => {
         fechaDateAInput(rangoFecha.fin) ||
         publicacionLimpia.fechaInicio ||
         "",
-      hora: publicacionLimpia.hora || "",
+      hora: normalizarHoraInput(publicacionLimpia.hora),
       lugar: publicacionLimpia.lugar || "",
       descripcion: publicacionLimpia.descripcion || "",
       imagen: publicacionLimpia.imagen || "",
@@ -604,6 +808,7 @@ const CrearPublicacion = () => {
     setErrorFormulario("");
     setFotoActualPreview(0);
     setVideoModalPreview(null);
+    cerrarSelectores();
     setModalAbierto(true);
   };
 
@@ -730,6 +935,7 @@ const CrearPublicacion = () => {
     setErrorFormulario("");
     setFotoActualPreview(0);
     setVideoModalPreview(null);
+    cerrarSelectores();
     setModalAbierto(true);
   };
 
@@ -741,6 +947,7 @@ const CrearPublicacion = () => {
     setErrorFormulario("");
     setFotoActualPreview(0);
     setVideoModalPreview(null);
+    cerrarSelectores();
     setModalAbierto(true);
   };
 
@@ -758,6 +965,118 @@ const CrearPublicacion = () => {
     setPublicacionesAdmin(nuevaLista);
     guardarPublicaciones(nuevaLista);
   };
+
+  const cambiarMesCalendario = (cantidad) => {
+    setMesCalendario(
+      (actual) => new Date(actual.getFullYear(), actual.getMonth() + cantidad, 1)
+    );
+  };
+
+  const renderCalendario = (campo) => {
+    const diasCalendario = obtenerDiasCalendario(mesCalendario);
+    const valorCampo = formulario[campo];
+    const hoyInput = obtenerFechaActualInput();
+
+    return (
+      <div className="admin-calendar-panel">
+        <div className="admin-calendar-header">
+          <button type="button" onClick={() => cambiarMesCalendario(-1)}>
+            ‹
+          </button>
+
+          <strong>
+            {nombresMeses[mesCalendario.getMonth()]} {mesCalendario.getFullYear()}
+          </strong>
+
+          <button type="button" onClick={() => cambiarMesCalendario(1)}>
+            ›
+          </button>
+        </div>
+
+        <div className="admin-calendar-weekdays">
+          <span>LU</span>
+          <span>MA</span>
+          <span>MI</span>
+          <span>JU</span>
+          <span>VI</span>
+          <span>SA</span>
+          <span>DO</span>
+        </div>
+
+        <div className="admin-calendar-days">
+          {diasCalendario.map((dia) => (
+            <button
+              type="button"
+              className={[
+                dia.esMesActual ? "" : "outside",
+                dia.fechaInput === valorCampo ? "active" : "",
+                dia.fechaInput === hoyInput ? "today" : "",
+              ]
+                .filter(Boolean)
+                .join(" ")}
+              onClick={() => seleccionarFecha(campo, dia.fechaInput)}
+              key={dia.fechaInput}
+            >
+              {dia.dia}
+            </button>
+          ))}
+        </div>
+
+        <div className="admin-calendar-footer">
+          {campo === "fechaFinal" && (
+            <button type="button" onClick={limpiarFechaFinal}>
+              Borrar
+            </button>
+          )}
+
+          <button
+            type="button"
+            onClick={() => seleccionarFecha(campo, hoyInput)}
+          >
+            Hoy
+          </button>
+        </div>
+      </div>
+    );
+  };
+
+  const renderSelectorHora = () => (
+    <div className="admin-time-panel">
+      <div className="admin-time-column">
+        <strong>Hora</strong>
+
+        <div>
+          {HORAS.map((hora) => (
+            <button
+              type="button"
+              className={horaTemporal.hora === hora ? "active" : ""}
+              onClick={() => seleccionarHora(hora)}
+              key={hora}
+            >
+              {hora}
+            </button>
+          ))}
+        </div>
+      </div>
+
+      <div className="admin-time-column">
+        <strong>Minutos</strong>
+
+        <div>
+          {MINUTOS.map((minuto) => (
+            <button
+              type="button"
+              className={horaTemporal.minuto === minuto ? "active" : ""}
+              onClick={() => seleccionarMinuto(minuto)}
+              key={minuto}
+            >
+              {minuto}
+            </button>
+          ))}
+        </div>
+      </div>
+    </div>
+  );
 
   const renderPublicacionPublica = () => (
     <article className="galeria-detalle-card">
@@ -893,7 +1212,11 @@ const CrearPublicacion = () => {
   );
 
   const formularioPublicacion = (
-    <form className="admin-form" onSubmit={guardarFormulario}>
+    <form
+      className="admin-form"
+      onSubmit={guardarFormulario}
+      autoComplete="off"
+    >
       {errorFormulario && (
         <div className="admin-form-error">{errorFormulario}</div>
       )}
@@ -907,55 +1230,125 @@ const CrearPublicacion = () => {
             value={formulario.titulo}
             onChange={actualizarCampo}
             placeholder="Ej: Noche de adoración"
+            autoComplete="off"
           />
         </label>
 
         <label>
           <span>Ministerio *</span>
-          <input
-            type="text"
-            name="ministerio"
-            value={formulario.ministerio}
-            onChange={actualizarCampo}
-            placeholder="Ej: Jóvenes"
-          />
+
+          <div
+            className={`admin-custom-select ${
+              ministerioAbierto ? "is-open" : ""
+            }`}
+            ref={ministerioBoxRef}
+          >
+            <button
+              type="button"
+              className={`admin-custom-select-control ${
+                formulario.ministerio ? "has-value" : ""
+              }`}
+              onClick={abrirMinisterio}
+            >
+              <span>{formulario.ministerio || "Selecciona un ministerio"}</span>
+            </button>
+
+            {ministerioAbierto && (
+              <div className="admin-custom-select-menu">
+                {ministeriosDisponibles.map((ministerio) => (
+                  <button
+                    type="button"
+                    className={`admin-custom-select-option ${
+                      formulario.ministerio === ministerio.nombre
+                        ? "active"
+                        : ""
+                    }`}
+                    onClick={() => seleccionarMinisterio(ministerio.nombre)}
+                    key={ministerio.id}
+                  >
+                    {ministerio.nombre}
+                  </button>
+                ))}
+              </div>
+            )}
+          </div>
         </label>
 
         <label>
           <span>Fecha inicial *</span>
 
-          <div className="admin-date-wrap">
-            <input
-              type="date"
-              name="fechaInicio"
-              value={formulario.fechaInicio}
-              onChange={actualizarCampo}
-            />
+          <div
+            className={`admin-picker-wrapper ${
+              calendarioAbierto === "fechaInicio" ? "is-open" : ""
+            }`}
+            ref={fechaInicioBoxRef}
+          >
+            <button
+              type="button"
+              className={`admin-picker-field ${
+                formulario.fechaInicio ? "has-value" : ""
+              }`}
+              onClick={() => abrirCalendario("fechaInicio")}
+            >
+              <span>
+                {formulario.fechaInicio
+                  ? formatearFechaCampo(formulario.fechaInicio)
+                  : "dd/mm/aaaa"}
+              </span>
+            </button>
+
+            {calendarioAbierto === "fechaInicio" &&
+              renderCalendario("fechaInicio")}
           </div>
         </label>
 
         <label>
           <span>Fecha final</span>
 
-          <div className="admin-date-wrap">
-            <input
-              type="date"
-              name="fechaFinal"
-              value={formulario.fechaFinal}
-              onChange={actualizarCampo}
-            />
+          <div
+            className={`admin-picker-wrapper ${
+              calendarioAbierto === "fechaFinal" ? "is-open" : ""
+            }`}
+            ref={fechaFinalBoxRef}
+          >
+            <button
+              type="button"
+              className={`admin-picker-field ${
+                formulario.fechaFinal ? "has-value" : ""
+              }`}
+              onClick={() => abrirCalendario("fechaFinal")}
+            >
+              <span>
+                {formulario.fechaFinal
+                  ? formatearFechaCampo(formulario.fechaFinal)
+                  : "dd/mm/aaaa"}
+              </span>
+            </button>
+
+            {calendarioAbierto === "fechaFinal" &&
+              renderCalendario("fechaFinal")}
           </div>
         </label>
 
         <label>
           <span>Hora *</span>
-          <input
-            type="text"
-            name="hora"
-            value={formulario.hora}
-            onChange={actualizarCampo}
-            placeholder="Ej: 7:30 pm"
-          />
+
+          <div
+            className={`admin-picker-wrapper ${horaAbierta ? "is-open" : ""}`}
+            ref={horaBoxRef}
+          >
+            <button
+              type="button"
+              className={`admin-picker-field ${
+                formulario.hora ? "has-value" : ""
+              }`}
+              onClick={abrirSelectorHora}
+            >
+              <span>{formulario.hora || "--:--"}</span>
+            </button>
+
+            {horaAbierta && renderSelectorHora()}
+          </div>
         </label>
 
         <label>
@@ -966,6 +1359,7 @@ const CrearPublicacion = () => {
             value={formulario.lugar}
             onChange={actualizarCampo}
             placeholder="Ej: Iglesia El Buen Pastor"
+            autoComplete="off"
           />
         </label>
 
@@ -977,6 +1371,7 @@ const CrearPublicacion = () => {
             value={formulario.imagen}
             onChange={actualizarCampo}
             placeholder="Ej: /img/publicaciones/foto1.jpg o una URL"
+            autoComplete="off"
           />
         </label>
       </div>
@@ -1002,6 +1397,7 @@ const CrearPublicacion = () => {
           onChange={actualizarCampo}
           placeholder="Descripción de la publicación."
           rows="4"
+          autoComplete="off"
         />
       </label>
 
@@ -1016,6 +1412,7 @@ const CrearPublicacion = () => {
 /img/publicaciones/foto2.jpg
 /img/publicaciones/foto3.jpg`}
           rows="5"
+          autoComplete="off"
         />
       </label>
 
@@ -1048,6 +1445,7 @@ const CrearPublicacion = () => {
             }
             disabled={videoTrailerSubidoDesdePc}
             className={videoTrailerSubidoDesdePc ? "admin-input-disabled" : ""}
+            autoComplete="off"
           />
 
           {videoTrailerSubidoDesdePc && (
@@ -1069,6 +1467,7 @@ const CrearPublicacion = () => {
             value={formulario.videoTrailerPortada}
             onChange={actualizarCampo}
             placeholder="Si lo dejas vacío, usará la imagen principal"
+            autoComplete="off"
           />
         </label>
 
@@ -1080,6 +1479,7 @@ const CrearPublicacion = () => {
             value={formulario.videoCompletoUrl}
             onChange={actualizarCampo}
             placeholder="Ej: link de YouTube, Facebook o video"
+            autoComplete="off"
           />
         </label>
       </div>

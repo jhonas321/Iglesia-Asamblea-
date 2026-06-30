@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 import { PlusCircle, X } from "lucide-react";
 import {
@@ -188,10 +188,18 @@ const diasSemana = [
   "Domingo",
 ];
 
+const HORAS = Array.from({ length: 24 }, (_, index) =>
+  String(index).padStart(2, "0")
+);
+
+const MINUTOS = Array.from({ length: 12 }, (_, index) =>
+  String(index * 5).padStart(2, "0")
+);
+
 const crearFormularioHorarioVacio = () => ({
   dia: "Lunes",
   actividad: "",
-  hora: "19:00",
+  hora: "--:--",
   iconoTipo: "principal",
   descripcion: "",
 });
@@ -217,7 +225,31 @@ const ordenarHorarios = (horarios) => {
   });
 };
 
+const normalizarHoraInput = (hora) => {
+  if (!hora) return "";
+
+  const horaLimpia = String(hora).trim();
+
+  if (/^\d{2}:\d{2}$/.test(horaLimpia)) return horaLimpia;
+
+  const match = horaLimpia.match(/^(\d{1,2}):(\d{2})\s*(am|pm)$/i);
+
+  if (!match) return "";
+
+  let horas = Number(match[1]);
+  const minutos = match[2];
+  const periodo = match[3].toLowerCase();
+
+  if (periodo === "pm" && horas < 12) horas += 12;
+  if (periodo === "am" && horas === 12) horas = 0;
+
+  return `${String(horas).padStart(2, "0")}:${minutos}`;
+};
+
 const CrearHorarios = () => {
+  const diaBoxRef = useRef(null);
+  const horaBoxRef = useRef(null);
+
   const [horariosAdmin, setHorariosAdmin] = useState(() =>
     obtenerHorariosGuardados()
   );
@@ -230,7 +262,78 @@ const CrearHorarios = () => {
   const [errorFormulario, setErrorFormulario] = useState("");
   const [horarioActivoPreview, setHorarioActivoPreview] = useState("");
 
+  const [diaAbierto, setDiaAbierto] = useState(false);
+  const [horaAbierta, setHoraAbierta] = useState(false);
+  const [horaTemporal, setHoraTemporal] = useState({
+    hora: "19",
+    minuto: "00",
+  });
+
   const esModoVista = modoFormulario === "ver";
+
+  const cerrarSelectores = useCallback(() => {
+    setDiaAbierto(false);
+    setHoraAbierta(false);
+  }, []);
+
+  const abrirDia = () => {
+    setDiaAbierto((actual) => !actual);
+    setHoraAbierta(false);
+  };
+
+  const abrirSelectorHora = () => {
+    const horaActual = formulario.hora || "19:00";
+    const [hora, minuto] = horaActual.split(":");
+
+    setHoraTemporal({
+      hora: hora || "19",
+      minuto: minuto || "00",
+    });
+
+    setHoraAbierta((actual) => !actual);
+    setDiaAbierto(false);
+  };
+
+  const seleccionarDia = (dia) => {
+    setFormulario((actual) => ({
+      ...actual,
+      dia,
+    }));
+
+    setDiaAbierto(false);
+    setErrorFormulario("");
+  };
+
+  const seleccionarHora = (hora) => {
+    setHoraTemporal((actual) => ({
+      ...actual,
+      hora,
+    }));
+  };
+
+  const seleccionarMinuto = (minuto) => {
+    const horaFinal = `${horaTemporal.hora}:${minuto}`;
+
+    setFormulario((actual) => ({
+      ...actual,
+      hora: horaFinal,
+    }));
+
+    setHoraTemporal((actual) => ({
+      ...actual,
+      minuto,
+    }));
+
+    setHoraAbierta(false);
+    setErrorFormulario("");
+  };
+
+  const manejarTeclaCampo = (e, accion) => {
+    if (e.key !== "Enter" && e.key !== " ") return;
+
+    e.preventDefault();
+    accion();
+  };
 
   const horariosProcesados = useMemo(() => {
     return ordenarHorarios(horariosAdmin);
@@ -255,7 +358,27 @@ const CrearHorarios = () => {
     setFormulario(crearFormularioHorarioVacio());
     setErrorFormulario("");
     setHorarioActivoPreview("");
-  }, []);
+    cerrarSelectores();
+  }, [cerrarSelectores]);
+
+  useEffect(() => {
+    if (!modalAbierto) return;
+
+    const cerrarAlHacerClickFuera = (e) => {
+      const clickEnDia = diaBoxRef.current?.contains(e.target);
+      const clickEnHora = horaBoxRef.current?.contains(e.target);
+
+      if (!clickEnDia && !clickEnHora) {
+        cerrarSelectores();
+      }
+    };
+
+    document.addEventListener("mousedown", cerrarAlHacerClickFuera);
+
+    return () => {
+      document.removeEventListener("mousedown", cerrarAlHacerClickFuera);
+    };
+  }, [modalAbierto, cerrarSelectores]);
 
   useEffect(() => {
     if (!modalAbierto) return;
@@ -341,7 +464,7 @@ const CrearHorarios = () => {
     setFormulario({
       dia: horario.dia || "Lunes",
       actividad: horario.actividad || "",
-      hora: horario.hora || "19:00",
+      hora: normalizarHoraInput(horario.hora) || "19:00",
       iconoTipo: horario.iconoTipo || "principal",
       descripcion: horario.descripcion || "",
     });
@@ -354,6 +477,7 @@ const CrearHorarios = () => {
     setFormulario(crearFormularioHorarioVacio());
     setErrorFormulario("");
     setHorarioActivoPreview("");
+    cerrarSelectores();
     setModalAbierto(true);
   };
 
@@ -422,6 +546,7 @@ const CrearHorarios = () => {
     cargarFormularioHorario(horario);
     setErrorFormulario("");
     setHorarioActivoPreview("");
+    cerrarSelectores();
     setModalAbierto(true);
   };
 
@@ -432,6 +557,7 @@ const CrearHorarios = () => {
     cargarFormularioHorario(horario);
     setErrorFormulario("");
     setHorarioActivoPreview("");
+    cerrarSelectores();
     setModalAbierto(true);
   };
 
@@ -451,6 +577,44 @@ const CrearHorarios = () => {
   const alternarHorarioPreview = (id) => {
     setHorarioActivoPreview((actual) => (actual === id ? "" : id));
   };
+
+  const renderSelectorHora = () => (
+    <div className="admin-time-panel">
+      <div className="admin-time-column">
+        <strong>Hora</strong>
+
+        <div>
+          {HORAS.map((hora) => (
+            <button
+              type="button"
+              className={horaTemporal.hora === hora ? "active" : ""}
+              onClick={() => seleccionarHora(hora)}
+              key={hora}
+            >
+              {hora}
+            </button>
+          ))}
+        </div>
+      </div>
+
+      <div className="admin-time-column">
+        <strong>Minutos</strong>
+
+        <div>
+          {MINUTOS.map((minuto) => (
+            <button
+              type="button"
+              className={horaTemporal.minuto === minuto ? "active" : ""}
+              onClick={() => seleccionarMinuto(minuto)}
+              key={minuto}
+            >
+              {minuto}
+            </button>
+          ))}
+        </div>
+      </div>
+    </div>
+  );
 
   const renderHorarioCard = (horario) => {
     const icono = opcionesIcono[horario.iconoTipo]?.icono || <FaHome />;
@@ -528,7 +692,11 @@ const CrearHorarios = () => {
   );
 
   const formularioHorarios = (
-    <form className="admin-form" onSubmit={guardarFormulario}>
+    <form
+      className="admin-form"
+      onSubmit={guardarFormulario}
+      autoComplete="off"
+    >
       {errorFormulario && (
         <div className="admin-form-error">{errorFormulario}</div>
       )}
@@ -537,19 +705,37 @@ const CrearHorarios = () => {
         <label>
           <span>Día *</span>
 
-          <div className="admin-select-wrap">
-            <select
-              name="dia"
-              value={formulario.dia}
-              onChange={actualizarCampo}
-              className="admin-form-select"
+          <div
+            className={`admin-custom-select ${diaAbierto ? "is-open" : ""}`}
+            ref={diaBoxRef}
+          >
+            <button
+              type="button"
+              className={`admin-custom-select-control ${
+                formulario.dia ? "has-value" : ""
+              }`}
+              onClick={abrirDia}
+              onKeyDown={(e) => manejarTeclaCampo(e, abrirDia)}
             >
-              {diasSemana.map((dia) => (
-                <option value={dia} key={dia}>
-                  {dia}
-                </option>
-              ))}
-            </select>
+              <span>{formulario.dia || "Selecciona un día"}</span>
+            </button>
+
+            {diaAbierto && (
+              <div className="admin-custom-select-menu">
+                {diasSemana.map((dia) => (
+                  <button
+                    type="button"
+                    className={`admin-custom-select-option ${
+                      formulario.dia === dia ? "active" : ""
+                    }`}
+                    onClick={() => seleccionarDia(dia)}
+                    key={dia}
+                  >
+                    {dia}
+                  </button>
+                ))}
+              </div>
+            )}
           </div>
         </label>
 
@@ -561,17 +747,30 @@ const CrearHorarios = () => {
             value={formulario.actividad}
             onChange={actualizarCampo}
             placeholder="Ej: Culto de Enseñanza"
+            autoComplete="off"
           />
         </label>
 
         <label>
           <span>Hora *</span>
-          <input
-            type="time"
-            name="hora"
-            value={formulario.hora}
-            onChange={actualizarCampo}
-          />
+
+          <div
+            className={`admin-picker-wrapper ${horaAbierta ? "is-open" : ""}`}
+            ref={horaBoxRef}
+          >
+            <button
+              type="button"
+              className={`admin-picker-field ${
+                formulario.hora ? "has-value" : ""
+              }`}
+              onClick={abrirSelectorHora}
+              onKeyDown={(e) => manejarTeclaCampo(e, abrirSelectorHora)}
+            >
+              <span>{formulario.hora || "--:--"}</span>
+            </button>
+
+            {horaAbierta && renderSelectorHora()}
+          </div>
         </label>
       </div>
 
@@ -603,6 +802,7 @@ const CrearHorarios = () => {
           onChange={actualizarCampo}
           placeholder="Ej: Un tiempo especial para buscar la presencia de Dios."
           rows="4"
+          autoComplete="off"
         />
       </label>
 

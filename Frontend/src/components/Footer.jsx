@@ -8,9 +8,13 @@ import {
   FaMapMarkerAlt,
   FaPhone,
   FaEnvelope,
+  FaTelegramPlane,
 } from "react-icons/fa";
 
-import { obtenerHorariosGuardados } from "../data/adminStorage";
+import {
+  obtenerContactoGuardado,
+  obtenerHorariosGuardados,
+} from "../data/adminStorage";
 
 const ordenarHorariosFooter = (horarios) => {
   const ordenDias = {
@@ -33,8 +37,70 @@ const ordenarHorariosFooter = (horarios) => {
   });
 };
 
+const tieneUrl = (url) => {
+  const valor = String(url || "").trim();
+
+  return valor !== "" && valor !== "#";
+};
+
+const normalizarUrl = (url) => {
+  const valor = String(url || "").trim();
+
+  if (!valor || valor === "#") return "#";
+
+  if (valor.startsWith("http://") || valor.startsWith("https://")) {
+    return valor;
+  }
+
+  return `https://${valor}`;
+};
+
 function Footer() {
   const horariosFooter = ordenarHorariosFooter(obtenerHorariosGuardados());
+  const contacto = obtenerContactoGuardado();
+
+  const redesSociales = [
+    {
+      nombre: "Facebook",
+      url: contacto.facebookUrl,
+      clase: "facebook",
+      icono: <FaFacebookF />,
+    },
+    {
+      nombre: "YouTube",
+      url: contacto.youtubeUrl,
+      clase: "youtube",
+      icono: <FaYoutube />,
+    },
+    {
+      nombre: "Instagram",
+      url: contacto.instagramUrl,
+      clase: "instagram",
+      icono: <FaInstagram />,
+    },
+    {
+      nombre: "TikTok",
+      url: contacto.tiktokUrl,
+      clase: "tiktok",
+      icono: <FaTiktok />,
+    },
+    {
+      nombre: "X / Twitter",
+      url: contacto.twitterUrl,
+      clase: "twitter",
+      icono: <span className="x-twitter-icon">𝕏</span>,
+    },
+    {
+      nombre: "Telegram",
+      url: contacto.telegramUrl,
+      clase: "telegram",
+      icono: <FaTelegramPlane />,
+    },
+  ];
+
+  const redesSocialesVisibles = redesSociales.filter((red) =>
+    tieneUrl(red.url)
+  );
 
   return (
     <footer className="footer">
@@ -84,7 +150,7 @@ function Footer() {
                 <FaMapMarkerAlt />
               </span>
 
-              <span>Cochabamba, Bolivia</span>
+              <span>{contacto.footerUbicacion}</span>
             </div>
 
             <div className="footer-contact-item">
@@ -92,7 +158,7 @@ function Footer() {
                 <FaPhone />
               </span>
 
-              <span>+591 70000000</span>
+              <span>{contacto.footerTelefono}</span>
             </div>
 
             <div className="footer-contact-item">
@@ -100,72 +166,33 @@ function Footer() {
                 <FaEnvelope />
               </span>
 
-              <span>contacto@asamblea.com</span>
+              <span>{contacto.footerCorreo}</span>
             </div>
           </div>
         </div>
 
-        <div className="footer-col">
-          <h4>Síguenos</h4>
+        {redesSocialesVisibles.length > 0 && (
+          <div className="footer-col">
+            <h4>Síguenos</h4>
 
-          <div className="social-icons">
-            <a
-              href="#"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="social-link facebook"
-              aria-label="Facebook"
-            >
-              <span className="circle">
-                <FaFacebookF />
-              </span>
+            <div className="social-icons">
+              {redesSocialesVisibles.map((red) => (
+                <a
+                  href={normalizarUrl(red.url)}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className={`social-link ${red.clase}`}
+                  aria-label={red.nombre}
+                  key={red.nombre}
+                >
+                  <span className="circle">{red.icono}</span>
 
-              <span className="social-text">Facebook</span>
-            </a>
-
-            <a
-              href="#"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="social-link youtube"
-              aria-label="YouTube"
-            >
-              <span className="circle">
-                <FaYoutube />
-              </span>
-
-              <span className="social-text">YouTube</span>
-            </a>
-
-            <a
-              href="#"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="social-link instagram"
-              aria-label="Instagram"
-            >
-              <span className="circle">
-                <FaInstagram />
-              </span>
-
-              <span className="social-text">Instagram</span>
-            </a>
-
-            <a
-              href="#"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="social-link tiktok"
-              aria-label="TikTok"
-            >
-              <span className="circle">
-                <FaTiktok />
-              </span>
-
-              <span className="social-text">TikTok</span>
-            </a>
+                  <span className="social-text">{red.nombre}</span>
+                </a>
+              ))}
+            </div>
           </div>
-        </div>
+        )}
       </div>
 
       <div className="footer-bottom">

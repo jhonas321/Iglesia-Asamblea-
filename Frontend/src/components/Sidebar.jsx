@@ -1,21 +1,88 @@
+import { useEffect, useState } from "react";
 import { Link, useLocation } from "react-router-dom";
 import {
   LayoutDashboard,
   CalendarDays,
   Image,
+  Images,
   Clock,
   Users,
   Mail,
   Settings,
   LogOut,
-  Church,
+  Layers,
 } from "lucide-react";
-import { FaRegUserCircle } from "react-icons/fa";
+
+import {
+  FaFemale,
+  FaMale,
+  FaRegUserCircle,
+  FaUserGraduate,
+  FaUserNurse,
+  FaUserShield,
+  FaUserTie,
+} from "react-icons/fa";
+
+import { obtenerConfiguracionGuardada } from "../data/adminStorage";
+
 import "../styles/Sidebar.css";
+
+const obtenerIconoAdmin = (iconoAdmin) => {
+  const iconos = {
+    "hombre-1": <FaUserTie size={26} />,
+    "hombre-2": <FaMale size={26} />,
+    "hombre-3": <FaUserShield size={26} />,
+    "mujer-1": <FaFemale size={26} />,
+    "mujer-2": <FaUserNurse size={26} />,
+    "mujer-3": <FaUserGraduate size={26} />,
+  };
+
+  return iconos[iconoAdmin] || <FaRegUserCircle size={26} />;
+};
 
 const Sidebar = () => {
   const location = useLocation();
   const currentPath = location.pathname;
+
+  const [configuracion, setConfiguracion] = useState(() =>
+    obtenerConfiguracionGuardada()
+  );
+
+  useEffect(() => {
+    const cargarConfiguracion = () => {
+      const config = obtenerConfiguracionGuardada();
+      setConfiguracion(config);
+    };
+
+    cargarConfiguracion();
+
+    window.addEventListener("admin-config-updated", cargarConfiguracion);
+
+    return () => {
+      window.removeEventListener("admin-config-updated", cargarConfiguracion);
+    };
+  }, []);
+
+  useEffect(() => {
+    window.scrollTo({
+      top: 0,
+      left: 0,
+      behavior: "auto",
+    });
+
+    document.documentElement.scrollTop = 0;
+    document.body.scrollTop = 0;
+
+    const adminContent = document.querySelector(".dashboard-admin-content");
+
+    if (adminContent) {
+      adminContent.scrollTo({
+        top: 0,
+        left: 0,
+        behavior: "auto",
+      });
+    }
+  }, [currentPath]);
 
   const menuItems = [
     {
@@ -23,6 +90,18 @@ const Sidebar = () => {
       label: "Dashboard",
       path: "/admin/dashboard",
       icon: <LayoutDashboard size={20} />,
+    },
+    {
+      id: "ministerios",
+      label: "Ministerios",
+      path: "/admin/ministerios",
+      icon: <Layers size={20} />,
+    },
+    {
+      id: "fotos-inicio",
+      label: "Fotos Inicio",
+      path: "/admin/fotos-inicio",
+      icon: <Images size={20} />,
     },
     {
       id: "eventos",
@@ -78,8 +157,8 @@ const Sidebar = () => {
   return (
     <aside className="sidebar">
       <div className="sidebar-header">
-        <div className="sidebar-logo">
-          <Church size={23} />
+        <div className="sidebar-logo sidebar-logo-image">
+          <img src="/images/logo.jpg" alt="Logo Asamblea" />
         </div>
 
         <div className="sidebar-brand">
@@ -90,11 +169,11 @@ const Sidebar = () => {
 
       <div className="sidebar-user">
         <div className="sidebar-user-icon">
-          <FaRegUserCircle size={26} />
+          {obtenerIconoAdmin(configuracion.iconoAdmin)}
         </div>
 
         <div className="sidebar-user-info">
-          <h3>Admin User</h3>
+          <h3>{configuracion.nombreAdmin}</h3>
           <p>Administrador</p>
         </div>
       </div>

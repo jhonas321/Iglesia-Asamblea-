@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 import {
   PlusCircle,
@@ -13,6 +13,7 @@ import ListaAdmin from "../../components/admin/ListaAdmin";
 import {
   guardarEventos,
   obtenerEventosGuardados,
+  obtenerMinisteriosGuardados,
 } from "../../data/adminStorage";
 
 import "../../styles/AdminCrudPage.css";
@@ -25,6 +26,14 @@ const obtenerFechaActualInput = () => {
   const anio = hoy.getFullYear();
   const mes = String(hoy.getMonth() + 1).padStart(2, "0");
   const dia = String(hoy.getDate()).padStart(2, "0");
+
+  return `${anio}-${mes}-${dia}`;
+};
+
+const convertirFechaAInput = (fecha) => {
+  const anio = fecha.getFullYear();
+  const mes = String(fecha.getMonth() + 1).padStart(2, "0");
+  const dia = String(fecha.getDate()).padStart(2, "0");
 
   return `${anio}-${mes}-${dia}`;
 };
@@ -63,6 +72,14 @@ const formatearFechaEvento = (fechaInput) => {
   const anio = fecha.getFullYear();
 
   return `${dia} ${mes} ${anio}`;
+};
+
+const formatearFechaCampo = (fechaInput) => {
+  if (!fechaInput) return "";
+
+  const [anio, mes, dia] = fechaInput.split("-");
+
+  return `${dia}/${mes}/${anio}`;
 };
 
 const formatearRangoFechaEvento = (fechaInicio, fechaFinal) => {
@@ -176,10 +193,71 @@ const convertirArchivoABase64 = (archivo) => {
   });
 };
 
+const normalizarHoraInput = (hora) => {
+  if (!hora) return "";
+
+  const horaLimpia = String(hora).trim();
+
+  if (/^\d{2}:\d{2}$/.test(horaLimpia)) return horaLimpia;
+
+  const match = horaLimpia.match(/^(\d{1,2}):(\d{2})\s*(am|pm)$/i);
+
+  if (!match) return "";
+
+  let horas = Number(match[1]);
+  const minutos = match[2];
+  const periodo = match[3].toLowerCase();
+
+  if (periodo === "pm" && horas < 12) horas += 12;
+  if (periodo === "am" && horas === 12) horas = 0;
+
+  return `${String(horas).padStart(2, "0")}:${minutos}`;
+};
+
+const obtenerDiasCalendario = (fechaBase) => {
+  const anio = fechaBase.getFullYear();
+  const mes = fechaBase.getMonth();
+
+  const primerDiaMes = new Date(anio, mes, 1);
+  const desfaseLunes = (primerDiaMes.getDay() + 6) % 7;
+
+  const dias = [];
+
+  for (let i = 0; i < 42; i += 1) {
+    const fecha = new Date(anio, mes, 1 - desfaseLunes + i);
+
+    dias.push({
+      fecha,
+      fechaInput: convertirFechaAInput(fecha),
+      dia: fecha.getDate(),
+      esMesActual: fecha.getMonth() === mes,
+    });
+  }
+
+  return dias;
+};
+
+const HORAS = Array.from({ length: 24 }, (_, index) =>
+  String(index).padStart(2, "0")
+);
+
+const MINUTOS = Array.from({ length: 12 }, (_, index) =>
+  String(index * 5).padStart(2, "0")
+);
+
 const CrearEventos = () => {
+  const ministerioBoxRef = useRef(null);
+  const fechaInicioBoxRef = useRef(null);
+  const fechaFinalBoxRef = useRef(null);
+  const horaBoxRef = useRef(null);
+
   const [eventosAdmin, setEventosAdmin] = useState(() =>
     obtenerEventosGuardados()
   );
+
+  const ministeriosDisponibles = useMemo(() => {
+    return obtenerMinisteriosGuardados();
+  }, []);
 
   const [modalAbierto, setModalAbierto] = useState(false);
   const [modoFormulario, setModoFormulario] = useState("crear");
@@ -188,7 +266,125 @@ const CrearEventos = () => {
   const [formulario, setFormulario] = useState(crearFormularioEventoVacio);
   const [errorFormulario, setErrorFormulario] = useState("");
 
+  const [ministerioAbierto, setMinisterioAbierto] = useState(false);
+  const [calendarioAbierto, setCalendarioAbierto] = useState(null);
+  const [mesCalendario, setMesCalendario] = useState(() =>
+    crearFechaLocalDesdeInput(obtenerFechaActualInput())
+  );
+  const [horaAbierta, setHoraAbierta] = useState(false);
+  const [horaTemporal, setHoraTemporal] = useState({
+    hora: "18",
+    minuto: "00",
+  });
+
   const esModoVista = modoFormulario === "ver";
+
+  const cerrarSelectores = useCallback(() => {
+    setMinisterioAbierto(false);
+    setCalendarioAbierto(null);
+    setHoraAbierta(false);
+  }, []);
+
+  const abrirMinisterio = () => {
+    setMinisterioAbierto((actual) => !actual);
+    setCalendarioAbierto(null);
+    setHoraAbierta(false);
+  };
+
+  const abrirCalendario = (campo) => {
+    const fechaCampo = formulario[campo] || obtenerFechaActualInput();
+
+    setMesCalendario(crearFechaLocalDesdeInput(fechaCampo));
+    setCalendarioAbierto((actual) => (actual === campo ? null : campo));
+    setMinisterioAbierto(false);
+    setHoraAbierta(false);
+  };
+
+  const abrirSelectorHora = () => {
+    const horaActual = formulario.hora || "18:00";
+    const [hora, minuto] = horaActual.split(":");
+
+    setHoraTemporal({
+      hora: hora || "18",
+      minuto: minuto || "00",
+    });
+
+    setHoraAbierta((actual) => !actual);
+    setMinisterioAbierto(false);
+    setCalendarioAbierto(null);
+  };
+
+  const seleccionarMinisterio = (nombreMinisterio) => {
+    setFormulario((actual) => ({
+      ...actual,
+      ministerio: nombreMinisterio,
+    }));
+
+    setMinisterioAbierto(false);
+    setErrorFormulario("");
+  };
+
+  const seleccionarFecha = (campo, fechaInput) => {
+    setFormulario((actual) => ({
+      ...actual,
+      [campo]: fechaInput,
+    }));
+
+    setCalendarioAbierto(null);
+    setErrorFormulario("");
+  };
+
+  const limpiarFechaFinal = () => {
+    setFormulario((actual) => ({
+      ...actual,
+      fechaFinal: "",
+    }));
+
+    setCalendarioAbierto(null);
+    setErrorFormulario("");
+  };
+
+  const seleccionarHora = (hora) => {
+    setHoraTemporal((actual) => ({
+      ...actual,
+      hora,
+    }));
+  };
+
+  const seleccionarMinuto = (minuto) => {
+    const horaFinal = `${horaTemporal.hora}:${minuto}`;
+
+    setFormulario((actual) => ({
+      ...actual,
+      hora: horaFinal,
+    }));
+
+    setHoraTemporal((actual) => ({
+      ...actual,
+      minuto,
+    }));
+
+    setHoraAbierta(false);
+    setErrorFormulario("");
+  };
+
+  const manejarTeclaCampo = (e, accion) => {
+    if (e.key !== "Enter" && e.key !== " ") return;
+
+    e.preventDefault();
+    accion();
+  };
+
+  const actualizarCampo = (e) => {
+    const { name, value } = e.target;
+
+    setFormulario((actual) => ({
+      ...actual,
+      [name]: value,
+    }));
+
+    setErrorFormulario("");
+  };
 
   const cerrarModal = useCallback(() => {
     setModalAbierto(false);
@@ -196,7 +392,34 @@ const CrearEventos = () => {
     setFormulario(crearFormularioEventoVacio());
     setErrorFormulario("");
     setPanelActivo("formulario");
-  }, []);
+    cerrarSelectores();
+  }, [cerrarSelectores]);
+
+  useEffect(() => {
+    if (!modalAbierto) return;
+
+    const cerrarAlHacerClickFuera = (e) => {
+      const clickEnMinisterio = ministerioBoxRef.current?.contains(e.target);
+      const clickEnFechaInicio = fechaInicioBoxRef.current?.contains(e.target);
+      const clickEnFechaFinal = fechaFinalBoxRef.current?.contains(e.target);
+      const clickEnHora = horaBoxRef.current?.contains(e.target);
+
+      if (
+        !clickEnMinisterio &&
+        !clickEnFechaInicio &&
+        !clickEnFechaFinal &&
+        !clickEnHora
+      ) {
+        cerrarSelectores();
+      }
+    };
+
+    document.addEventListener("mousedown", cerrarAlHacerClickFuera);
+
+    return () => {
+      document.removeEventListener("mousedown", cerrarAlHacerClickFuera);
+    };
+  }, [modalAbierto, cerrarSelectores]);
 
   useEffect(() => {
     if (!modalAbierto) return;
@@ -287,17 +510,6 @@ const CrearEventos = () => {
     },
   ];
 
-  const actualizarCampo = (e) => {
-    const { name, value } = e.target;
-
-    setFormulario((actual) => ({
-      ...actual,
-      [name]: value,
-    }));
-
-    setErrorFormulario("");
-  };
-
   const manejarImagenArchivo = async (e) => {
     const archivo = e.target.files?.[0];
 
@@ -328,7 +540,7 @@ const CrearEventos = () => {
       ministerio: evento.ministerio || "",
       fechaInicio: evento.fechaInicio || obtenerFechaActualInput(),
       fechaFinal: evento.fechaFinal || evento.fechaInicio || "",
-      hora: evento.hora || "",
+      hora: normalizarHoraInput(evento.hora),
       lugar: evento.lugar || "",
       descripcion: evento.descripcion || "",
       detalles: evento.detalles || "",
@@ -342,6 +554,7 @@ const CrearEventos = () => {
     setEventoEditandoId(null);
     setFormulario(crearFormularioEventoVacio());
     setErrorFormulario("");
+    cerrarSelectores();
     setModalAbierto(true);
   };
 
@@ -424,6 +637,7 @@ const CrearEventos = () => {
     setEventoEditandoId(evento.id);
     cargarFormularioEvento(evento);
     setErrorFormulario("");
+    cerrarSelectores();
     setModalAbierto(true);
   };
 
@@ -433,6 +647,7 @@ const CrearEventos = () => {
     setEventoEditandoId(evento.id);
     cargarFormularioEvento(evento);
     setErrorFormulario("");
+    cerrarSelectores();
     setModalAbierto(true);
   };
 
@@ -448,6 +663,119 @@ const CrearEventos = () => {
     setEventosAdmin(nuevaLista);
     guardarEventos(nuevaLista);
   };
+
+  const cambiarMesCalendario = (cantidad) => {
+    setMesCalendario(
+      (actual) => new Date(actual.getFullYear(), actual.getMonth() + cantidad, 1)
+    );
+  };
+
+  const renderCalendario = (campo) => {
+    const diasCalendario = obtenerDiasCalendario(mesCalendario);
+    const valorCampo = formulario[campo];
+    const hoyInput = obtenerFechaActualInput();
+
+    return (
+      <div className="admin-calendar-panel">
+        <div className="admin-calendar-header">
+          <button type="button" onClick={() => cambiarMesCalendario(-1)}>
+            ‹
+          </button>
+
+          <strong>
+            {obtenerNombreMes(mesCalendario.getMonth())}{" "}
+            {mesCalendario.getFullYear()}
+          </strong>
+
+          <button type="button" onClick={() => cambiarMesCalendario(1)}>
+            ›
+          </button>
+        </div>
+
+        <div className="admin-calendar-weekdays">
+          <span>LU</span>
+          <span>MA</span>
+          <span>MI</span>
+          <span>JU</span>
+          <span>VI</span>
+          <span>SA</span>
+          <span>DO</span>
+        </div>
+
+        <div className="admin-calendar-days">
+          {diasCalendario.map((dia) => (
+            <button
+              type="button"
+              className={[
+                dia.esMesActual ? "" : "outside",
+                dia.fechaInput === valorCampo ? "active" : "",
+                dia.fechaInput === hoyInput ? "today" : "",
+              ]
+                .filter(Boolean)
+                .join(" ")}
+              onClick={() => seleccionarFecha(campo, dia.fechaInput)}
+              key={dia.fechaInput}
+            >
+              {dia.dia}
+            </button>
+          ))}
+        </div>
+
+        <div className="admin-calendar-footer">
+          {campo === "fechaFinal" && (
+            <button type="button" onClick={limpiarFechaFinal}>
+              Borrar
+            </button>
+          )}
+
+          <button
+            type="button"
+            onClick={() => seleccionarFecha(campo, hoyInput)}
+          >
+            Hoy
+          </button>
+        </div>
+      </div>
+    );
+  };
+
+  const renderSelectorHora = () => (
+    <div className="admin-time-panel">
+      <div className="admin-time-column">
+        <strong>Hora</strong>
+
+        <div>
+          {HORAS.map((hora) => (
+            <button
+              type="button"
+              className={horaTemporal.hora === hora ? "active" : ""}
+              onClick={() => seleccionarHora(hora)}
+              key={hora}
+            >
+              {hora}
+            </button>
+          ))}
+        </div>
+      </div>
+
+      <div className="admin-time-column">
+        <strong>Minutos</strong>
+
+        <div>
+          {MINUTOS.map((minuto) => (
+            <button
+              type="button"
+              className={horaTemporal.minuto === minuto ? "active" : ""}
+              onClick={() => seleccionarMinuto(minuto)}
+              key={minuto}
+            >
+              {minuto}
+            </button>
+          ))}
+        </div>
+      </div>
+    </div>
+  );
 
   const renderEventoPublico = () => (
     <article className="evento-detalle-card">
@@ -513,7 +841,11 @@ const CrearEventos = () => {
   );
 
   const formularioEventos = (
-    <form className="admin-form" onSubmit={guardarFormulario}>
+    <form
+      className="admin-form"
+      onSubmit={guardarFormulario}
+      autoComplete="off"
+    >
       {errorFormulario && (
         <div className="admin-form-error">{errorFormulario}</div>
       )}
@@ -521,114 +853,202 @@ const CrearEventos = () => {
       <div className="admin-form-grid">
         <label>
           <span>Título *</span>
+
           <input
             type="text"
             name="titulo"
             value={formulario.titulo}
             onChange={actualizarCampo}
             placeholder="Ej: Noche de fogata"
+            autoComplete="off"
           />
         </label>
 
         <label>
           <span>Ministerio *</span>
-          <input
-            type="text"
-            name="ministerio"
-            value={formulario.ministerio}
-            onChange={actualizarCampo}
-            placeholder="Ej: Jóvenes"
-          />
+
+          <div
+            className={`admin-custom-select ${
+              ministerioAbierto ? "is-open" : ""
+            }`}
+            ref={ministerioBoxRef}
+          >
+            <button
+              type="button"
+              className={`admin-custom-select-control ${
+                formulario.ministerio ? "has-value" : ""
+              }`}
+              onClick={abrirMinisterio}
+            >
+              <span>{formulario.ministerio || "Selecciona un ministerio"}</span>
+            </button>
+
+            {ministerioAbierto && (
+              <div className="admin-custom-select-menu">
+                {ministeriosDisponibles.map((ministerio) => (
+                  <button
+                    type="button"
+                    className={`admin-custom-select-option ${
+                      formulario.ministerio === ministerio.nombre
+                        ? "active"
+                        : ""
+                    }`}
+                    onClick={() => seleccionarMinisterio(ministerio.nombre)}
+                    key={ministerio.id}
+                  >
+                    {ministerio.nombre}
+                  </button>
+                ))}
+              </div>
+            )}
+          </div>
         </label>
 
         <label>
           <span>Fecha inicial *</span>
 
-          <div className="admin-date-wrap">
-            <input
-              type="date"
-              name="fechaInicio"
-              value={formulario.fechaInicio}
-              onChange={actualizarCampo}
-            />
+          <div
+            className={`admin-picker-wrapper ${
+              calendarioAbierto === "fechaInicio" ? "is-open" : ""
+            }`}
+            ref={fechaInicioBoxRef}
+          >
+            <button
+              type="button"
+              className={`admin-picker-field ${
+                formulario.fechaInicio ? "has-value" : ""
+              }`}
+              onClick={() => abrirCalendario("fechaInicio")}
+              onKeyDown={(e) =>
+                manejarTeclaCampo(e, () => abrirCalendario("fechaInicio"))
+              }
+            >
+              <span>
+                {formulario.fechaInicio
+                  ? formatearFechaCampo(formulario.fechaInicio)
+                  : "dd/mm/aaaa"}
+              </span>
+            </button>
+
+            {calendarioAbierto === "fechaInicio" &&
+              renderCalendario("fechaInicio")}
           </div>
         </label>
 
         <label>
           <span>Fecha final</span>
 
-          <div className="admin-date-wrap">
-            <input
-              type="date"
-              name="fechaFinal"
-              value={formulario.fechaFinal}
-              onChange={actualizarCampo}
-            />
+          <div
+            className={`admin-picker-wrapper ${
+              calendarioAbierto === "fechaFinal" ? "is-open" : ""
+            }`}
+            ref={fechaFinalBoxRef}
+          >
+            <button
+              type="button"
+              className={`admin-picker-field ${
+                formulario.fechaFinal ? "has-value" : ""
+              }`}
+              onClick={() => abrirCalendario("fechaFinal")}
+              onKeyDown={(e) =>
+                manejarTeclaCampo(e, () => abrirCalendario("fechaFinal"))
+              }
+            >
+              <span>
+                {formulario.fechaFinal
+                  ? formatearFechaCampo(formulario.fechaFinal)
+                  : "dd/mm/aaaa"}
+              </span>
+            </button>
+
+            {calendarioAbierto === "fechaFinal" &&
+              renderCalendario("fechaFinal")}
           </div>
         </label>
 
         <label>
           <span>Hora *</span>
-          <input
-            type="text"
-            name="hora"
-            value={formulario.hora}
-            onChange={actualizarCampo}
-            placeholder="Ej: 7:30 pm"
-          />
+
+          <div
+            className={`admin-picker-wrapper ${horaAbierta ? "is-open" : ""}`}
+            ref={horaBoxRef}
+          >
+            <button
+              type="button"
+              className={`admin-picker-field ${
+                formulario.hora ? "has-value" : ""
+              }`}
+              onClick={abrirSelectorHora}
+              onKeyDown={(e) => manejarTeclaCampo(e, abrirSelectorHora)}
+            >
+              <span>{formulario.hora || "--:--"}</span>
+            </button>
+
+            {horaAbierta && renderSelectorHora()}
+          </div>
         </label>
 
         <label>
           <span>Lugar *</span>
+
           <input
             type="text"
             name="lugar"
             value={formulario.lugar}
             onChange={actualizarCampo}
             placeholder="Ej: Iglesia El Buen Pastor"
+            autoComplete="off"
           />
         </label>
       </div>
 
       <label>
         <span>Imagen o afiche por URL *</span>
+
         <input
           type="text"
           name="imagen"
           value={formulario.imagen}
           onChange={actualizarCampo}
           placeholder="Ej: /img/eventos/fogata.jpg o una URL"
+          autoComplete="off"
         />
       </label>
 
       <label className="admin-file-upload">
         <UploadCloud size={22} />
+
         <div>
           <strong>Subir imagen desde tu PC</strong>
           <small>Por ahora se guarda en localStorage. Usa imágenes livianas.</small>
         </div>
+
         <input type="file" accept="image/*" onChange={manejarImagenArchivo} />
       </label>
 
       <label>
         <span>Descripción corta *</span>
+
         <textarea
           name="descripcion"
           value={formulario.descripcion}
           onChange={actualizarCampo}
           placeholder="Descripción que se verá en la tarjeta del evento."
           rows="3"
+          autoComplete="off"
         />
       </label>
 
       <label>
         <span>Detalles</span>
+
         <textarea
           name="detalles"
           value={formulario.detalles}
           onChange={actualizarCampo}
           placeholder="Información completa que se verá en el detalle del evento."
           rows="5"
+          autoComplete="off"
         />
       </label>
 
@@ -659,7 +1079,9 @@ const CrearEventos = () => {
           <X size={22} />
         </button>
 
-        <div className="admin-public-preview-content">{renderEventoPublico()}</div>
+        <div className="admin-public-preview-content">
+          {renderEventoPublico()}
+        </div>
       </div>
     </div>
   );
@@ -673,7 +1095,9 @@ const CrearEventos = () => {
         <div className="admin-form-modal-header">
           <div>
             <span className="admin-crud-label">
-              {modoFormulario === "editar" ? "Editar registro" : "Nuevo registro"}
+              {modoFormulario === "editar"
+                ? "Editar registro"
+                : "Nuevo registro"}
             </span>
 
             <h2>
@@ -717,7 +1141,9 @@ const CrearEventos = () => {
           {panelActivo === "formulario" ? (
             <div className="admin-editor-form-wrap">{formularioEventos}</div>
           ) : (
-            <div className="admin-preview-page-shell">{renderEventoPublico()}</div>
+            <div className="admin-preview-page-shell">
+              {renderEventoPublico()}
+            </div>
           )}
         </div>
       </div>
