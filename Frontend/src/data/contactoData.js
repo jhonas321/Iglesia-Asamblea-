@@ -9,10 +9,10 @@ export const contacto = {
     footerTelefono: "+591 70000000",
     footerCorreo: "contacto@asamblea.com",
   
-    facebookUrl: "#",
+    facebookUrl: "https://www.facebook.com/aafcjbolivia",
     youtubeUrl: "#",
     instagramUrl: "#",
-    tiktokUrl: "#",
+    tiktokUrl: "https://www.tiktok.com/@nochedeencuentros.sacaba",
     twitterUrl: "#",
     telegramUrl: "#",
   };

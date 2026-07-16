@@ -118,9 +118,9 @@ export const eventos = [
     id: 9,
     titulo: "Convención Nacional Electoral",
     ministerio: "Ministerio General",
-    fechaInicio: "2026-05-22",
-    fechaFinal: "2026-05-24",
-    hora: "19:00",
+    fechaInicio: "2026-07-17",
+    fechaFinal: "2026-07-19",
+    hora: "14:00 09:00 ",
     lugar: "Coliseo Polifuncional Chacacollo",
     descripcion:
       "Convención Nacional Electoral organizada por la Asamblea Apostólica de la Fe en Cristo Jesús - Misión Bolivia.",
