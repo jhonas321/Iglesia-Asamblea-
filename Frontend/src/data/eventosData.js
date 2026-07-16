@@ -125,7 +125,7 @@ export const eventos = [
     descripcion:
       "Convención Nacional Electoral organizada por la Asamblea Apostólica de la Fe en Cristo Jesús - Misión Bolivia.",
     detalles:
-      "Edifica la iglesia: Misión Doctrina. Evento nacional realizado los días 22, 23 y 24 de mayo de 2026 en el Coliseo Polifuncional Chacacollo.",
+      "Edifica la iglesia: Misión Doctrina. Evento nacional realizado los días 17,18 y 19 de Julio de 2026 en el Coliseo Polifuncional Chacacollo.",
     imagen: "/images/evento9.jpeg",
   },
   {
