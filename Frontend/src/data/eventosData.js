@@ -242,4 +242,5 @@ export const eventos = [
     imagen:
       "/images/noche.jpg",
   },
+  
 ];

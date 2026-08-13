@@ -112,10 +112,6 @@ const obtenerFechaOrdenEvento = (evento) => {
 function Heroe() {
   const navigate = useNavigate();
 
-  const heroImages = obtenerHeroFotosGuardadas()
-    .map((foto) => foto.imagen)
-    .filter(Boolean);
-
   const fechaActual = obtenerFechaActualInput();
 
   const eventosDestacados = useMemo(() => {
@@ -146,7 +142,15 @@ function Heroe() {
 
   const hayEventosDestacados = eventosDestacados.length > 0;
 
-  const fondosHero = heroImages;
+  const fondosHero = useMemo(() => {
+    if (hayEventosDestacados) {
+      return eventosDestacados.map((evento) => evento.imagen).filter(Boolean);
+    }
+
+    return obtenerHeroFotosGuardadas()
+      .map((foto) => foto.imagen)
+      .filter(Boolean);
+  }, [hayEventosDestacados, eventosDestacados]);
 
   const [heroIndex, setHeroIndex] = useState(0);
 
@@ -213,18 +217,31 @@ function Heroe() {
     return "card-hidden";
   };
 
-  const obtenerImagenSinEventos = (posicion) => {
-    return fondosHero[(heroIndex + posicion) % fondosHero.length];
+  const obtenerClaseTarjetaSinEventos = (index) => {
+    const total = fondosHero.length;
+    if (total === 0) return "card-hidden";
+
+    if (index === heroIndex % total) return "card-active";
+
+    const diferencia = (index - (heroIndex % total) + total) % total;
+
+    if (diferencia === 1) return "card-next";
+    if (diferencia === 2) return "card-back";
+    if (diferencia === total - 1) return "card-prev";
+
+    return "card-hidden";
   };
 
   return (
     <header className="hero-header" id="inicio">
       <div className="hero-slider-bg">
         {fondosHero.map((image, index) => (
-          <div
+          <img
             key={index}
+            src={image}
+            alt=""
+            aria-hidden="true"
             className={`hero-bg-image ${heroIndex === index ? "active" : ""}`}
-            style={{ backgroundImage: `url(${image})` }}
           />
         ))}
 
@@ -356,58 +373,45 @@ function Heroe() {
             </>
           ) : (
             <div className="event-cards-area">
-              <article className="event-stack-card card-active event-empty-card">
-                <img
-                  src={obtenerImagenSinEventos(0)}
-                  alt="No hay eventos activos"
-                />
+              {fondosHero.map((image, index) => {
+                const claseTarjeta = obtenerClaseTarjetaSinEventos(index);
+                const esActiva = index === heroIndex % fondosHero.length;
 
-                <div className="event-stack-overlay"></div>
-
-                <div className="event-stack-content">
-                  <span className="event-status status-empty">
-                    Sin eventos
-                  </span>
-
-                  <small>Eventos destacados</small>
-
-                  <h3>No hay eventos en curso ni próximos</h3>
-
-                  <p>Por el momento no tenemos actividades publicadas.</p>
-
-                  <button
-                    type="button"
-                    className="event-stack-btn event-empty-btn"
-                    onClick={irEventosPasados}
+                return (
+                  <article
+                    key={index}
+                    className={`event-stack-card ${claseTarjeta} ${
+                      esActiva ? "event-empty-card" : "event-empty-ghost"
+                    }`}
                   >
-                    Ver eventos pasados
-                  </button>
-                </div>
-              </article>
+                    <img src={image} alt="" aria-hidden={!esActiva} />
 
-              <article className="event-stack-card card-next event-empty-ghost">
-                <img
-                  src={obtenerImagenSinEventos(1)}
-                  alt=""
-                  aria-hidden="true"
-                />
-              </article>
+                    <div className="event-stack-overlay"></div>
 
-              <article className="event-stack-card card-back event-empty-ghost">
-                <img
-                  src={obtenerImagenSinEventos(2)}
-                  alt=""
-                  aria-hidden="true"
-                />
-              </article>
+                    {esActiva && (
+                      <div className="event-stack-content">
+                        <span className="event-status status-empty">
+                          Sin eventos
+                        </span>
 
-              <article className="event-stack-card card-prev event-empty-ghost">
-                <img
-                  src={obtenerImagenSinEventos(3)}
-                  alt=""
-                  aria-hidden="true"
-                />
-              </article>
+                        <small>Eventos destacados</small>
+
+                        <h3>No hay eventos en curso ni próximos</h3>
+
+                        <p>Por el momento no tenemos actividades publicadas.</p>
+
+                        <button
+                          type="button"
+                          className="event-stack-btn event-empty-btn"
+                          onClick={irEventosPasados}
+                        >
+                          Ver eventos pasados
+                        </button>
+                      </div>
+                    )}
+                  </article>
+                );
+              })}
             </div>
           )}
         </aside>
