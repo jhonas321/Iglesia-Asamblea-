@@ -227,4 +227,19 @@ export const eventos = [
     imagen:
       "/images/evento16.jpeg",
   },
+  {
+    id: 17,
+    titulo: "Noche de Talentos",
+    ministerio: "Ministerio de Jovenes",
+    fechaInicio: "2026-08-15",
+    fechaFinal: "2026-08-15",
+    hora: "18:00",
+    lugar: "Iglesia Sacaba",
+    descripcion:
+      "Un encuentro especial para compartir, fortalecer la amistad y vivir un momento de compañerismo en un ambiente alegre, familiar y espiritual.",
+    detalles:
+    "Una actividad especial para compartir entre amigos, convivir en un ambiente alegre y fortalecer la unidad. Será un momento para integrarse, conocer nuevas personas y demostrar tu talento.",
+    imagen:
+      "/images/noche.jpg",
+  },
 ];
