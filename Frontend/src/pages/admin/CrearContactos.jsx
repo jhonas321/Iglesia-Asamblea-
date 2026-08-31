@@ -1,5 +1,7 @@
 import { useEffect, useState } from "react";
 import { Edit, RotateCcw, Save, X } from "lucide-react";
+import PhoneInput from "react-phone-input-2";
+import "react-phone-input-2/lib/style.css";
 
 import {
   guardarContacto,
@@ -8,6 +10,22 @@ import {
 
 import "../../styles/AdminCrudPage.css";
 import "../../styles/ContactosAdmin.css";
+
+const limpiarNumeroTelefono = (numero) => {
+  return String(numero || "").replace(/\D/g, "");
+};
+
+const formatearTelefono = (valor) => {
+  const numeroLimpio = limpiarNumeroTelefono(valor);
+
+  if (!numeroLimpio) return "No registrado";
+
+  if (numeroLimpio.startsWith("591") && numeroLimpio.length > 3) {
+    return `+591 ${numeroLimpio.slice(3)}`;
+  }
+
+  return `+${numeroLimpio}`;
+};
 
 const mostrarValor = (valor) => {
   const texto = String(valor || "").trim();
@@ -35,6 +53,21 @@ const CrearContactos = () => {
     setFormulario((actual) => ({
       ...actual,
       [name]: value,
+    }));
+
+    setGuardado(false);
+  };
+
+  const actualizarTelefono = ({ name, value, guardarConPlus = false }) => {
+    const numeroLimpio = limpiarNumeroTelefono(value);
+
+    setFormulario((actual) => ({
+      ...actual,
+      [name]: numeroLimpio
+        ? guardarConPlus
+          ? `+${numeroLimpio}`
+          : numeroLimpio
+        : "",
     }));
 
     setGuardado(false);
@@ -108,6 +141,59 @@ const CrearContactos = () => {
           placeholder={placeholder}
           autoComplete="off"
         />
+      </label>
+    );
+  };
+
+  const renderCampoTelefono = ({
+    label,
+    name,
+    value,
+    guardarConPlus = false,
+  }) => {
+    const numeroLimpio = limpiarNumeroTelefono(value);
+
+    if (!modoEdicion) {
+      return (
+        <div className="admin-contact-view-item">
+          <span>{label}</span>
+
+          <p className={!numeroLimpio ? "admin-contact-empty" : ""}>
+            {formatearTelefono(value)}
+          </p>
+        </div>
+      );
+    }
+
+    return (
+      <label className="admin-contact-phone-label">
+        <span>{label}</span>
+
+        <div className="admin-contact-phone-wrapper">
+          <PhoneInput
+            country="bo"
+            value={numeroLimpio}
+            onChange={(valor) =>
+              actualizarTelefono({
+                name,
+                value: valor,
+                guardarConPlus,
+              })
+            }
+            enableSearch={false}
+            countryCodeEditable={false}
+            specialLabel=""
+            placeholder="Ej: 79386322"
+            inputProps={{
+              name,
+              autoComplete: "off",
+            }}
+            containerClass="admin-contact-phone-container"
+            inputClass="admin-contact-phone-field"
+            buttonClass="admin-contact-phone-button"
+            dropdownClass="admin-contact-phone-dropdown"
+          />
+        </div>
       </label>
     );
   };
@@ -192,11 +278,11 @@ const CrearContactos = () => {
                 placeholder: "Ej: Calle Santa Cruz entre Calama",
               })}
 
-              {renderCampoTexto({
+              {renderCampoTelefono({
                 label: "Teléfono",
                 name: "telefono",
                 value: formulario.telefono,
-                placeholder: "Ej: +591 70000000",
+                guardarConPlus: true,
               })}
             </div>
           </div>
@@ -210,22 +296,24 @@ const CrearContactos = () => {
                 modoEdicion ? "admin-form-grid" : "admin-contact-view-grid"
               }
             >
-              {renderCampoTexto({
+              {renderCampoTelefono({
                 label: "Número de WhatsApp",
                 name: "whatsappNumero",
                 value: formulario.whatsappNumero,
-                placeholder: "Ej: 59179386322",
+                guardarConPlus: false,
               })}
             </div>
           </div>
 
-          <div className="admin-contact-section">
+          <div className="admin-contact-section admin-contact-footer-section">
             <span className="admin-crud-label">Footer</span>
             <h2>Datos de contacto del footer</h2>
 
             <div
               className={
-                modoEdicion ? "admin-form-grid" : "admin-contact-view-grid"
+                modoEdicion
+                  ? "admin-form-grid admin-contact-footer-grid"
+                  : "admin-contact-view-grid admin-contact-footer-grid"
               }
             >
               {renderCampoTexto({
@@ -235,11 +323,11 @@ const CrearContactos = () => {
                 placeholder: "Ej: Cochabamba, Bolivia",
               })}
 
-              {renderCampoTexto({
+              {renderCampoTelefono({
                 label: "Teléfono",
                 name: "footerTelefono",
                 value: formulario.footerTelefono,
-                placeholder: "Ej: +591 70000000",
+                guardarConPlus: true,
               })}
 
               {renderCampoTexto({

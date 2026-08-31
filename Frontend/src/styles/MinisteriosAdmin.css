@@ -1,162 +1,242 @@
 .admin-ministerios-success {
-    padding: 13px 15px;
-    border-radius: 14px;
-    background: #f0fdf4;
-    color: #166534;
-    border: 1px solid #bbf7d0;
-    font-size: 0.92rem;
-    font-weight: 900;
-    margin-bottom: 18px;
-  }
-  
-  .admin-ministerios-grid {
-    display: grid;
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: 18px;
-  }
-  
-  .admin-ministerio-card {
-    background: #ffffff;
-    border: 1px solid #e2e8f0;
-    border-radius: 22px;
-    padding: 20px;
-    box-shadow: 0 14px 32px rgba(15, 23, 42, 0.07);
-    display: grid;
-    grid-template-columns: 48px minmax(0, 1fr) auto;
-    gap: 14px;
-    align-items: flex-start;
-  }
-  
-  .admin-ministerio-icon {
-    width: 48px;
-    height: 48px;
-    border-radius: 16px;
-    background: rgba(212, 175, 55, 0.14);
-    border: 1px solid rgba(212, 175, 55, 0.35);
-    color: #d4af37;
-    display: grid;
-    place-items: center;
-  }
-  
-  .admin-ministerio-content h3 {
-    margin: 0 0 7px;
-    color: #07101d;
-    font-size: 1.05rem;
-    font-weight: 900;
-  }
-  
-  .admin-ministerio-content p {
-    margin: 0;
-    color: #64748b;
-    font-size: 0.92rem;
-    line-height: 1.55;
-  }
-  
-  .admin-ministerio-actions {
-    display: flex;
-    gap: 8px;
-  }
-  
-  .admin-form-grid.single {
-    grid-template-columns: 1fr;
-  }
-  
-  .admin-form-grid textarea {
-    width: 100%;
-    border: 1px solid #d7dce7;
-    border-radius: 14px;
-    padding: 13px 14px;
-    color: #07101d;
-    background: #ffffff;
-    font-size: 0.95rem;
-    font-family: inherit;
-    outline: none;
-    resize: none;
-    min-height: 120px;
-    transition: 0.2s ease;
-  }
-  
-  .admin-form-grid textarea:focus {
-    border-color: #d4af37;
-    box-shadow: 0 0 0 4px rgba(212, 175, 55, 0.16);
-  }
-  
-  @media (max-width: 900px) {
-    .admin-ministerios-grid {
-      grid-template-columns: 1fr;
-    }
-  }
-  
-  @media (max-width: 600px) {
-    .admin-ministerio-card {
-      grid-template-columns: 42px minmax(0, 1fr);
-    }
-  
-    .admin-ministerio-icon {
-      width: 42px;
-      height: 42px;
-      border-radius: 14px;
-    }
-  
-    .admin-ministerio-actions {
-      grid-column: 1 / -1;
-      justify-content: flex-end;
-    }
-  }
+  padding: 13px 15px;
+  border-radius: 14px;
+  background: #f0fdf4;
+  color: #166534;
+  border: 1px solid #bbf7d0;
+  font-size: 0.92rem;
+  font-weight: 900;
+  margin-bottom: 18px;
+}
 
+.admin-ministerios-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 18px;
+}
 
-  /* ACCIONES EDITAR / ELIMINAR EN MINISTERIOS */
+.admin-ministerio-card {
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 22px;
+  padding: 20px;
+  box-shadow: 0 14px 32px rgba(15, 23, 42, 0.07);
+  display: grid;
+  grid-template-columns: 48px minmax(0, 1fr) auto;
+  gap: 14px;
+  align-items: flex-start;
+}
+
+.admin-ministerio-icon {
+  width: 48px;
+  height: 48px;
+  border-radius: 16px;
+  background: rgba(212, 175, 55, 0.14);
+  border: 1px solid rgba(212, 175, 55, 0.35);
+  color: #d4af37;
+  display: grid;
+  place-items: center;
+}
+
+.admin-ministerio-content h3 {
+  margin: 0 0 7px;
+  color: #07101d;
+  font-size: 1.05rem;
+  font-weight: 900;
+}
+
+.admin-ministerio-content p {
+  margin: 0;
+  color: #64748b;
+  font-size: 0.92rem;
+  line-height: 1.55;
+}
+
+.admin-form-grid.single {
+  grid-template-columns: 1fr;
+}
+
+.admin-form-grid textarea {
+  width: 100%;
+  border: 1px solid #d7dce7;
+  border-radius: 14px;
+  padding: 13px 14px;
+  color: #07101d;
+  background: #ffffff;
+  font-size: 0.95rem;
+  font-family: inherit;
+  outline: none;
+  resize: none;
+  min-height: 120px;
+  transition: 0.2s ease;
+}
+
+.admin-form-grid textarea:focus {
+  border-color: #17253f;
+  box-shadow: 0 0 0 4px rgba(23, 37, 63, 0.12);
+}
+
+/* =========================================
+   MODAL MINISTERIOS
+========================================= */
+
+.admin-ministerios-overlay {
+  z-index: 1000000 !important;
+  align-items: center !important;
+  justify-content: center !important;
+}
+
+.admin-ministerios-modal {
+  z-index: 1000001 !important;
+}
+
+.admin-ministerios-modal .admin-form-save {
+  background: #d4af37;
+  color: #07101d;
+  box-shadow: 0 10px 22px rgba(212, 175, 55, 0.22);
+}
+
+.admin-ministerios-modal .admin-form-save:hover {
+  background: #c79f24;
+  color: #07101d;
+  transform: translateY(-1px);
+  box-shadow: 0 14px 28px rgba(212, 175, 55, 0.3);
+}
+
+.admin-ministerios-modal .admin-form-cancel {
+  background: #eef1f6;
+  color: #263247;
+}
+
+.admin-ministerios-modal .admin-form-cancel:hover {
+  background: #e2e8f0;
+  transform: translateY(-1px);
+}
+
+/* =========================================
+   ACCIONES EDITAR / ELIMINAR
+========================================= */
 
 .admin-ministerio-actions {
-    display: flex;
-    gap: 8px;
-    align-items: center;
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  justify-content: flex-end;
+}
+
+.admin-ministerio-actions .admin-table-btn {
+  width: 38px;
+  height: 38px;
+  border: none;
+  border-radius: 12px;
+  display: grid;
+  place-items: center;
+  cursor: pointer;
+  transition: 0.2s ease;
+  background: #f1f5f9;
+  color: #334155;
+}
+
+.admin-ministerio-actions .admin-table-btn svg {
+  width: 18px;
+  height: 18px;
+  stroke-width: 2.2;
+}
+
+/* EDITAR */
+
+.admin-ministerio-actions .admin-table-btn.edit {
+  background: rgba(212, 175, 55, 0.14);
+  color: #b88900;
+}
+
+.admin-ministerio-actions .admin-table-btn.edit:hover {
+  background: #d4af37;
+  color: #07101d;
+  transform: translateY(-2px);
+  box-shadow: 0 8px 18px rgba(212, 175, 55, 0.3);
+}
+
+/* ELIMINAR */
+
+.admin-ministerio-actions .admin-table-btn.delete {
+  background: #fee2e2;
+  color: #b91c1c;
+}
+
+.admin-ministerio-actions .admin-table-btn.delete:hover {
+  background: #ef4444;
+  color: #ffffff;
+  transform: translateY(-2px);
+  box-shadow: 0 8px 18px rgba(239, 68, 68, 0.28);
+}
+
+/* =========================================
+   RESPONSIVE
+========================================= */
+
+@media (max-width: 900px) {
+  .admin-ministerios-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 768px) {
+  .admin-ministerios-overlay {
+    padding: 14px !important;
+  }
+
+  .admin-ministerios-modal {
+    width: min(620px, 100%) !important;
+    max-height: calc(100vh - 28px) !important;
+    border-radius: 22px !important;
+    overflow-y: auto !important;
+  }
+
+  .admin-ministerios-modal .admin-form-actions {
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 12px !important;
+  }
+
+  .admin-ministerios-modal .admin-form-save,
+  .admin-ministerios-modal .admin-form-cancel {
+    width: 100% !important;
+  }
+
+  .admin-ministerios-modal .admin-form-save {
+    order: 1;
+  }
+
+  .admin-ministerios-modal .admin-form-cancel {
+    order: 2;
+  }
+}
+
+@media (max-width: 600px) {
+  .admin-ministerio-card {
+    grid-template-columns: 42px minmax(0, 1fr);
+  }
+
+  .admin-ministerio-icon {
+    width: 42px;
+    height: 42px;
+    border-radius: 14px;
+  }
+
+  .admin-ministerio-actions {
+    grid-column: 1 / -1;
     justify-content: flex-end;
   }
-  
-  .admin-ministerio-actions .admin-table-btn {
-    width: 38px;
-    height: 38px;
-    border: none;
-    border-radius: 12px;
-    display: grid;
-    place-items: center;
-    cursor: pointer;
-    transition: 0.2s ease;
-    background: #f1f5f9;
-    color: #334155;
+}
+
+@media (max-width: 480px) {
+  .admin-ministerios-overlay {
+    padding: 10px !important;
   }
-  
-  .admin-ministerio-actions .admin-table-btn svg {
-    width: 18px;
-    height: 18px;
-    stroke-width: 2.2;
+
+  .admin-ministerios-modal {
+    max-height: calc(100vh - 20px) !important;
+    border-radius: 20px !important;
   }
-  
-  /* EDITAR */
-  
-  .admin-ministerio-actions .admin-table-btn.edit {
-    background: rgba(212, 175, 55, 0.14);
-    color: #b88900;
-  }
-  
-  .admin-ministerio-actions .admin-table-btn.edit:hover {
-    background: #d4af37;
-    color: #07101d;
-    transform: translateY(-2px);
-    box-shadow: 0 8px 18px rgba(212, 175, 55, 0.3);
-  }
-  
-  /* ELIMINAR */
-  
-  .admin-ministerio-actions .admin-table-btn.delete {
-    background: #fee2e2;
-    color: #b91c1c;
-  }
-  
-  .admin-ministerio-actions .admin-table-btn.delete:hover {
-    background: #ef4444;
-    color: #ffffff;
-    transform: translateY(-2px);
-    box-shadow: 0 8px 18px rgba(239, 68, 68, 0.28);
-  }
+}

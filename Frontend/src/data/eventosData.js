@@ -118,14 +118,14 @@ export const eventos = [
     id: 9,
     titulo: "Convención Nacional Electoral",
     ministerio: "Ministerio General",
-    fechaInicio: "2026-05-22",
-    fechaFinal: "2026-05-24",
-    hora: "19:00",
+    fechaInicio: "2026-07-17",
+    fechaFinal: "2026-07-19",
+    hora: "14:00 - 09:00 - 09:00 ",
     lugar: "Coliseo Polifuncional Chacacollo",
     descripcion:
       "Convención Nacional Electoral organizada por la Asamblea Apostólica de la Fe en Cristo Jesús - Misión Bolivia.",
     detalles:
-      "Edifica la iglesia: Misión Doctrina. Evento nacional realizado los días 22, 23 y 24 de mayo de 2026 en el Coliseo Polifuncional Chacacollo.",
+      "Edifica la iglesia: Misión Doctrina. Evento nacional realizado los días 17,18 y 19 de Julio de 2026 en el Coliseo Polifuncional Chacacollo.",
     imagen: "/images/evento9.jpeg",
   },
   {
@@ -227,4 +227,20 @@ export const eventos = [
     imagen:
       "/images/evento16.jpeg",
   },
+  {
+    id: 17,
+    titulo: "Noche de Talentos",
+    ministerio: "Ministerio de Jovenes",
+    fechaInicio: "2026-08-15",
+    fechaFinal: "2026-08-15",
+    hora: "18:00",
+    lugar: "Iglesia Sacaba",
+    descripcion:
+      "Un encuentro especial para compartir, fortalecer la amistad y vivir un momento de compañerismo en un ambiente alegre, familiar y espiritual.",
+    detalles:
+    "Una actividad especial para compartir entre amigos, convivir en un ambiente alegre y fortalecer la unidad. Será un momento para integrarse, conocer nuevas personas y demostrar tu talento.",
+    imagen:
+      "/images/noche.jpg",
+  },
+  
 ];

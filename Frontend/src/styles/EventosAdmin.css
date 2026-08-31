@@ -34,6 +34,103 @@
 }
 
 /* =========================================
+   CAMPO TELÉFONO CON BANDERAS
+========================================= */
+
+.admin-phone-wrapper {
+  width: 100%;
+  position: relative;
+  z-index: 20;
+}
+
+.admin-phone-input-container {
+  width: 100% !important;
+  position: relative !important;
+}
+
+.admin-phone-input-container .form-control {
+  width: 100% !important;
+  height: 48px !important;
+  border: 1px solid #d7dce7 !important;
+  border-radius: 14px !important;
+  padding-left: 58px !important;
+  font-size: 0.95rem !important;
+  font-family: inherit !important;
+  color: #07101d !important;
+  background: #ffffff !important;
+  box-shadow: none !important;
+}
+
+.admin-phone-input-container .form-control:focus {
+  border-color: #d4af37 !important;
+  box-shadow: 0 0 0 4px rgba(212, 175, 55, 0.16) !important;
+}
+
+.admin-phone-input-container .flag-dropdown {
+  border: 1px solid #d7dce7 !important;
+  border-right: none !important;
+  border-radius: 14px 0 0 14px !important;
+  background: #ffffff !important;
+}
+
+.admin-phone-input-container .selected-flag {
+  width: 48px !important;
+  border-radius: 14px 0 0 14px !important;
+  background: transparent !important;
+}
+
+.admin-phone-input-container .selected-flag:hover,
+.admin-phone-input-container .selected-flag:focus,
+.admin-phone-input-container .flag-dropdown.open .selected-flag {
+  background: #f8fafc !important;
+}
+
+/* Lista de países */
+.admin-phone-dropdown {
+  width: 320px !important;
+  max-height: 230px !important;
+  overflow-y: auto !important;
+  margin-top: 8px !important;
+  border-radius: 14px !important;
+  border: 1px solid #d7dce7 !important;
+  background: #ffffff !important;
+  box-shadow: 0 18px 36px rgba(15, 23, 42, 0.16) !important;
+  font-family: inherit !important;
+  z-index: 1000002 !important;
+}
+
+.admin-phone-dropdown .country {
+  min-height: 38px !important;
+  padding: 9px 12px !important;
+  display: flex !important;
+  align-items: center !important;
+  gap: 8px !important;
+  color: #07101d !important;
+  font-size: 0.88rem !important;
+}
+
+.admin-phone-dropdown .country:hover {
+  background: #f8fafc !important;
+}
+
+.admin-phone-dropdown .country.highlight {
+  background: #eef4ff !important;
+}
+
+.admin-phone-dropdown .country-name {
+  color: #07101d !important;
+}
+
+.admin-phone-dropdown .dial-code {
+  color: #64748b !important;
+}
+
+/* Ocultamos el buscador interno para evitar el bug visual */
+.admin-phone-dropdown .search {
+  display: none !important;
+}
+
+/* =========================================
    RESPONSIVE EVENTOS ADMIN
 ========================================= */
 
@@ -58,11 +155,31 @@
   .admin-preview-page-shell .evento-detalle-card {
     min-height: auto !important;
   }
+
+  .admin-phone-dropdown {
+    width: 280px !important;
+    max-height: 210px !important;
+  }
+}
+
+@media (max-width: 600px) {
+  .admin-phone-input-container .form-control {
+    font-size: 0.92rem !important;
+  }
+
+  .admin-phone-dropdown {
+    width: calc(100vw - 64px) !important;
+  }
 }
 
 @media (max-width: 480px) {
   .admin-evento-public-preview-modal {
     max-height: 96vh;
     border-radius: 18px 18px 0 0;
+  }
+
+  .admin-phone-dropdown {
+    width: calc(100vw - 48px) !important;
+    max-height: 200px !important;
   }
 }

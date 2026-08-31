@@ -31,20 +31,4 @@ export const horarios = [
       iconoTipo: "principal",
       descripcion: "Celebramos juntos como familia en la presencia de Dios.",
     },
-    {
-      id: "domingo",
-      dia: "Domingo",
-      actividad: "Culto General",
-      hora: "19:00",
-      iconoTipo: "principal",
-      descripcion: "Celebramos juntos como familia en la presencia de Dios.",
-    },
-    {
-      id: "domingo",
-      dia: "Domingo",
-      actividad: "Culto General",
-      hora: "19:00",
-      iconoTipo: "principal",
-      descripcion: "Celebramos juntos como familia en la presencia de Dios.",
-    },
   ];
