@@ -284,3 +284,22 @@
     height: 78%;
   }
 }
+
+.sidebar-logout {
+  width: 100%;
+  border: none;
+  background: transparent;
+  cursor: pointer;
+
+  display: flex;
+  align-items: center;
+  gap: 12px;
+
+  font: inherit;
+  text-align: left;
+}
+
+.sidebar-logout:disabled {
+  cursor: not-allowed;
+  opacity: 0.6;
+}

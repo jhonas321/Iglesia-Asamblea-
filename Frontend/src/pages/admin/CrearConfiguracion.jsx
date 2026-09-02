@@ -18,14 +18,10 @@ import {
   FaUserTie,
 } from "react-icons/fa";
 
-import {
-  cambiarPasswordAdmin,
-  guardarConfiguracion,
-  obtenerConfiguracionGuardada,
-} from "../../data/adminStorage";
-
 import "../../styles/AdminCrudPage.css";
 import "../../styles/ConfiguracionAdmin.css";
+
+const API_URL = "http://127.0.0.1:8000/api";
 
 const iconosDisponibles = [
   {
@@ -67,19 +63,74 @@ const passwordInicial = {
 };
 
 const CrearConfiguracion = () => {
-  const [perfil, setPerfil] = useState(() => {
-    const config = obtenerConfiguracionGuardada();
+  const [perfil, setPerfil] = useState({
+    nombreAdmin: "",
+    iconoAdmin: "hombre-1",
+  });
 
-    return {
-      nombreAdmin: config.nombreAdmin,
-      iconoAdmin: config.iconoAdmin,
-    };
+  const [perfilGuardado, setPerfilGuardado] = useState({
+    nombreAdmin: "",
+    iconoAdmin: "hombre-1",
   });
 
   const [passwordForm, setPasswordForm] = useState(passwordInicial);
+
   const [mensajePerfil, setMensajePerfil] = useState("");
   const [mensajePassword, setMensajePassword] = useState("");
+
+  const [errorPerfil, setErrorPerfil] = useState("");
   const [errorPassword, setErrorPassword] = useState("");
+
+  const [cargandoPerfil, setCargandoPerfil] = useState(true);
+  const [guardandoPerfil, setGuardandoPerfil] = useState(false);
+  const [guardandoPassword, setGuardandoPassword] = useState(false);
+
+  const obtenerToken = () => localStorage.getItem("token");
+
+  useEffect(() => {
+    const cargarPerfil = async () => {
+      const token = obtenerToken();
+
+      try {
+        setCargandoPerfil(true);
+        setErrorPerfil("");
+
+        const response = await fetch(`${API_URL}/user`, {
+          method: "GET",
+          headers: {
+            Accept: "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+        });
+
+        const data = await response.json();
+
+        if (!response.ok) {
+          throw new Error(
+            data.message || "No se pudo cargar el perfil del administrador."
+          );
+        }
+
+        const perfilActual = {
+          nombreAdmin: data.user?.name || "",
+          iconoAdmin: data.user?.icono || "hombre-1",
+        };
+
+        setPerfil(perfilActual);
+        setPerfilGuardado(perfilActual);
+      } catch (error) {
+        console.error("Error cargando perfil:", error);
+
+        setErrorPerfil(
+          error.message || "No se pudo cargar el perfil del administrador."
+        );
+      } finally {
+        setCargandoPerfil(false);
+      }
+    };
+
+    cargarPerfil();
+  }, []);
 
   useEffect(() => {
     if (!mensajePerfil && !mensajePassword) return;
@@ -101,6 +152,7 @@ const CrearConfiguracion = () => {
     }));
 
     setMensajePerfil("");
+    setErrorPerfil("");
   };
 
   const cambiarIcono = (iconoAdmin) => {
@@ -110,31 +162,89 @@ const CrearConfiguracion = () => {
     }));
 
     setMensajePerfil("");
+    setErrorPerfil("");
   };
 
-  const guardarPerfil = (e) => {
+  const guardarPerfil = async (e) => {
     e.preventDefault();
 
-    const configActual = obtenerConfiguracionGuardada();
+    if (!perfil.nombreAdmin.trim()) {
+      setErrorPerfil("El nombre del administrador es obligatorio.");
+      return;
+    }
 
-    guardarConfiguracion({
-      ...configActual,
-      nombreAdmin: perfil.nombreAdmin.trim() || "Admin User",
-      iconoAdmin: perfil.iconoAdmin || "hombre-1",
-    });
+    const token = obtenerToken();
 
-    setMensajePerfil("La configuración se guardó correctamente.");
+    try {
+      setGuardandoPerfil(true);
+      setErrorPerfil("");
+      setMensajePerfil("");
+
+      const response = await fetch(`${API_URL}/perfil`, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+          Accept: "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({
+          name: perfil.nombreAdmin.trim(),
+          icono: perfil.iconoAdmin || "hombre-1",
+        }),
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        if (data.errors) {
+          const primerError = Object.values(data.errors)[0];
+
+          throw new Error(
+            Array.isArray(primerError)
+              ? primerError[0]
+              : "Revisa los datos ingresados."
+          );
+        }
+
+        throw new Error(
+          data.message || "No se pudo actualizar el perfil."
+        );
+      }
+
+      const perfilActualizado = {
+        nombreAdmin: data.user?.name || perfil.nombreAdmin.trim(),
+        iconoAdmin: data.user?.icono || perfil.iconoAdmin,
+      };
+
+      setPerfil(perfilActualizado);
+      setPerfilGuardado(perfilActualizado);
+
+      if (data.user) {
+        localStorage.setItem("usuario", JSON.stringify(data.user));
+      }
+
+      window.dispatchEvent(
+        new CustomEvent("usuario-actualizado", {
+          detail: data.user || null,
+        })
+      );
+
+      setMensajePerfil("La configuración se guardó correctamente.");
+    } catch (error) {
+      console.error("Error actualizando perfil:", error);
+
+      setErrorPerfil(
+        error.message || "No se pudo actualizar el perfil."
+      );
+    } finally {
+      setGuardandoPerfil(false);
+    }
   };
 
   const descartarPerfil = () => {
-    const config = obtenerConfiguracionGuardada();
-
-    setPerfil({
-      nombreAdmin: config.nombreAdmin,
-      iconoAdmin: config.iconoAdmin,
-    });
-
+    setPerfil(perfilGuardado);
     setMensajePerfil("");
+    setErrorPerfil("");
   };
 
   const actualizarPassword = (e) => {
@@ -149,7 +259,7 @@ const CrearConfiguracion = () => {
     setMensajePassword("");
   };
 
-  const guardarPassword = (e) => {
+  const guardarPassword = async (e) => {
     e.preventDefault();
 
     if (!passwordForm.passwordActual.trim()) {
@@ -158,35 +268,80 @@ const CrearConfiguracion = () => {
     }
 
     if (passwordForm.passwordNueva.length < 6) {
-      setErrorPassword("La nueva contraseña debe tener al menos 6 caracteres.");
+      setErrorPassword(
+        "La nueva contraseña debe tener al menos 6 caracteres."
+      );
       return;
     }
 
     if (passwordForm.passwordNueva !== passwordForm.passwordConfirmar) {
-      setErrorPassword("La confirmación no coincide con la nueva contraseña.");
+      setErrorPassword(
+        "La confirmación no coincide con la nueva contraseña."
+      );
       return;
     }
 
-    const resultado = cambiarPasswordAdmin({
-      passwordActual: passwordForm.passwordActual,
-      passwordNueva: passwordForm.passwordNueva,
-    });
+    const token = obtenerToken();
 
-    if (!resultado.ok) {
-      setErrorPassword(resultado.mensaje);
-      return;
+    try {
+      setGuardandoPassword(true);
+      setErrorPassword("");
+      setMensajePassword("");
+
+      const response = await fetch(`${API_URL}/cambiar-password`, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+          Accept: "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({
+          password_actual: passwordForm.passwordActual,
+          password_nueva: passwordForm.passwordNueva,
+          password_nueva_confirmation: passwordForm.passwordConfirmar,
+        }),
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        if (data.errors) {
+          const primerError = Object.values(data.errors)[0];
+
+          throw new Error(
+            Array.isArray(primerError)
+              ? primerError[0]
+              : "Revisa los datos ingresados."
+          );
+        }
+
+        throw new Error(
+          data.message || "No se pudo cambiar la contraseña."
+        );
+      }
+
+      setPasswordForm(passwordInicial);
+      setMensajePassword(
+        data.message || "Contraseña actualizada correctamente."
+      );
+    } catch (error) {
+      console.error("Error cambiando contraseña:", error);
+
+      setErrorPassword(
+        error.message || "No se pudo cambiar la contraseña."
+      );
+    } finally {
+      setGuardandoPassword(false);
     }
-
-    setPasswordForm(passwordInicial);
-    setErrorPassword("");
-    setMensajePassword(resultado.mensaje);
   };
 
   return (
     <section className="admin-crud-page">
       <div className="admin-crud-header">
         <div>
-          <span className="admin-crud-label">Gestión administrativa</span>
+          <span className="admin-crud-label">
+            Gestión administrativa
+          </span>
 
           <h1>Configuración</h1>
 
@@ -198,7 +353,10 @@ const CrearConfiguracion = () => {
       </div>
 
       <div className="admin-config-layout">
-        <form className="admin-config-card" onSubmit={guardarPerfil}>
+        <form
+          className="admin-config-card"
+          onSubmit={guardarPerfil}
+        >
           <div className="admin-config-card-header">
             <div className="admin-config-icon">
               <UserRound size={24} />
@@ -220,64 +378,92 @@ const CrearConfiguracion = () => {
             </div>
           )}
 
-          <div className="admin-form-grid single">
-            <label>
-              <span>Nombre del administrador</span>
-
-              <input
-                type="text"
-                name="nombreAdmin"
-                value={perfil.nombreAdmin}
-                onChange={actualizarPerfil}
-                placeholder="Ej: Admin User"
-              />
-            </label>
-          </div>
-
-          <div className="admin-config-icon-section">
-            <div className="admin-config-section-title">
-              <h3>Icono del perfil</h3>
-              <p>Selecciona un icono para mostrarlo en el sidebar.</p>
+          {errorPerfil && (
+            <div className="admin-config-error">
+              <span>{errorPerfil}</span>
             </div>
+          )}
 
-            <div className="admin-profile-icons">
-              {iconosDisponibles.map((opcion) => (
+          {cargandoPerfil ? (
+            <div className="admin-config-loading">
+              Cargando perfil...
+            </div>
+          ) : (
+            <>
+              <div className="admin-form-grid single">
+                <label>
+                  <span>Nombre del administrador</span>
+
+                  <input
+                    type="text"
+                    name="nombreAdmin"
+                    value={perfil.nombreAdmin}
+                    onChange={actualizarPerfil}
+                    placeholder="Ej: Admin User"
+                    disabled={guardandoPerfil}
+                  />
+                </label>
+              </div>
+
+              <div className="admin-config-icon-section">
+                <div className="admin-config-section-title">
+                  <h3>Icono del perfil</h3>
+                  <p>
+                    Selecciona un icono para mostrarlo en el sidebar.
+                  </p>
+                </div>
+
+                <div className="admin-profile-icons">
+                  {iconosDisponibles.map((opcion) => (
+                    <button
+                      type="button"
+                      className={`admin-profile-icon-option ${
+                        perfil.iconoAdmin === opcion.id ? "active" : ""
+                      }`}
+                      onClick={() => cambiarIcono(opcion.id)}
+                      key={opcion.id}
+                      disabled={guardandoPerfil}
+                    >
+                      <span className="admin-profile-icon-circle">
+                        {opcion.icono || <FaRegUserCircle />}
+                      </span>
+
+                      <small>{opcion.nombre}</small>
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              <div className="admin-config-actions">
                 <button
                   type="button"
-                  className={`admin-profile-icon-option ${
-                    perfil.iconoAdmin === opcion.id ? "active" : ""
-                  }`}
-                  onClick={() => cambiarIcono(opcion.id)}
-                  key={opcion.id}
+                  className="admin-config-reset"
+                  onClick={descartarPerfil}
+                  disabled={guardandoPerfil}
                 >
-                  <span className="admin-profile-icon-circle">
-                    {opcion.icono || <FaRegUserCircle />}
-                  </span>
-
-                  <small>{opcion.nombre}</small>
+                  <RotateCcw size={18} />
+                  Descartar
                 </button>
-              ))}
-            </div>
-          </div>
 
-          <div className="admin-config-actions">
-            <button
-              type="button"
-              className="admin-config-reset"
-              onClick={descartarPerfil}
-            >
-              <RotateCcw size={18} />
-              Descartar
-            </button>
-
-            <button type="submit" className="admin-config-save">
-              <Save size={18} />
-              Guardar configuración
-            </button>
-          </div>
+                <button
+                  type="submit"
+                  className="admin-config-save"
+                  disabled={guardandoPerfil}
+                >
+                  <Save size={18} />
+                  {guardandoPerfil
+                    ? "Guardando..."
+                    : "Guardar configuración"}
+                </button>
+              </div>
+            </>
+          )}
         </form>
 
-        <form className="admin-config-card" onSubmit={guardarPassword}>
+        <form
+          className="admin-config-card"
+          onSubmit={guardarPassword}
+        >
           <div className="admin-config-card-header">
             <div className="admin-config-icon danger">
               <ShieldCheck size={24} />
@@ -286,8 +472,7 @@ const CrearConfiguracion = () => {
             <div>
               <h2>Cambio de contraseña</h2>
               <p>
-                La contraseña inicial es <strong>admin123</strong>, salvo que ya
-                la hayas cambiado.
+                Escribe tu contraseña actual y luego establece una nueva.
               </p>
             </div>
           </div>
@@ -318,6 +503,7 @@ const CrearConfiguracion = () => {
                   value={passwordForm.passwordActual}
                   onChange={actualizarPassword}
                   placeholder="Escribe tu contraseña actual"
+                  disabled={guardandoPassword}
                 />
               </div>
             </label>
@@ -334,6 +520,7 @@ const CrearConfiguracion = () => {
                   value={passwordForm.passwordNueva}
                   onChange={actualizarPassword}
                   placeholder="Mínimo 6 caracteres"
+                  disabled={guardandoPassword}
                 />
               </div>
             </label>
@@ -350,15 +537,22 @@ const CrearConfiguracion = () => {
                   value={passwordForm.passwordConfirmar}
                   onChange={actualizarPassword}
                   placeholder="Repite la nueva contraseña"
+                  disabled={guardandoPassword}
                 />
               </div>
             </label>
           </div>
 
           <div className="admin-config-actions">
-            <button type="submit" className="admin-config-save danger">
+            <button
+              type="submit"
+              className="admin-config-save danger"
+              disabled={guardandoPassword}
+            >
               <Save size={18} />
-              Cambiar contraseña
+              {guardandoPassword
+                ? "Cambiando..."
+                : "Cambiar contraseña"}
             </button>
           </div>
         </form>

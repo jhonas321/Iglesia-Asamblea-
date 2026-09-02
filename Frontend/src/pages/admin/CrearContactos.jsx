@@ -3,16 +3,87 @@ import { Edit, RotateCcw, Save, X } from "lucide-react";
 import PhoneInput from "react-phone-input-2";
 import "react-phone-input-2/lib/style.css";
 
-import {
-  guardarContacto,
-  obtenerContactoGuardado,
-} from "../../data/adminStorage";
-
 import "../../styles/AdminCrudPage.css";
 import "../../styles/ContactosAdmin.css";
 
+const API_URL = "http://127.0.0.1:8000/api";
+
+const crearContactoVacio = () => ({
+  id: null,
+  nombreIglesia: "",
+  direccion: "",
+  telefono: "",
+  whatsappNumero: "",
+  footerUbicacion: "",
+  footerTelefono: "",
+  footerCorreo: "",
+  facebookUrl: "",
+  youtubeUrl: "",
+  instagramUrl: "",
+  tiktokUrl: "",
+  twitterUrl: "",
+  telegramUrl: "",
+});
+
+const convertirContactoBackendAFrontend = (contacto) => {
+  if (!contacto) return crearContactoVacio();
+
+  return {
+    id: contacto.id ?? null,
+    nombreIglesia: contacto.nombre_iglesia || "",
+    direccion: contacto.direccion || "",
+    telefono: normalizarTelefonoInternacional(contacto.telefono),
+    whatsappNumero: normalizarTelefonoInternacional(contacto.whatsapp_numero),
+    footerUbicacion: contacto.footer_ubicacion || "",
+    footerTelefono: normalizarTelefonoInternacional(contacto.footer_telefono),
+    footerCorreo: contacto.footer_correo || "",
+    facebookUrl: contacto.facebook_url || "",
+    youtubeUrl: contacto.youtube_url || "",
+    instagramUrl: contacto.instagram_url || "",
+    tiktokUrl: contacto.tiktok_url || "",
+    twitterUrl: contacto.twitter_url || "",
+    telegramUrl: contacto.telegram_url || "",
+  };
+};
+
+const convertirContactoFrontendABackend = (formulario) => ({
+  nombre_iglesia: formulario.nombreIglesia.trim(),
+  direccion: formulario.direccion.trim(),
+  telefono: formulario.telefono.trim() || null,
+  whatsapp_numero: formulario.whatsappNumero.trim() || null,
+  footer_ubicacion: formulario.footerUbicacion.trim() || null,
+  footer_telefono: formulario.footerTelefono.trim() || null,
+  footer_correo: formulario.footerCorreo.trim() || null,
+  facebook_url: formulario.facebookUrl.trim() || null,
+  youtube_url: formulario.youtubeUrl.trim() || null,
+  instagram_url: formulario.instagramUrl.trim() || null,
+  tiktok_url: formulario.tiktokUrl.trim() || null,
+  twitter_url: formulario.twitterUrl.trim() || null,
+  telegram_url: formulario.telegramUrl.trim() || null,
+});
+
+const obtenerToken = () => localStorage.getItem("token");
+
 const limpiarNumeroTelefono = (numero) => {
   return String(numero || "").replace(/\D/g, "");
+};
+
+const normalizarTelefonoInternacional = (valor) => {
+  const texto = String(valor || "").trim();
+
+  if (!texto) return "";
+
+  const numeroLimpio = limpiarNumeroTelefono(texto);
+
+  if (!numeroLimpio) return "";
+
+  // Los datos antiguos del proyecto estaban guardados como números locales
+  // de Bolivia (por ejemplo 4250000). Los convertimos a formato internacional.
+  if (!texto.startsWith("+") && !numeroLimpio.startsWith("591")) {
+    return `+591${numeroLimpio}`;
+  }
+
+  return `+${numeroLimpio}`;
 };
 
 const formatearTelefono = (valor) => {
@@ -33,9 +104,59 @@ const mostrarValor = (valor) => {
 };
 
 const CrearContactos = () => {
-  const [formulario, setFormulario] = useState(() => obtenerContactoGuardado());
+  const [formulario, setFormulario] = useState(crearContactoVacio);
+  const [contactoGuardado, setContactoGuardado] = useState(crearContactoVacio);
+  const [cargando, setCargando] = useState(true);
+  const [guardando, setGuardando] = useState(false);
+  const [error, setError] = useState("");
+  const [paisTelefono, setPaisTelefono] = useState({
+    telefono: "bo",
+    whatsappNumero: "bo",
+    footerTelefono: "bo",
+  });
   const [modoEdicion, setModoEdicion] = useState(false);
   const [guardado, setGuardado] = useState(false);
+
+  useEffect(() => {
+    const cargarContacto = async () => {
+      const token = obtenerToken();
+
+      try {
+        setCargando(true);
+        setError("");
+
+        const response = await fetch(`${API_URL}/contactos`, {
+          method: "GET",
+          headers: {
+            Accept: "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+        });
+
+        const data = await response.json();
+
+        if (!response.ok) {
+          throw new Error(
+            data.message || "No se pudieron cargar los datos de contacto."
+          );
+        }
+
+        const contacto = convertirContactoBackendAFrontend(data);
+
+        setFormulario(contacto);
+        setContactoGuardado(contacto);
+      } catch (err) {
+        console.error("Error cargando contacto:", err);
+        setError(
+          err.message || "No se pudieron cargar los datos de contacto."
+        );
+      } finally {
+        setCargando(false);
+      }
+    };
+
+    cargarContacto();
+  }, []);
 
   useEffect(() => {
     if (!guardado) return;
@@ -58,19 +179,16 @@ const CrearContactos = () => {
     setGuardado(false);
   };
 
-  const actualizarTelefono = ({ name, value, guardarConPlus = false }) => {
+  const actualizarTelefono = ({ name, value }) => {
     const numeroLimpio = limpiarNumeroTelefono(value);
 
     setFormulario((actual) => ({
       ...actual,
-      [name]: numeroLimpio
-        ? guardarConPlus
-          ? `+${numeroLimpio}`
-          : numeroLimpio
-        : "",
+      [name]: numeroLimpio ? `+${numeroLimpio}` : "",
     }));
 
     setGuardado(false);
+    setError("");
   };
 
   const activarEdicion = () => {
@@ -85,17 +203,82 @@ const CrearContactos = () => {
 
     if (!confirmar) return;
 
-    setFormulario(obtenerContactoGuardado());
+    setFormulario(contactoGuardado);
     setModoEdicion(false);
     setGuardado(false);
   };
 
-  const guardarFormulario = (e) => {
+  const guardarFormulario = async (e) => {
     e.preventDefault();
 
-    guardarContacto(formulario);
-    setGuardado(true);
-    setModoEdicion(false);
+    if (!formulario.nombreIglesia.trim()) {
+      setError("El nombre de la iglesia es obligatorio.");
+      return;
+    }
+
+    if (!formulario.direccion.trim()) {
+      setError("La dirección es obligatoria.");
+      return;
+    }
+
+    const token = obtenerToken();
+    const datos = convertirContactoFrontendABackend(formulario);
+    const esEdicion = Boolean(formulario.id);
+
+    try {
+      setGuardando(true);
+      setError("");
+      setGuardado(false);
+
+      const response = await fetch(
+        esEdicion
+          ? `${API_URL}/contactos/${formulario.id}`
+          : `${API_URL}/contactos`,
+        {
+          method: esEdicion ? "PUT" : "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Accept: "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+          body: JSON.stringify(datos),
+        }
+      );
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        if (data.errors) {
+          const primerError = Object.values(data.errors)[0];
+
+          throw new Error(
+            Array.isArray(primerError)
+              ? primerError[0]
+              : "Revisa los datos ingresados."
+          );
+        }
+
+        throw new Error(
+          data.message || "No se pudieron guardar los datos de contacto."
+        );
+      }
+
+      const contactoActualizado = convertirContactoBackendAFrontend(
+        data.contacto
+      );
+
+      setFormulario(contactoActualizado);
+      setContactoGuardado(contactoActualizado);
+      setGuardado(true);
+      setModoEdicion(false);
+    } catch (err) {
+      console.error("Error guardando contacto:", err);
+      setError(
+        err.message || "No se pudieron guardar los datos de contacto."
+      );
+    } finally {
+      setGuardando(false);
+    }
   };
 
   const restaurarDatos = () => {
@@ -105,7 +288,7 @@ const CrearContactos = () => {
 
     if (!confirmar) return;
 
-    setFormulario(obtenerContactoGuardado());
+    setFormulario(contactoGuardado);
     setGuardado(false);
     setModoEdicion(false);
   };
@@ -149,7 +332,6 @@ const CrearContactos = () => {
     label,
     name,
     value,
-    guardarConPlus = false,
   }) => {
     const numeroLimpio = limpiarNumeroTelefono(value);
 
@@ -171,16 +353,22 @@ const CrearContactos = () => {
 
         <div className="admin-contact-phone-wrapper">
           <PhoneInput
-            country="bo"
+            country={paisTelefono[name] || "bo"}
             value={numeroLimpio}
-            onChange={(valor) =>
+            onChange={(valor, pais) => {
+              if (pais?.countryCode) {
+                setPaisTelefono((actual) => ({
+                  ...actual,
+                  [name]: pais.countryCode,
+                }));
+              }
+
               actualizarTelefono({
                 name,
                 value: valor,
-                guardarConPlus,
-              })
-            }
-            enableSearch={false}
+              });
+            }}
+            enableSearch={true}
             countryCodeEditable={false}
             specialLabel=""
             placeholder="Ej: 79386322"
@@ -192,6 +380,7 @@ const CrearContactos = () => {
             inputClass="admin-contact-phone-field"
             buttonClass="admin-contact-phone-button"
             dropdownClass="admin-contact-phone-dropdown"
+            disabled={guardando}
           />
         </div>
       </label>
@@ -233,6 +422,7 @@ const CrearContactos = () => {
                 type="button"
                 className="admin-create-btn admin-contact-edit-main"
                 onClick={activarEdicion}
+                disabled={cargando || guardando}
               >
                 <Edit size={18} />
                 <span>Editar</span>
@@ -242,6 +432,7 @@ const CrearContactos = () => {
                 type="button"
                 className="admin-contact-close-edit"
                 onClick={cancelarEdicion}
+                disabled={guardando}
                 aria-label="Cancelar edición"
               >
                 <X size={20} />
@@ -252,6 +443,16 @@ const CrearContactos = () => {
           {guardado && (
             <div className="admin-contact-success">
               Los datos se guardaron correctamente.
+            </div>
+          )}
+
+          {error && (
+            <div className="admin-contact-error">{error}</div>
+          )}
+
+          {cargando && (
+            <div className="admin-contact-loading">
+              Cargando datos de contacto...
             </div>
           )}
 
@@ -282,7 +483,6 @@ const CrearContactos = () => {
                 label: "Teléfono",
                 name: "telefono",
                 value: formulario.telefono,
-                guardarConPlus: true,
               })}
             </div>
           </div>
@@ -300,7 +500,6 @@ const CrearContactos = () => {
                 label: "Número de WhatsApp",
                 name: "whatsappNumero",
                 value: formulario.whatsappNumero,
-                guardarConPlus: false,
               })}
             </div>
           </div>
@@ -327,7 +526,6 @@ const CrearContactos = () => {
                 label: "Teléfono",
                 name: "footerTelefono",
                 value: formulario.footerTelefono,
-                guardarConPlus: true,
               })}
 
               {renderCampoTexto({
@@ -399,14 +597,19 @@ const CrearContactos = () => {
                 type="button"
                 className="admin-contact-reset"
                 onClick={restaurarDatos}
+                disabled={guardando}
               >
                 <RotateCcw size={18} />
                 Descartar cambios
               </button>
 
-              <button type="submit" className="admin-contact-save">
+              <button
+                type="submit"
+                className="admin-contact-save"
+                disabled={guardando}
+              >
                 <Save size={18} />
-                Guardar cambios
+                {guardando ? "Guardando..." : "Guardar cambios"}
               </button>
             </div>
           )}

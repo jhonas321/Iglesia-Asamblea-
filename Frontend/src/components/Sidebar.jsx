@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
-import { Link, useLocation } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
+
 import {
   LayoutDashboard,
   CalendarDays,
@@ -23,9 +24,9 @@ import {
   FaUserTie,
 } from "react-icons/fa";
 
-import { obtenerConfiguracionGuardada } from "../data/adminStorage";
-
 import "../styles/Sidebar.css";
+
+const API_URL = "http://127.0.0.1:8000/api";
 
 const obtenerIconoAdmin = (iconoAdmin) => {
   const iconos = {
@@ -42,24 +43,94 @@ const obtenerIconoAdmin = (iconoAdmin) => {
 
 const Sidebar = () => {
   const location = useLocation();
+  const navigate = useNavigate();
+
   const currentPath = location.pathname;
 
-  const [configuracion, setConfiguracion] = useState(() =>
-    obtenerConfiguracionGuardada()
-  );
+  const [usuario, setUsuario] = useState(null);
+  const [cerrandoSesion, setCerrandoSesion] = useState(false);
 
   useEffect(() => {
-    const cargarConfiguracion = () => {
-      const config = obtenerConfiguracionGuardada();
-      setConfiguracion(config);
+    const cargarUsuario = async () => {
+      const token = localStorage.getItem("token");
+
+      if (!token) {
+        setUsuario(null);
+        return;
+      }
+
+      try {
+        const response = await fetch(`${API_URL}/user`, {
+          method: "GET",
+          headers: {
+            Accept: "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+        });
+
+        const data = await response.json();
+
+        if (!response.ok) {
+          throw new Error(
+            data.message || "No se pudo obtener el usuario."
+          );
+        }
+
+        setUsuario(data.user);
+
+        localStorage.setItem(
+          "usuario",
+          JSON.stringify(data.user)
+        );
+      } catch (error) {
+        console.error(
+          "Error al obtener el usuario:",
+          error
+        );
+      }
     };
 
-    cargarConfiguracion();
+    const actualizarUsuario = (event) => {
+      if (event?.detail) {
+        setUsuario(event.detail);
 
-    window.addEventListener("admin-config-updated", cargarConfiguracion);
+        localStorage.setItem(
+          "usuario",
+          JSON.stringify(event.detail)
+        );
+
+        return;
+      }
+
+      const usuarioGuardado = localStorage.getItem("usuario");
+
+      if (usuarioGuardado) {
+        try {
+          setUsuario(JSON.parse(usuarioGuardado));
+          return;
+        } catch (error) {
+          console.error(
+            "Error leyendo el usuario guardado:",
+            error
+          );
+        }
+      }
+
+      cargarUsuario();
+    };
+
+    cargarUsuario();
+
+    window.addEventListener(
+      "usuario-actualizado",
+      actualizarUsuario
+    );
 
     return () => {
-      window.removeEventListener("admin-config-updated", cargarConfiguracion);
+      window.removeEventListener(
+        "usuario-actualizado",
+        actualizarUsuario
+      );
     };
   }, []);
 
@@ -73,7 +144,9 @@ const Sidebar = () => {
     document.documentElement.scrollTop = 0;
     document.body.scrollTop = 0;
 
-    const adminContent = document.querySelector(".dashboard-admin-content");
+    const adminContent = document.querySelector(
+      ".dashboard-admin-content"
+    );
 
     if (adminContent) {
       adminContent.scrollTo({
@@ -143,22 +216,64 @@ const Sidebar = () => {
 
   const isActive = (path) => {
     if (path === "/admin/dashboard") {
-      return currentPath === "/admin" || currentPath === "/admin/dashboard";
+      return (
+        currentPath === "/admin" ||
+        currentPath === "/admin/dashboard"
+      );
     }
 
-    return currentPath === path || currentPath.startsWith(`${path}/`);
+    return (
+      currentPath === path ||
+      currentPath.startsWith(`${path}/`)
+    );
   };
 
-  const handleLogout = () => {
-    localStorage.removeItem("token");
-    localStorage.removeItem("userRole");
+  const handleLogout = async () => {
+    if (cerrandoSesion) {
+      return;
+    }
+
+    setCerrandoSesion(true);
+
+    const token = localStorage.getItem("token");
+
+    try {
+      if (token) {
+        await fetch(`${API_URL}/logout`, {
+          method: "POST",
+          headers: {
+            Accept: "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+        });
+      }
+    } catch (error) {
+      console.error(
+        "Error al cerrar sesión:",
+        error
+      );
+    } finally {
+      localStorage.removeItem("token");
+      localStorage.removeItem("usuario");
+      localStorage.removeItem("userRole");
+      localStorage.removeItem("recordarme");
+
+      setUsuario(null);
+
+      navigate("/login", {
+        replace: true,
+      });
+    }
   };
 
   return (
     <aside className="sidebar">
       <div className="sidebar-header">
         <div className="sidebar-logo sidebar-logo-image">
-          <img src="/images/logo.jpg" alt="Logo Asamblea" />
+          <img
+            src="/images/logo.jpg"
+            alt="Logo Asamblea"
+          />
         </div>
 
         <div className="sidebar-brand">
@@ -169,12 +284,17 @@ const Sidebar = () => {
 
       <div className="sidebar-user">
         <div className="sidebar-user-icon">
-          {obtenerIconoAdmin(configuracion.iconoAdmin)}
+          {obtenerIconoAdmin(usuario?.icono)}
         </div>
 
         <div className="sidebar-user-info">
-          <h3>{configuracion.nombreAdmin}</h3>
-          <p>Administrador</p>
+          <h3>
+            {usuario?.name || "Administrador"}
+          </h3>
+
+          <p>
+            {usuario?.rol?.nombre || "Administrador"}
+          </p>
         </div>
       </div>
 
@@ -185,7 +305,9 @@ const Sidebar = () => {
               <Link
                 to={item.path}
                 className={`sidebar-link ${
-                  isActive(item.path) ? "active" : ""
+                  isActive(item.path)
+                    ? "active"
+                    : ""
                 }`}
               >
                 {item.icon}
@@ -197,10 +319,20 @@ const Sidebar = () => {
       </nav>
 
       <div className="sidebar-footer">
-        <Link to="/" className="sidebar-logout" onClick={handleLogout}>
+        <button
+          type="button"
+          className="sidebar-logout"
+          onClick={handleLogout}
+          disabled={cerrandoSesion}
+        >
           <LogOut size={20} />
-          <span>Cerrar sesión</span>
-        </Link>
+
+          <span>
+            {cerrandoSesion
+              ? "Cerrando sesión..."
+              : "Cerrar sesión"}
+          </span>
+        </button>
       </div>
     </aside>
   );

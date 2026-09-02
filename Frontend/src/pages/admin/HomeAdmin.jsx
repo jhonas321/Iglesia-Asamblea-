@@ -1,3 +1,4 @@
+import { useEffect, useMemo, useState } from "react";
 import { Link } from "react-router-dom";
 import {
   CalendarDays,
@@ -18,17 +19,86 @@ import {
   Building2,
 } from "lucide-react";
 
-import {
-  obtenerContactoGuardado,
-  obtenerEventosGuardados,
-  obtenerHeroFotosGuardadas,
-  obtenerHorariosGuardados,
-  obtenerMinisteriosGuardados,
-  obtenerOrganigramaGuardado,
-  obtenerPublicacionesGuardadas,
-} from "../../data/adminStorage";
 
 import "../../styles/HomeAdmin.css";
+
+const API_URL = "http://127.0.0.1:8000/api";
+const BACKEND_URL = "http://127.0.0.1:8000";
+
+
+const obtenerToken = () => localStorage.getItem("token");
+
+const obtenerUrlArchivo = (ruta) => {
+  if (!ruta) return "";
+
+  const valor = String(ruta);
+
+  if (
+    valor.startsWith("http://") ||
+    valor.startsWith("https://") ||
+    valor.startsWith("blob:") ||
+    valor.startsWith("data:") ||
+    valor.startsWith("/")
+  ) {
+    return valor;
+  }
+
+  return `${BACKEND_URL}/storage/${valor}`;
+};
+
+const normalizarHora = (hora) => {
+  if (!hora) return "";
+
+  const valor = String(hora).trim();
+
+  if (/^\d{2}:\d{2}:\d{2}$/.test(valor)) {
+    return valor.slice(0, 5);
+  }
+
+  return valor;
+};
+
+const convertirEvento = (evento) => ({
+  id: evento.id,
+  titulo: evento.titulo || "",
+  ministerio: evento.ministerio?.nombre || "",
+  fechaInicio: evento.fecha_inicio || "",
+  fechaFinal: evento.fecha_final || evento.fecha_inicio || "",
+  hora: normalizarHora(evento.hora),
+  lugar: evento.lugar || "",
+});
+
+const convertirPublicacion = (publicacion) => ({
+  id: publicacion.id,
+  titulo: publicacion.titulo || "",
+  ministerio: publicacion.ministerio?.nombre || "",
+  fechaInicio: publicacion.fecha_inicio || "",
+  fechaFinal: publicacion.fecha_final || publicacion.fecha_inicio || "",
+  fecha: "",
+  imagen: obtenerUrlArchivo(publicacion.imagen),
+});
+
+const convertirHorario = (horario) => ({
+  id: horario.id,
+  dia: horario.dia || "",
+  actividad: horario.actividad || "",
+  hora: normalizarHora(horario.hora),
+});
+
+const convertirSeccion = (seccion) => ({
+  id: seccion.id,
+  titulo: seccion.titulo || "",
+  tipo: seccion.tipo || "normal",
+  miembros: Array.isArray(seccion.miembros) ? seccion.miembros : [],
+});
+
+const convertirContacto = (contacto) => ({
+  id: contacto?.id || null,
+  nombreIglesia: contacto?.nombre_iglesia || "",
+  direccion: contacto?.direccion || "",
+  telefono: contacto?.telefono || "",
+  footerCorreo: contacto?.footer_correo || "",
+});
 
 const obtenerFechaActualInput = () => {
   const hoy = new Date();
@@ -140,18 +210,129 @@ const mostrarDato = (valor) => {
 };
 
 const HomeAdmin = () => {
-  const eventos = obtenerEventosGuardados();
-  const publicaciones = obtenerPublicacionesGuardadas();
-  const horarios = obtenerHorariosGuardados();
-  const ministerios = obtenerMinisteriosGuardados();
-  const fotosInicio = obtenerHeroFotosGuardadas();
-  const organigrama = obtenerOrganigramaGuardado();
-  const contacto = obtenerContactoGuardado();
+  const [eventos, setEventos] = useState([]);
+  const [publicaciones, setPublicaciones] = useState([]);
+  const [horarios, setHorarios] = useState([]);
+  const [ministerios, setMinisterios] = useState([]);
+  const [fotosInicio, setFotosInicio] = useState([]);
+  const [organigrama, setOrganigrama] = useState([]);
+  const [contacto, setContacto] = useState({});
+  const [usuario, setUsuario] = useState(null);
 
-  const eventosRecientes = ordenarPorFechaDesc(eventos).slice(0, 5);
-  const publicacionesRecientes = ordenarPorFechaDesc(publicaciones).slice(0, 4);
-  const horariosOrdenados = [...horarios].slice(0, 5);
-  const ministeriosRecientes = [...ministerios].slice(0, 6);
+  const [cargando, setCargando] = useState(true);
+  const [error, setError] = useState("");
+
+  useEffect(() => {
+    const cargarDashboard = async () => {
+      const token = obtenerToken();
+
+      try {
+        setCargando(true);
+        setError("");
+
+        const headers = {
+          Accept: "application/json",
+          Authorization: `Bearer ${token}`,
+        };
+
+        const [
+          respuestaEventos,
+          respuestaPublicaciones,
+          respuestaHorarios,
+          respuestaMinisterios,
+          respuestaFotos,
+          respuestaOrganigrama,
+          respuestaContacto,
+          respuestaUsuario,
+        ] = await Promise.all([
+          fetch(`${API_URL}/eventos`, { headers }),
+          fetch(`${API_URL}/publicaciones`, { headers }),
+          fetch(`${API_URL}/horarios`, { headers }),
+          fetch(`${API_URL}/ministerios`, { headers }),
+          fetch(`${API_URL}/hero-fotos`, { headers }),
+          fetch(`${API_URL}/secciones-organigrama`, { headers }),
+          fetch(`${API_URL}/contactos`, { headers }),
+          fetch(`${API_URL}/user`, { headers }),
+        ]);
+
+        const respuestas = [
+          respuestaEventos,
+          respuestaPublicaciones,
+          respuestaHorarios,
+          respuestaMinisterios,
+          respuestaFotos,
+          respuestaOrganigrama,
+          respuestaContacto,
+          respuestaUsuario,
+        ];
+
+        const algunaFallo = respuestas.some(
+          (response) => !response.ok
+        );
+
+        if (algunaFallo) {
+          throw new Error(
+            "No se pudo cargar toda la información del dashboard."
+          );
+        }
+
+        const [
+          datosEventos,
+          datosPublicaciones,
+          datosHorarios,
+          datosMinisterios,
+          datosFotos,
+          datosOrganigrama,
+          datosContacto,
+          datosUsuario,
+        ] = await Promise.all(
+          respuestas.map((response) => response.json())
+        );
+
+        setEventos(datosEventos.map(convertirEvento));
+        setPublicaciones(
+          datosPublicaciones.map(convertirPublicacion)
+        );
+        setHorarios(datosHorarios.map(convertirHorario));
+        setMinisterios(datosMinisterios);
+        setFotosInicio(datosFotos);
+        setOrganigrama(datosOrganigrama.map(convertirSeccion));
+        setContacto(convertirContacto(datosContacto));
+        setUsuario(datosUsuario.user || null);
+      } catch (error) {
+        console.error("Error cargando dashboard:", error);
+
+        setError(
+          error.message ||
+            "No se pudo cargar la información del dashboard."
+        );
+      } finally {
+        setCargando(false);
+      }
+    };
+
+    cargarDashboard();
+  }, []);
+
+  const eventosRecientes = useMemo(
+    () => ordenarPorFechaDesc(eventos).slice(0, 5),
+    [eventos]
+  );
+
+  const publicacionesRecientes = useMemo(
+    () => ordenarPorFechaDesc(publicaciones).slice(0, 4),
+    [publicaciones]
+  );
+
+  const horariosOrdenados = useMemo(
+    () => [...horarios].slice(0, 5),
+    [horarios]
+  );
+
+  const ministeriosRecientes = useMemo(
+    () => [...ministerios].slice(0, 6),
+    [ministerios]
+  );
 
   const resumen = [
     {
@@ -200,11 +381,23 @@ const HomeAdmin = () => {
 
   return (
     <main className="home-admin">
+      {error && (
+        <div className="home-admin-alert error">
+          {error}
+        </div>
+      )}
+
+      {cargando && (
+        <div className="home-admin-alert loading">
+          Cargando información del dashboard...
+        </div>
+      )}
+
       <section className="home-admin-hero">
         <div>
           <span className="home-admin-tag">Panel Administrativo</span>
 
-          <h1>Bienvenido, Administrador</h1>
+          <h1>Bienvenido, {usuario?.name || "Administrador"}</h1>
 
           <p>
             Desde aquí puedes revisar el resumen general de eventos,
@@ -397,8 +590,8 @@ const HomeAdmin = () => {
             <h3>Resumen general</h3>
 
             <p>
-              El panel está conectado con tus datos guardados. Cada módulo
-              muestra información real registrada desde el administrador.
+              El panel está conectado directamente con Laravel y PostgreSQL.
+              Cada módulo muestra la información real registrada desde el administrador.
             </p>
 
             <div className="home-admin-progress-list">

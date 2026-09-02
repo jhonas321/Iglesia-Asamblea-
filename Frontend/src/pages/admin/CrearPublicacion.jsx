@@ -13,15 +13,13 @@ import {
 } from "lucide-react";
 
 import ListaAdmin from "../../components/admin/ListaAdmin";
-import {
-  guardarPublicaciones,
-  obtenerMinisteriosGuardados,
-  obtenerPublicacionesGuardadas,
-} from "../../data/adminStorage";
 
 import "../../styles/AdminCrudPage.css";
 import "../../styles/publicaciones.css";
 import "../../styles/PublicacionesAdmin.css";
+
+const API_URL = "http://127.0.0.1:8000/api";
+const BACKEND_URL = "http://127.0.0.1:8000";
 
 const meses = {
   enero: 0,
@@ -232,81 +230,6 @@ const convertirListaFotosATexto = (fotos) => {
   return fotos.join("\n");
 };
 
-const convertirArchivoABase64 = (archivo) => {
-  return new Promise((resolve, reject) => {
-    const lector = new FileReader();
-
-    lector.onload = () => resolve(lector.result);
-    lector.onerror = () => reject(new Error("No se pudo leer el archivo."));
-    lector.readAsDataURL(archivo);
-  });
-};
-
-const crearMiniaturaDesdeVideo = (urlVideo) => {
-  return new Promise((resolve) => {
-    const video = document.createElement("video");
-    let terminado = false;
-
-    const finalizar = (resultado) => {
-      if (terminado) return;
-
-      terminado = true;
-      video.removeAttribute("src");
-      video.load();
-      resolve(resultado);
-    };
-
-    video.src = urlVideo;
-    video.muted = true;
-    video.playsInline = true;
-    video.preload = "metadata";
-
-    video.addEventListener("loadedmetadata", () => {
-      const ancho = video.videoWidth || 1280;
-      const alto = video.videoHeight || 720;
-
-      const orientacion = alto > ancho ? "vertical" : "horizontal";
-
-      const segundoCaptura = Number.isFinite(video.duration)
-        ? Math.min(1, Math.max(video.duration - 0.1, 0))
-        : 0.5;
-
-      video.currentTime = segundoCaptura;
-
-      video.addEventListener(
-        "seeked",
-        () => {
-          try {
-            const canvas = document.createElement("canvas");
-            canvas.width = ancho;
-            canvas.height = alto;
-
-            const contexto = canvas.getContext("2d");
-            contexto.drawImage(video, 0, 0, ancho, alto);
-
-            finalizar({
-              portada: canvas.toDataURL("image/jpeg", 0.85),
-              orientacion,
-            });
-          } catch (error) {
-            finalizar({
-              portada: null,
-              orientacion,
-            });
-          }
-        },
-        { once: true }
-      );
-    });
-
-    video.addEventListener("error", () => {
-      finalizar({
-        portada: null,
-        orientacion: "horizontal",
-      });
-    });
-  });
-};
 
 const quitarCategoria = (publicacion) => {
   const { categoria, ...resto } = publicacion;
@@ -320,6 +243,10 @@ const normalizarHoraInput = (hora) => {
 
   if (/^\d{2}:\d{2}$/.test(horaLimpia)) return horaLimpia;
 
+  if (/^\d{2}:\d{2}:\d{2}$/.test(horaLimpia)) {
+    return horaLimpia.slice(0, 5);
+  }
+
   const match = horaLimpia.match(/^(\d{1,2}):(\d{2})\s*(am|pm)$/i);
 
   if (!match) return "";
@@ -332,6 +259,74 @@ const normalizarHoraInput = (hora) => {
   if (periodo === "am" && horas === 12) horas = 0;
 
   return `${String(horas).padStart(2, "0")}:${minutos}`;
+};
+
+const obtenerToken = () => localStorage.getItem("token");
+
+const obtenerUrlArchivo = (ruta) => {
+  if (!ruta) return "";
+
+  const valor = String(ruta);
+
+  if (
+    valor.startsWith("http://") ||
+    valor.startsWith("https://") ||
+    valor.startsWith("blob:") ||
+    valor.startsWith("data:") ||
+    valor.startsWith("/")
+  ) {
+    return valor;
+  }
+
+  return `${BACKEND_URL}/storage/${valor}`;
+};
+
+const convertirPublicacionBackendAFrontend = (publicacion) => {
+  const fechaInicio = publicacion.fecha_inicio || "";
+  const fechaFinal = publicacion.fecha_final || fechaInicio;
+
+  const fotos = Array.isArray(publicacion.fotos)
+    ? publicacion.fotos
+        .map((foto) => obtenerUrlArchivo(foto.imagen))
+        .filter(Boolean)
+    : [];
+
+  const imagen = obtenerUrlArchivo(publicacion.imagen);
+
+  const videoTrailerUrl = obtenerUrlArchivo(
+    publicacion.video_trailer_url
+  );
+
+  const videoTrailerPortada = obtenerUrlArchivo(
+    publicacion.video_trailer_portada
+  );
+
+  return {
+    id: publicacion.id,
+    titulo: publicacion.titulo || "",
+    ministerioId: publicacion.ministerio_id,
+    ministerio: publicacion.ministerio?.nombre || "",
+    fechaInicio,
+    fechaFinal,
+    fecha: formatearRangoFechaPublicacion(fechaInicio, fechaFinal),
+    hora: normalizarHoraInput(publicacion.hora),
+    lugar: publicacion.lugar || "",
+    descripcion: publicacion.descripcion || "",
+    imagen,
+    fotos: fotos.length > 0 ? fotos : imagen ? [imagen] : [],
+    videoTrailer: videoTrailerUrl
+      ? {
+          url: videoTrailerUrl,
+          portadaFallback: videoTrailerPortada || imagen,
+        }
+      : null,
+    videoCompleto: publicacion.video_completo_url
+      ? {
+          url: publicacion.video_completo_url,
+        }
+      : null,
+    activo: publicacion.activo,
+  };
 };
 
 const obtenerDiasCalendario = (fechaBase) => {
@@ -371,13 +366,17 @@ const CrearPublicacion = () => {
   const fechaFinalBoxRef = useRef(null);
   const horaBoxRef = useRef(null);
 
-  const [publicacionesAdmin, setPublicacionesAdmin] = useState(() =>
-    obtenerPublicacionesGuardadas().map(quitarCategoria)
-  );
+  const [publicacionesAdmin, setPublicacionesAdmin] = useState([]);
+  const [ministeriosDisponibles, setMinisteriosDisponibles] = useState([]);
 
-  const ministeriosDisponibles = useMemo(() => {
-    return obtenerMinisteriosGuardados();
-  }, []);
+  const [cargandoDatos, setCargandoDatos] = useState(true);
+  const [guardandoPublicacion, setGuardandoPublicacion] = useState(false);
+  const [eliminandoId, setEliminandoId] = useState(null);
+
+  const [archivoImagenPrincipal, setArchivoImagenPrincipal] = useState(null);
+  const [archivosGaleria, setArchivosGaleria] = useState([]);
+  const [archivoVideoTrailer, setArchivoVideoTrailer] = useState(null);
+  const [archivoPortadaTrailer, setArchivoPortadaTrailer] = useState(null);
 
   const [modalAbierto, setModalAbierto] = useState(false);
   const [modoFormulario, setModoFormulario] = useState("crear");
@@ -403,8 +402,61 @@ const CrearPublicacion = () => {
 
   const esModoVista = modoFormulario === "ver";
 
-  const videoTrailerSubidoDesdePc =
-    formulario.videoTrailerUrl.startsWith("data:video");
+  const videoTrailerSubidoDesdePc = Boolean(archivoVideoTrailer);
+
+  const cargarDatos = useCallback(async () => {
+    const token = obtenerToken();
+
+    try {
+      setCargandoDatos(true);
+
+      const [respuestaPublicaciones, respuestaMinisterios] =
+        await Promise.all([
+          fetch(`${API_URL}/publicaciones`, {
+            method: "GET",
+            headers: {
+              Accept: "application/json",
+              Authorization: `Bearer ${token}`,
+            },
+          }),
+          fetch(`${API_URL}/ministerios`, {
+            method: "GET",
+            headers: {
+              Accept: "application/json",
+              Authorization: `Bearer ${token}`,
+            },
+          }),
+        ]);
+
+      if (!respuestaPublicaciones.ok) {
+        throw new Error("No se pudieron cargar las publicaciones.");
+      }
+
+      if (!respuestaMinisterios.ok) {
+        throw new Error("No se pudieron cargar los ministerios.");
+      }
+
+      const datosPublicaciones = await respuestaPublicaciones.json();
+      const datosMinisterios = await respuestaMinisterios.json();
+
+      setPublicacionesAdmin(
+        datosPublicaciones.map(convertirPublicacionBackendAFrontend)
+      );
+
+      setMinisteriosDisponibles(datosMinisterios);
+    } catch (error) {
+      console.error("Error cargando publicaciones:", error);
+      setErrorFormulario(
+        error.message || "No se pudieron cargar los datos."
+      );
+    } finally {
+      setCargandoDatos(false);
+    }
+  }, []);
+
+  useEffect(() => {
+    cargarDatos();
+  }, [cargarDatos]);
 
   const cerrarSelectores = useCallback(() => {
     setMinisterioAbierto(false);
@@ -506,6 +558,10 @@ const CrearPublicacion = () => {
     setModalAbierto(false);
     setPublicacionEditandoId(null);
     setFormulario(crearFormularioPublicacionVacio());
+    setArchivoImagenPrincipal(null);
+    setArchivosGaleria([]);
+    setArchivoVideoTrailer(null);
+    setArchivoPortadaTrailer(null);
     setErrorFormulario("");
     setPanelActivo("formulario");
     setFotoActualPreview(0);
@@ -518,10 +574,13 @@ const CrearPublicacion = () => {
   };
 
   const quitarVideoTrailerSubido = () => {
+    if (!archivoVideoTrailer) return;
+
+    setArchivoVideoTrailer(null);
+
     setFormulario((actual) => ({
       ...actual,
       videoTrailerUrl: "",
-      videoTrailerPortada: "",
     }));
 
     setVideoModalPreview(null);
@@ -673,130 +732,174 @@ const CrearPublicacion = () => {
     setErrorFormulario("");
   };
 
-  const actualizarVideoTrailerUrl = (e) => {
-    const value = e.target.value;
+
+  const validarImagenSeleccionada = (archivo) => {
+    const tiposPermitidos = [
+      "image/jpeg",
+      "image/png",
+      "image/webp",
+    ];
+
+    if (!tiposPermitidos.includes(archivo.type)) {
+      return "La imagen debe ser JPG, JPEG, PNG o WEBP.";
+    }
+
+    if (archivo.size > 5 * 1024 * 1024) {
+      return "Cada imagen debe pesar como máximo 5 MB.";
+    }
+
+    return "";
+  };
+
+  const manejarImagenPrincipalArchivo = (e) => {
+    const archivo = e.target.files?.[0];
+
+    if (!archivo) return;
+
+    const errorImagen = validarImagenSeleccionada(archivo);
+
+    if (errorImagen) {
+      setErrorFormulario(errorImagen);
+      e.target.value = "";
+      return;
+    }
+
+    setArchivoImagenPrincipal(archivo);
+
+    const preview = URL.createObjectURL(archivo);
 
     setFormulario((actual) => ({
       ...actual,
-      videoTrailerUrl: value,
+      imagen: preview,
     }));
 
     setErrorFormulario("");
   };
 
-  const manejarImagenPrincipalArchivo = async (e) => {
-    const archivo = e.target.files?.[0];
-
-    if (!archivo) return;
-
-    if (!archivo.type.startsWith("image/")) {
-      setErrorFormulario("Debes seleccionar una imagen válida.");
-      return;
-    }
-
-    try {
-      const imagenBase64 = await convertirArchivoABase64(archivo);
-
-      setFormulario((actual) => ({
-        ...actual,
-        imagen: imagenBase64,
-      }));
-
-      setErrorFormulario("");
-    } catch (error) {
-      setErrorFormulario("No se pudo cargar la imagen.");
-    }
-  };
-
-  const manejarFotosGaleriaArchivos = async (e) => {
+  const manejarFotosGaleriaArchivos = (e) => {
     const archivos = Array.from(e.target.files || []);
 
     if (archivos.length === 0) return;
 
-    const soloImagenes = archivos.filter((archivo) =>
-      archivo.type.startsWith("image/")
-    );
+    const errorImagen = archivos
+      .map(validarImagenSeleccionada)
+      .find(Boolean);
 
-    if (soloImagenes.length === 0) {
-      setErrorFormulario("Debes seleccionar imágenes válidas.");
+    if (errorImagen) {
+      setErrorFormulario(errorImagen);
+      e.target.value = "";
       return;
     }
 
-    try {
-      const imagenesBase64 = await Promise.all(
-        soloImagenes.map((archivo) => convertirArchivoABase64(archivo))
-      );
+    setArchivosGaleria(archivos);
 
-      setFormulario((actual) => {
-        const textoAnterior = actual.fotosTexto.trim();
-        const textoNuevo = imagenesBase64.join("\n");
+    const previews = archivos.map((archivo) =>
+      URL.createObjectURL(archivo)
+    );
 
-        return {
-          ...actual,
-          fotosTexto: textoAnterior
-            ? `${textoAnterior}\n${textoNuevo}`
-            : textoNuevo,
-        };
-      });
+    setFormulario((actual) => ({
+      ...actual,
+      fotosTexto: previews.join("\n"),
+    }));
 
-      setErrorFormulario("");
-    } catch (error) {
-      setErrorFormulario("No se pudieron cargar las imágenes.");
-    }
+    setFotoActualPreview(0);
+    setErrorFormulario("");
   };
 
-  const manejarVideoTrailerArchivo = async (e) => {
+  const manejarVideoTrailerArchivo = (e) => {
     const archivo = e.target.files?.[0];
 
     if (!archivo) return;
 
-    if (!archivo.type.startsWith("video/")) {
-      setErrorFormulario("Debes seleccionar un video válido.");
+    const tiposPermitidos = [
+      "video/mp4",
+      "video/webm",
+      "video/ogg",
+    ];
+
+    if (!tiposPermitidos.includes(archivo.type)) {
+      setErrorFormulario(
+        "El trailer debe ser un archivo MP4, WEBM u OGG."
+      );
+      e.target.value = "";
       return;
     }
 
-    try {
-      const videoBase64 = await convertirArchivoABase64(archivo);
-      const miniatura = await crearMiniaturaDesdeVideo(videoBase64);
-
-      setFormulario((actual) => ({
-        ...actual,
-        videoTrailerUrl: videoBase64,
-        videoTrailerPortada:
-          miniatura.portada || actual.videoTrailerPortada || actual.imagen,
-      }));
-
-      setErrorFormulario("");
-    } catch (error) {
-      setErrorFormulario("No se pudo cargar el video trailer.");
+    if (archivo.size > 50 * 1024 * 1024) {
+      setErrorFormulario(
+        "El video trailer no puede superar los 50 MB."
+      );
+      e.target.value = "";
+      return;
     }
+
+    setArchivoVideoTrailer(archivo);
+
+    const preview = URL.createObjectURL(archivo);
+
+    setFormulario((actual) => ({
+      ...actual,
+      videoTrailerUrl: preview,
+    }));
+
+    setErrorFormulario("");
+  };
+
+  const manejarPortadaTrailerArchivo = (e) => {
+    const archivo = e.target.files?.[0];
+
+    if (!archivo) return;
+
+    const errorImagen = validarImagenSeleccionada(archivo);
+
+    if (errorImagen) {
+      setErrorFormulario(errorImagen);
+      e.target.value = "";
+      return;
+    }
+
+    setArchivoPortadaTrailer(archivo);
+
+    const preview = URL.createObjectURL(archivo);
+
+    setFormulario((actual) => ({
+      ...actual,
+      videoTrailerPortada: preview,
+    }));
+
+    setErrorFormulario("");
   };
 
   const cargarFormularioPublicacion = (publicacion) => {
     const publicacionLimpia = quitarCategoria(publicacion);
-    const rangoFecha = obtenerRangoFecha(publicacionLimpia.fecha);
+
+    setArchivoImagenPrincipal(null);
+    setArchivosGaleria([]);
+    setArchivoVideoTrailer(null);
+    setArchivoPortadaTrailer(null);
 
     setFormulario({
       titulo: publicacionLimpia.titulo || "",
       ministerio: publicacionLimpia.ministerio || "",
       fechaInicio:
-        publicacionLimpia.fechaInicio ||
-        fechaDateAInput(rangoFecha.inicio) ||
-        obtenerFechaActualInput(),
+        publicacionLimpia.fechaInicio || obtenerFechaActualInput(),
       fechaFinal:
         publicacionLimpia.fechaFinal ||
-        fechaDateAInput(rangoFecha.fin) ||
         publicacionLimpia.fechaInicio ||
         "",
       hora: normalizarHoraInput(publicacionLimpia.hora),
       lugar: publicacionLimpia.lugar || "",
       descripcion: publicacionLimpia.descripcion || "",
       imagen: publicacionLimpia.imagen || "",
-      fotosTexto: convertirListaFotosATexto(publicacionLimpia.fotos),
-      videoTrailerUrl: publicacionLimpia.videoTrailer?.url || "",
+      fotosTexto: convertirListaFotosATexto(
+        publicacionLimpia.fotos || []
+      ),
+      videoTrailerUrl:
+        publicacionLimpia.videoTrailer?.url || "",
       videoTrailerPortada:
         publicacionLimpia.videoTrailer?.portadaFallback || "",
-      videoCompletoUrl: publicacionLimpia.videoCompleto?.url || "",
+      videoCompletoUrl:
+        publicacionLimpia.videoCompleto?.url || "",
     });
   };
 
@@ -805,6 +908,10 @@ const CrearPublicacion = () => {
     setPanelActivo("formulario");
     setPublicacionEditandoId(null);
     setFormulario(crearFormularioPublicacionVacio());
+    setArchivoImagenPrincipal(null);
+    setArchivosGaleria([]);
+    setArchivoVideoTrailer(null);
+    setArchivoPortadaTrailer(null);
     setErrorFormulario("");
     setFotoActualPreview(0);
     setVideoModalPreview(null);
@@ -832,7 +939,7 @@ const CrearPublicacion = () => {
     return "";
   };
 
-  const guardarFormulario = (e) => {
+  const guardarFormulario = async (e) => {
     e.preventDefault();
 
     const error = validarFormulario();
@@ -843,74 +950,120 @@ const CrearPublicacion = () => {
       return;
     }
 
-    const fechaFinalNormalizada =
-      formulario.fechaFinal || formulario.fechaInicio;
-
-    const imagenPrincipal = formulario.imagen.trim();
-
-    const fotos = convertirFotosTextoALista(
-      formulario.fotosTexto,
-      imagenPrincipal
+    const ministerioSeleccionado = ministeriosDisponibles.find(
+      (ministerio) =>
+        ministerio.nombre.trim().toLowerCase() ===
+        formulario.ministerio.trim().toLowerCase()
     );
 
-    const publicacionNormalizada = {
-      titulo: formulario.titulo.trim(),
-      ministerio: formulario.ministerio.trim(),
-      fechaInicio: formulario.fechaInicio,
-      fechaFinal: fechaFinalNormalizada,
-      fecha: formatearRangoFechaPublicacion(
-        formulario.fechaInicio,
-        fechaFinalNormalizada
-      ),
-      hora: formulario.hora.trim(),
-      lugar: formulario.lugar.trim(),
-      descripcion: formulario.descripcion.trim(),
-      imagen: imagenPrincipal,
-      fotos,
-      videoTrailer: formulario.videoTrailerUrl.trim()
-        ? {
-            url: formulario.videoTrailerUrl.trim(),
-            portadaFallback:
-              formulario.videoTrailerPortada.trim() || imagenPrincipal,
-          }
-        : null,
-      videoCompleto: formulario.videoCompletoUrl.trim()
-        ? {
-            url: formulario.videoCompletoUrl.trim(),
-          }
-        : null,
-    };
-
-    let nuevaLista = [];
-
-    if (modoFormulario === "editar") {
-      nuevaLista = publicacionesAdmin.map((publicacion) => {
-        const publicacionSinCategoria = quitarCategoria(publicacion);
-
-        if (publicacion.id === publicacionEditandoId) {
-          return {
-            ...publicacionSinCategoria,
-            ...publicacionNormalizada,
-          };
-        }
-
-        return publicacionSinCategoria;
-      });
-    } else {
-      const nuevaPublicacion = {
-        id: Date.now(),
-        ...publicacionNormalizada,
-      };
-
-      nuevaLista = [
-        nuevaPublicacion,
-        ...publicacionesAdmin.map(quitarCategoria),
-      ];
+    if (!ministerioSeleccionado) {
+      setErrorFormulario(
+        "El ministerio seleccionado no es válido."
+      );
+      setPanelActivo("formulario");
+      return;
     }
 
-    setPublicacionesAdmin(nuevaLista);
-    guardarPublicaciones(nuevaLista);
-    cerrarModal();
+    const token = obtenerToken();
+    const esEdicion = modoFormulario === "editar";
+
+    const datos = new FormData();
+
+    datos.append("ministerio_id", ministerioSeleccionado.id);
+    datos.append("titulo", formulario.titulo.trim());
+    datos.append("fecha_inicio", formulario.fechaInicio);
+    datos.append(
+      "fecha_final",
+      formulario.fechaFinal || formulario.fechaInicio
+    );
+    datos.append("hora", formulario.hora.trim());
+    datos.append("lugar", formulario.lugar.trim());
+    datos.append("descripcion", formulario.descripcion.trim());
+    datos.append("activo", "1");
+
+    if (formulario.videoCompletoUrl.trim()) {
+      datos.append(
+        "video_completo_url",
+        formulario.videoCompletoUrl.trim()
+      );
+    }
+
+    if (archivoImagenPrincipal) {
+      datos.append("imagen", archivoImagenPrincipal);
+    }
+
+    archivosGaleria.forEach((archivo) => {
+      datos.append("fotos[]", archivo);
+    });
+
+    if (archivoVideoTrailer) {
+      datos.append("video_trailer", archivoVideoTrailer);
+    }
+
+    if (archivoPortadaTrailer) {
+      datos.append(
+        "video_trailer_portada",
+        archivoPortadaTrailer
+      );
+    }
+
+    if (esEdicion) {
+      datos.append("_method", "PUT");
+    }
+
+    try {
+      setGuardandoPublicacion(true);
+      setErrorFormulario("");
+
+      const url = esEdicion
+        ? `${API_URL}/publicaciones/${publicacionEditandoId}`
+        : `${API_URL}/publicaciones`;
+
+      const response = await fetch(url, {
+        method: "POST",
+        headers: {
+          Accept: "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: datos,
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        if (data.errors) {
+          const primerError = Object.values(data.errors)[0];
+
+          setErrorFormulario(
+            Array.isArray(primerError)
+              ? primerError[0]
+              : "Revisa los datos ingresados."
+          );
+        } else {
+          setErrorFormulario(
+            data.message ||
+              "No se pudo guardar la publicación."
+          );
+        }
+
+        setPanelActivo("formulario");
+        return;
+      }
+
+      await cargarDatos();
+      cerrarModal();
+    } catch (error) {
+      console.error(
+        "Error guardando publicación:",
+        error
+      );
+
+      setErrorFormulario(
+        "No se pudo conectar con el servidor."
+      );
+    } finally {
+      setGuardandoPublicacion(false);
+    }
   };
 
   const abrirVideoTrailer = () => {
@@ -951,19 +1104,62 @@ const CrearPublicacion = () => {
     setModalAbierto(true);
   };
 
-  const handleEliminar = (publicacion) => {
+  const handleEliminar = async (publicacion) => {
     const confirmar = window.confirm(
       `¿Seguro que quieres eliminar la publicación "${publicacion.titulo}"?`
     );
 
     if (!confirmar) return;
 
-    const nuevaLista = publicacionesAdmin
-      .filter((item) => item.id !== publicacion.id)
-      .map(quitarCategoria);
+    const token = obtenerToken();
 
-    setPublicacionesAdmin(nuevaLista);
-    guardarPublicaciones(nuevaLista);
+    try {
+      setEliminandoId(publicacion.id);
+
+      const response = await fetch(
+        `${API_URL}/publicaciones/${publicacion.id}`,
+        {
+          method: "DELETE",
+          headers: {
+            Accept: "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+
+      let data = null;
+
+      try {
+        data = await response.json();
+      } catch {
+        data = null;
+      }
+
+      if (!response.ok) {
+        throw new Error(
+          data?.message ||
+            "No se pudo eliminar la publicación."
+        );
+      }
+
+      setPublicacionesAdmin((actuales) =>
+        actuales.filter(
+          (item) => item.id !== publicacion.id
+        )
+      );
+    } catch (error) {
+      console.error(
+        "Error eliminando publicación:",
+        error
+      );
+
+      window.alert(
+        error.message ||
+          "No se pudo eliminar la publicación."
+      );
+    } finally {
+      setEliminandoId(null);
+    }
   };
 
   const cambiarMesCalendario = (cantidad) => {
@@ -1363,31 +1559,47 @@ const CrearPublicacion = () => {
           />
         </label>
 
-        <label>
-          <span>Imagen principal por URL *</span>
-          <input
-            type="text"
-            name="imagen"
-            value={formulario.imagen}
-            onChange={actualizarCampo}
-            placeholder="Ej: /img/publicaciones/foto1.jpg o una URL"
-            autoComplete="off"
-          />
-        </label>
       </div>
 
       <label className="admin-file-upload">
         <UploadCloud size={22} />
         <div>
-          <strong>Subir imagen principal desde tu PC</strong>
-          <small>Por ahora se guarda en localStorage. Usa imágenes livianas.</small>
+          <strong>
+            {formulario.imagen
+              ? "Cambiar imagen principal"
+              : "Subir imagen principal desde tu PC"}
+          </strong>
+          <small>
+            JPG, JPEG, PNG o WEBP. Máximo 5 MB.
+          </small>
         </div>
         <input
           type="file"
-          accept="image/*"
+          accept="image/jpeg,image/png,image/webp"
           onChange={manejarImagenPrincipalArchivo}
+          disabled={guardandoPublicacion}
         />
       </label>
+
+      {formulario.imagen && (
+        <div className="admin-publicacion-imagen-seleccionada">
+          <div className="admin-publicacion-imagen-preview">
+            <img
+              src={formulario.imagen}
+              alt="Vista previa de la imagen principal"
+            />
+          </div>
+
+          <div className="admin-publicacion-imagen-info">
+            <strong>Imagen principal</strong>
+            <span>
+              {archivoImagenPrincipal
+                ? archivoImagenPrincipal.name
+                : "Imagen actual de la publicación"}
+            </span>
+          </div>
+        </div>
+      )}
 
       <label>
         <span>Descripción *</span>
@@ -1401,76 +1613,44 @@ const CrearPublicacion = () => {
         />
       </label>
 
-      <label>
-        <span>Fotos de la galería por URL</span>
-        <textarea
-          name="fotosTexto"
-          value={formulario.fotosTexto}
-          onChange={actualizarCampo}
-          placeholder={`Puedes poner una URL por línea:
-/img/publicaciones/foto1.jpg
-/img/publicaciones/foto2.jpg
-/img/publicaciones/foto3.jpg`}
-          rows="5"
-          autoComplete="off"
-        />
-      </label>
-
       <label className="admin-file-upload">
         <UploadCloud size={22} />
         <div>
-          <strong>Subir varias fotos para la galería</strong>
-          <small>Puedes seleccionar varias imágenes livianas para prueba.</small>
+          <strong>
+            {formulario.fotosTexto
+              ? "Cambiar fotos de la galería"
+              : "Subir fotos para la galería"}
+          </strong>
+          <small>
+            Puedes elegir varias imágenes. Cada una máximo 5 MB.
+          </small>
         </div>
         <input
           type="file"
-          accept="image/*"
+          accept="image/jpeg,image/png,image/webp"
           multiple
           onChange={manejarFotosGaleriaArchivos}
+          disabled={guardandoPublicacion}
         />
       </label>
 
-      <div className="admin-form-grid">
-        <label>
-          <span>URL video trailer</span>
-          <input
-            type="text"
-            name="videoTrailerUrl"
-            value={videoTrailerSubidoDesdePc ? "" : formulario.videoTrailerUrl}
-            onChange={actualizarVideoTrailerUrl}
-            placeholder={
-              videoTrailerSubidoDesdePc
-                ? "Ya hay un video subido desde tu PC"
-                : "Ej: /videos/trailer.mp4"
-            }
-            disabled={videoTrailerSubidoDesdePc}
-            className={videoTrailerSubidoDesdePc ? "admin-input-disabled" : ""}
-            autoComplete="off"
-          />
-
-          {videoTrailerSubidoDesdePc && (
-            <div className="admin-video-uploaded-note">
-              <span>Video trailer subido desde tu PC correctamente.</span>
-
-              <button type="button" onClick={quitarVideoTrailerSubido}>
-                Quitar video
-              </button>
+      {fotosVistaPrevia.length > 0 && (
+        <div className="admin-publicacion-galeria-preview">
+          {fotosVistaPrevia.slice(0, 8).map((foto, index) => (
+            <div
+              className="admin-publicacion-galeria-item"
+              key={`${foto}-${index}`}
+            >
+              <img
+                src={foto}
+                alt={`Vista previa ${index + 1}`}
+              />
             </div>
-          )}
-        </label>
+          ))}
+        </div>
+      )}
 
-        <label>
-          <span>Portada del trailer</span>
-          <input
-            type="text"
-            name="videoTrailerPortada"
-            value={formulario.videoTrailerPortada}
-            onChange={actualizarCampo}
-            placeholder="Si lo dejas vacío, usará la imagen principal"
-            autoComplete="off"
-          />
-        </label>
-
+      <div className="admin-form-grid">
         <label>
           <span>URL video completo</span>
           <input
@@ -1478,8 +1658,9 @@ const CrearPublicacion = () => {
             name="videoCompletoUrl"
             value={formulario.videoCompletoUrl}
             onChange={actualizarCampo}
-            placeholder="Ej: link de YouTube, Facebook o video"
+            placeholder="Ej: enlace de YouTube, Facebook o Vimeo"
             autoComplete="off"
+            disabled={guardandoPublicacion}
           />
         </label>
       </div>
@@ -1487,23 +1668,101 @@ const CrearPublicacion = () => {
       <label className="admin-file-upload">
         <UploadCloud size={22} />
         <div>
-          <strong>Subir video trailer desde tu PC</strong>
-          <small>Recomendado: MP4 corto de 15 a 30 segundos.</small>
+          <strong>
+            {formulario.videoTrailerUrl
+              ? "Cambiar video trailer"
+              : "Subir video trailer desde tu PC"}
+          </strong>
+          <small>
+            MP4, WEBM u OGG. Máximo 50 MB.
+          </small>
         </div>
         <input
           type="file"
-          accept="video/mp4,video/webm,video/ogg,video/*"
+          accept="video/mp4,video/webm,video/ogg"
           onChange={manejarVideoTrailerArchivo}
+          disabled={guardandoPublicacion}
         />
       </label>
 
+      {videoTrailerSubidoDesdePc && (
+        <div className="admin-video-uploaded-note">
+          <span>
+            Nuevo trailer seleccionado: {archivoVideoTrailer.name}
+          </span>
+
+          <button
+            type="button"
+            onClick={quitarVideoTrailerSubido}
+            disabled={guardandoPublicacion}
+          >
+            Quitar video
+          </button>
+        </div>
+      )}
+
+      {formulario.videoTrailerUrl && (
+        <div className="admin-publicacion-video-preview">
+          <video
+            src={formulario.videoTrailerUrl}
+            controls
+            playsInline
+          />
+        </div>
+      )}
+
+      <label className="admin-file-upload">
+        <UploadCloud size={22} />
+        <div>
+          <strong>
+            {formulario.videoTrailerPortada
+              ? "Cambiar portada del trailer"
+              : "Subir portada del trailer"}
+          </strong>
+          <small>
+            Opcional. JPG, PNG o WEBP. Máximo 5 MB.
+          </small>
+        </div>
+        <input
+          type="file"
+          accept="image/jpeg,image/png,image/webp"
+          onChange={manejarPortadaTrailerArchivo}
+          disabled={guardandoPublicacion}
+        />
+      </label>
+
+      {formulario.videoTrailerPortada && (
+        <div className="admin-publicacion-portada-preview">
+          <img
+            src={formulario.videoTrailerPortada}
+            alt="Portada del trailer"
+          />
+          <span>
+            {archivoPortadaTrailer
+              ? archivoPortadaTrailer.name
+              : "Portada actual del trailer"}
+          </span>
+        </div>
+      )}
+
       <div className="admin-form-actions">
-        <button type="button" className="admin-form-cancel" onClick={cerrarModal}>
+        <button
+          type="button"
+          className="admin-form-cancel"
+          onClick={cerrarModal}
+          disabled={guardandoPublicacion}
+        >
           Cancelar
         </button>
 
-        <button type="submit" className="admin-form-save">
-          {modoFormulario === "editar"
+        <button
+          type="submit"
+          className="admin-form-save"
+          disabled={guardandoPublicacion}
+        >
+          {guardandoPublicacion
+            ? "Guardando..."
+            : modoFormulario === "editar"
             ? "Guardar cambios"
             : "Crear publicación"}
         </button>
@@ -1670,9 +1929,15 @@ const CrearPublicacion = () => {
         </button>
       </div>
 
+      {cargandoDatos && (
+        <div className="admin-publicaciones-cargando">
+          Cargando publicaciones...
+        </div>
+      )}
+
       <ListaAdmin
         columnas={columnasPublicaciones}
-        datos={publicacionesProcesadas}
+        datos={cargandoDatos ? [] : publicacionesProcesadas}
         onVer={handleVer}
         onEditar={handleEditar}
         onEliminar={handleEliminar}

@@ -35,4 +35,8 @@ Route::middleware('auth:sanctum')->group(function () {
 
     Route::apiResource('contactos', ContactoController::class);
 
+    Route::put('/perfil', [AuthController::class, 'actualizarPerfil']);
+
+    Route::put('/cambiar-password', [AuthController::class, 'cambiarPassword']);
+
 });

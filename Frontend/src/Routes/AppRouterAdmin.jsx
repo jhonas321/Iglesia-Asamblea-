@@ -13,17 +13,71 @@ import CrearConfiguracion from "../pages/admin/CrearConfiguracion";
 const AppRouterAdmin = () => {
   return (
     <Routes>
-      <Route path="/admin" element={<Navigate to="/admin/dashboard" replace />} />
+      {/* /admin */}
+      <Route
+        index
+        element={<Navigate to="dashboard" replace />}
+      />
 
-      <Route path="/admin/dashboard" element={<HomeAdmin />} />
-      <Route path="/admin/ministerios" element={<CrearMinisterios />} />
-      <Route path="/admin/fotos-inicio" element={<CrearHeroFotos />} />
-      <Route path="/admin/eventos" element={<CrearEventos />} />
-      <Route path="/admin/publicaciones" element={<CrearPublicacion />} />
-      <Route path="/admin/horarios" element={<CrearHorarios />} />
-      <Route path="/admin/organigrama" element={<CrearOrganigrama />} />
-      <Route path="/admin/contactos" element={<CrearContactos />} />
-      <Route path="/admin/configuracion" element={<CrearConfiguracion />} />
+      {/* /admin/dashboard */}
+      <Route
+        path="dashboard"
+        element={<HomeAdmin />}
+      />
+
+      {/* /admin/ministerios */}
+      <Route
+        path="ministerios"
+        element={<CrearMinisterios />}
+      />
+
+      {/* /admin/fotos-inicio */}
+      <Route
+        path="fotos-inicio"
+        element={<CrearHeroFotos />}
+      />
+
+      {/* /admin/eventos */}
+      <Route
+        path="eventos"
+        element={<CrearEventos />}
+      />
+
+      {/* /admin/publicaciones */}
+      <Route
+        path="publicaciones"
+        element={<CrearPublicacion />}
+      />
+
+      {/* /admin/horarios */}
+      <Route
+        path="horarios"
+        element={<CrearHorarios />}
+      />
+
+      {/* /admin/organigrama */}
+      <Route
+        path="organigrama"
+        element={<CrearOrganigrama />}
+      />
+
+      {/* /admin/contactos */}
+      <Route
+        path="contactos"
+        element={<CrearContactos />}
+      />
+
+      {/* /admin/configuracion */}
+      <Route
+        path="configuracion"
+        element={<CrearConfiguracion />}
+      />
+
+      {/* Ruta admin inexistente */}
+      <Route
+        path="*"
+        element={<Navigate to="dashboard" replace />}
+      />
     </Routes>
   );
 };

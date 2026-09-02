@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Evento;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 
 class EventoController extends Controller
 {
@@ -28,9 +29,20 @@ class EventoController extends Controller
             'whatsapp_numero' => 'nullable|string|max:30',
             'descripcion' => 'required|string',
             'detalles' => 'nullable|string',
-            'imagen' => 'nullable|string|max:1000',
+
+            'imagen' => 'nullable|image|mimes:jpg,jpeg,png,webp|max:5120',
+
             'activo' => 'nullable|boolean',
         ]);
+
+        $rutaImagen = null;
+
+        if ($request->hasFile('imagen')) {
+            $rutaImagen = $request->file('imagen')->store(
+                'eventos',
+                'public'
+            );
+        }
 
         $evento = Evento::create([
             'ministerio_id' => $request->ministerio_id,
@@ -42,7 +54,7 @@ class EventoController extends Controller
             'whatsapp_numero' => $request->whatsapp_numero,
             'descripcion' => $request->descripcion,
             'detalles' => $request->detalles,
-            'imagen' => $request->imagen,
+            'imagen' => $rutaImagen,
             'activo' => $request->activo ?? true,
         ]);
 
@@ -87,11 +99,13 @@ class EventoController extends Controller
             'whatsapp_numero' => 'nullable|string|max:30',
             'descripcion' => 'required|string',
             'detalles' => 'nullable|string',
-            'imagen' => 'nullable|string|max:1000',
+
+            'imagen' => 'nullable|image|mimes:jpg,jpeg,png,webp|max:5120',
+
             'activo' => 'nullable|boolean',
         ]);
 
-        $evento->update([
+        $datos = [
             'ministerio_id' => $request->ministerio_id,
             'titulo' => $request->titulo,
             'fecha_inicio' => $request->fecha_inicio,
@@ -101,9 +115,21 @@ class EventoController extends Controller
             'whatsapp_numero' => $request->whatsapp_numero,
             'descripcion' => $request->descripcion,
             'detalles' => $request->detalles,
-            'imagen' => $request->imagen,
             'activo' => $request->activo ?? $evento->activo,
-        ]);
+        ];
+
+        if ($request->hasFile('imagen')) {
+            if ($evento->imagen) {
+                Storage::disk('public')->delete($evento->imagen);
+            }
+
+            $datos['imagen'] = $request->file('imagen')->store(
+                'eventos',
+                'public'
+            );
+        }
+
+        $evento->update($datos);
 
         $evento->load('ministerio');
 
@@ -121,6 +147,10 @@ class EventoController extends Controller
             return response()->json([
                 'message' => 'Evento no encontrado.'
             ], 404);
+        }
+
+        if ($evento->imagen) {
+            Storage::disk('public')->delete($evento->imagen);
         }
 
         $evento->delete();

@@ -569,3 +569,11 @@
     background-position: 0% 50%;
   }
 }
+
+
+.login-error {
+  width: 100%;
+  margin: 5px 0 10px;
+  font-size: 14px;
+  text-align: center;
+}

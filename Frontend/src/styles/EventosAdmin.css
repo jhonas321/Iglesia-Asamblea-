@@ -183,3 +183,53 @@
     max-height: 200px !important;
   }
 }
+
+
+.admin-evento-imagen-seleccionada {
+  margin-top: 14px;
+  padding: 14px;
+  border: 1px solid #e5e7eb;
+  border-radius: 18px;
+  background: #f8fafc;
+
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  align-items: flex-start;
+}
+
+.admin-evento-imagen-preview {
+  width: 100%;
+  max-width: 340px;
+  height: 210px;
+  border-radius: 16px;
+  overflow: hidden;
+  background: #e5e7eb;
+  border: 1px solid #dbe2ea;
+  box-shadow: 0 10px 24px rgba(15, 23, 42, 0.08);
+}
+
+.admin-evento-imagen-preview img {
+  width: 100%;
+  height: 100%;
+  display: block;
+  object-fit: cover;
+}
+
+.admin-evento-imagen-info {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.admin-evento-imagen-titulo {
+  font-size: 14px;
+  font-weight: 700;
+  color: #0f172a;
+}
+
+.admin-evento-imagen-nombre {
+  font-size: 13px;
+  color: #64748b;
+  word-break: break-word;
+}

@@ -58,8 +58,56 @@ class AuthController extends Controller
 
     public function user(Request $request)
     {
+        $user = $request->user()->load('rol');
+
         return response()->json([
-            'user' => $request->user()->load('rol'),
+            'user' => $user,
+        ]);
+    }
+
+    public function actualizarPerfil(Request $request)
+    {
+        $request->validate([
+            'name' => 'required|string|max:100',
+            'icono' => 'required|string|max:50',
+        ]);
+
+        $user = $request->user();
+
+        $user->update([
+            'name' => $request->name,
+            'icono' => $request->icono,
+        ]);
+
+        $user->load('rol');
+
+        return response()->json([
+            'message' => 'Perfil actualizado correctamente.',
+            'user' => $user,
+        ]);
+    }
+
+    public function cambiarPassword(Request $request)
+    {
+        $request->validate([
+            'password_actual' => 'required|string',
+            'password_nueva' => 'required|string|min:6|confirmed',
+        ]);
+
+        $user = $request->user();
+
+        if (!Hash::check($request->password_actual, $user->password)) {
+            return response()->json([
+                'message' => 'La contraseña actual es incorrecta.'
+            ], 422);
+        }
+
+        $user->update([
+            'password' => Hash::make($request->password_nueva),
+        ]);
+
+        return response()->json([
+            'message' => 'Contraseña actualizada correctamente.'
         ]);
     }
 

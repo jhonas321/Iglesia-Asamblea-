@@ -4,15 +4,12 @@ import { PlusCircle, X, Trash2, UserPlus } from "lucide-react";
 import { FaRegUser, FaRegUserCircle } from "react-icons/fa";
 
 import ListaAdmin from "../../components/admin/ListaAdmin";
-import {
-  guardarOrganigrama,
-  obtenerMinisteriosGuardados,
-  obtenerOrganigramaGuardado,
-} from "../../data/adminStorage";
 
 import "../../styles/AdminCrudPage.css";
 import "../../styles/organigrama.css";
 import "../../styles/OrganigramaAdmin.css";
+
+const API_URL = "http://127.0.0.1:8000/api";
 
 const opcionesTipoSeccion = [
   {
@@ -80,18 +77,38 @@ function Avatar({ genero = "hombre", nombre = "", principal = false }) {
   );
 }
 
+const obtenerToken = () => localStorage.getItem("token");
+
+const convertirSeccionBackendAFrontend = (seccion) => ({
+  id: seccion.id,
+  ministerioId: seccion.ministerio_id,
+  titulo: seccion.titulo || seccion.ministerio?.nombre || "",
+  descripcion: seccion.descripcion || "",
+  tipo: seccion.tipo === "principal" ? "principal" : "normal",
+  activo: seccion.activo,
+  miembros: Array.isArray(seccion.miembros)
+    ? seccion.miembros.map((miembro) => ({
+        id: miembro.id,
+        cargo: miembro.cargo || "",
+        nombre: miembro.nombre || "",
+        genero: miembro.genero === "mujer" ? "mujer" : "hombre",
+        orden: miembro.orden || 1,
+        activo: miembro.activo,
+      }))
+    : [],
+});
+
 const CrearOrganigrama = () => {
   const ministerioBoxRef = useRef(null);
   const tipoBoxRef = useRef(null);
   const generoBoxRefs = useRef({});
 
-  const [organigramaAdmin, setOrganigramaAdmin] = useState(() =>
-    obtenerOrganigramaGuardado()
-  );
+  const [organigramaAdmin, setOrganigramaAdmin] = useState([]);
+  const [ministeriosDisponibles, setMinisteriosDisponibles] = useState([]);
 
-  const ministeriosDisponibles = useMemo(() => {
-    return obtenerMinisteriosGuardados();
-  }, []);
+  const [cargandoDatos, setCargandoDatos] = useState(true);
+  const [guardandoOrganigrama, setGuardandoOrganigrama] = useState(false);
+  const [eliminandoId, setEliminandoId] = useState(null);
 
   const [modalAbierto, setModalAbierto] = useState(false);
   const [modoFormulario, setModoFormulario] = useState("crear");
@@ -107,6 +124,66 @@ const CrearOrganigrama = () => {
   const [generoAbiertoId, setGeneroAbiertoId] = useState(null);
 
   const esModoVista = modoFormulario === "ver";
+
+  const cargarDatos = useCallback(async () => {
+    const token = obtenerToken();
+
+    try {
+      setCargandoDatos(true);
+
+      const [respuestaSecciones, respuestaMinisterios] =
+        await Promise.all([
+          fetch(`${API_URL}/secciones-organigrama`, {
+            method: "GET",
+            headers: {
+              Accept: "application/json",
+              Authorization: `Bearer ${token}`,
+            },
+          }),
+          fetch(`${API_URL}/ministerios`, {
+            method: "GET",
+            headers: {
+              Accept: "application/json",
+              Authorization: `Bearer ${token}`,
+            },
+          }),
+        ]);
+
+      const datosSecciones = await respuestaSecciones.json();
+      const datosMinisterios = await respuestaMinisterios.json();
+
+      if (!respuestaSecciones.ok) {
+        throw new Error(
+          datosSecciones.message ||
+            "No se pudo cargar el organigrama."
+        );
+      }
+
+      if (!respuestaMinisterios.ok) {
+        throw new Error(
+          datosMinisterios.message ||
+            "No se pudieron cargar los ministerios."
+        );
+      }
+
+      setOrganigramaAdmin(
+        datosSecciones.map(convertirSeccionBackendAFrontend)
+      );
+
+      setMinisteriosDisponibles(datosMinisterios);
+    } catch (error) {
+      console.error("Error cargando organigrama:", error);
+      setErrorFormulario(
+        error.message || "No se pudieron cargar los datos."
+      );
+    } finally {
+      setCargandoDatos(false);
+    }
+  }, []);
+
+  useEffect(() => {
+    cargarDatos();
+  }, [cargarDatos]);
 
   const ministeriosOpciones = useMemo(() => {
     const nombresRegistrados = ministeriosDisponibles
@@ -411,7 +488,7 @@ const CrearOrganigrama = () => {
     setModalAbierto(true);
   };
 
-  const guardarFormulario = (e) => {
+  const guardarFormulario = async (e) => {
     e.preventDefault();
 
     const error = validarFormulario();
@@ -422,48 +499,194 @@ const CrearOrganigrama = () => {
       return;
     }
 
-    const miembrosNormalizados = formulario.miembros
-      .filter((miembro) => miembro.nombre.trim() && miembro.cargo.trim())
-      .map((miembro) => ({
-        id: miembro.id || `miembro-${Date.now()}`,
-        cargo: miembro.cargo.trim(),
-        nombre: miembro.nombre.trim(),
-        genero: miembro.genero === "mujer" ? "mujer" : "hombre",
-      }));
+    const ministerioSeleccionado = ministeriosDisponibles.find(
+      (ministerio) =>
+        ministerio.nombre.trim().toLowerCase() ===
+        formulario.titulo.trim().toLowerCase()
+    );
 
-    const seccionNormalizada = {
-      titulo: formulario.titulo.trim(),
-      descripcion: formulario.descripcion.trim(),
-      tipo: formulario.tipo === "principal" ? "principal" : "normal",
-      miembros: miembrosNormalizados,
-    };
-
-    let nuevaLista = [];
-
-    if (modoFormulario === "editar") {
-      nuevaLista = organigramaAdmin.map((seccion) =>
-        seccion.id === seccionEditandoId
-          ? {
-              ...seccion,
-              ...seccionNormalizada,
-            }
-          : seccion
+    if (!ministerioSeleccionado) {
+      setErrorFormulario(
+        "El ministerio seleccionado no es válido."
       );
-    } else {
-      const nuevaSeccion = {
-        id: Date.now(),
-        ...seccionNormalizada,
-      };
-
-      nuevaLista =
-        nuevaSeccion.tipo === "principal"
-          ? [nuevaSeccion, ...organigramaAdmin]
-          : [...organigramaAdmin, nuevaSeccion];
+      setPanelActivo("formulario");
+      return;
     }
 
-    setOrganigramaAdmin(nuevaLista);
-    guardarOrganigrama(nuevaLista);
-    cerrarModal();
+    const miembrosValidos = formulario.miembros
+      .filter(
+        (miembro) =>
+          miembro.nombre.trim() && miembro.cargo.trim()
+      )
+      .map((miembro, index) => ({
+        ...miembro,
+        nombre: miembro.nombre.trim(),
+        cargo: miembro.cargo.trim(),
+        genero:
+          miembro.genero === "mujer" ? "mujer" : "hombre",
+        orden: index + 1,
+      }));
+
+    const token = obtenerToken();
+    const esEdicion = modoFormulario === "editar";
+
+    try {
+      setGuardandoOrganigrama(true);
+      setErrorFormulario("");
+
+      const datosSeccion = {
+        ministerio_id: ministerioSeleccionado.id,
+        titulo: formulario.titulo.trim(),
+        descripcion: formulario.descripcion.trim(),
+        tipo:
+          formulario.tipo === "principal"
+            ? "principal"
+            : "normal",
+        activo: true,
+      };
+
+      const respuestaSeccion = await fetch(
+        esEdicion
+          ? `${API_URL}/secciones-organigrama/${seccionEditandoId}`
+          : `${API_URL}/secciones-organigrama`,
+        {
+          method: esEdicion ? "PUT" : "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Accept: "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+          body: JSON.stringify(datosSeccion),
+        }
+      );
+
+      const dataSeccion = await respuestaSeccion.json();
+
+      if (!respuestaSeccion.ok) {
+        if (dataSeccion.errors) {
+          const primerError =
+            Object.values(dataSeccion.errors)[0];
+
+          throw new Error(
+            Array.isArray(primerError)
+              ? primerError[0]
+              : "Revisa los datos de la sección."
+          );
+        }
+
+        throw new Error(
+          dataSeccion.message ||
+            "No se pudo guardar la sección."
+        );
+      }
+
+      const seccionId = esEdicion
+        ? seccionEditandoId
+        : dataSeccion.seccion.id;
+
+      const seccionAnterior = esEdicion
+        ? organigramaAdmin.find(
+            (seccion) => seccion.id === seccionEditandoId
+          )
+        : null;
+
+      const idsMiembrosFormulario = miembrosValidos
+        .filter((miembro) => Number.isInteger(miembro.id))
+        .map((miembro) => miembro.id);
+
+      const miembrosAEliminar = esEdicion
+        ? (seccionAnterior?.miembros || []).filter(
+            (miembro) =>
+              Number.isInteger(miembro.id) &&
+              !idsMiembrosFormulario.includes(miembro.id)
+          )
+        : [];
+
+      for (const miembro of miembrosAEliminar) {
+        const respuestaEliminar = await fetch(
+          `${API_URL}/miembros-organigrama/${miembro.id}`,
+          {
+            method: "DELETE",
+            headers: {
+              Accept: "application/json",
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
+
+        if (!respuestaEliminar.ok) {
+          const dataEliminar =
+            await respuestaEliminar.json().catch(() => ({}));
+
+          throw new Error(
+            dataEliminar.message ||
+              `No se pudo eliminar a ${miembro.nombre}.`
+          );
+        }
+      }
+
+      for (const miembro of miembrosValidos) {
+        const esMiembroExistente =
+          esEdicion && Number.isInteger(miembro.id);
+
+        const respuestaMiembro = await fetch(
+          esMiembroExistente
+            ? `${API_URL}/miembros-organigrama/${miembro.id}`
+            : `${API_URL}/miembros-organigrama`,
+          {
+            method: esMiembroExistente ? "PUT" : "POST",
+            headers: {
+              "Content-Type": "application/json",
+              Accept: "application/json",
+              Authorization: `Bearer ${token}`,
+            },
+            body: JSON.stringify({
+              seccion_organigrama_id: seccionId,
+              nombre: miembro.nombre,
+              cargo: miembro.cargo,
+              genero: miembro.genero,
+              orden: miembro.orden,
+              activo: true,
+            }),
+          }
+        );
+
+        const dataMiembro =
+          await respuestaMiembro.json().catch(() => ({}));
+
+        if (!respuestaMiembro.ok) {
+          if (dataMiembro.errors) {
+            const primerError =
+              Object.values(dataMiembro.errors)[0];
+
+            throw new Error(
+              Array.isArray(primerError)
+                ? primerError[0]
+                : "Revisa los datos del miembro."
+            );
+          }
+
+          throw new Error(
+            dataMiembro.message ||
+              `No se pudo guardar a ${miembro.nombre}.`
+          );
+        }
+      }
+
+      await cargarDatos();
+      cerrarModal();
+    } catch (error) {
+      console.error("Error guardando organigrama:", error);
+
+      setErrorFormulario(
+        error.message ||
+          "No se pudo guardar el organigrama."
+      );
+
+      setPanelActivo("formulario");
+    } finally {
+      setGuardandoOrganigrama(false);
+    }
   };
 
   const handleCrear = () => {
@@ -490,17 +713,81 @@ const CrearOrganigrama = () => {
     setModalAbierto(true);
   };
 
-  const handleEliminar = (seccion) => {
+  const handleEliminar = async (seccion) => {
     const confirmar = window.confirm(
       `¿Seguro que quieres eliminar el ministerio "${seccion.titulo}" del organigrama?`
     );
 
     if (!confirmar) return;
 
-    const nuevaLista = organigramaAdmin.filter((item) => item.id !== seccion.id);
+    const token = obtenerToken();
 
-    setOrganigramaAdmin(nuevaLista);
-    guardarOrganigrama(nuevaLista);
+    try {
+      setEliminandoId(seccion.id);
+
+      /*
+       * Los miembros deberían eliminarse automáticamente si la
+       * relación en PostgreSQL usa ON DELETE CASCADE.
+       * Si no existe CASCADE, los eliminamos primero.
+       */
+      for (const miembro of seccion.miembros || []) {
+        if (!Number.isInteger(miembro.id)) continue;
+
+        const respuestaMiembro = await fetch(
+          `${API_URL}/miembros-organigrama/${miembro.id}`,
+          {
+            method: "DELETE",
+            headers: {
+              Accept: "application/json",
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
+
+        if (!respuestaMiembro.ok) {
+          const dataMiembro =
+            await respuestaMiembro.json().catch(() => ({}));
+
+          throw new Error(
+            dataMiembro.message ||
+              `No se pudo eliminar a ${miembro.nombre}.`
+          );
+        }
+      }
+
+      const response = await fetch(
+        `${API_URL}/secciones-organigrama/${seccion.id}`,
+        {
+          method: "DELETE",
+          headers: {
+            Accept: "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+
+      const data = await response.json().catch(() => ({}));
+
+      if (!response.ok) {
+        throw new Error(
+          data.message ||
+            "No se pudo eliminar la sección del organigrama."
+        );
+      }
+
+      setOrganigramaAdmin((actuales) =>
+        actuales.filter((item) => item.id !== seccion.id)
+      );
+    } catch (error) {
+      console.error("Error eliminando organigrama:", error);
+
+      window.alert(
+        error.message ||
+          "No se pudo eliminar la sección del organigrama."
+      );
+    } finally {
+      setEliminandoId(null);
+    }
   };
 
   const obtenerSeccionesVistaPrevia = () => {
@@ -740,6 +1027,7 @@ const CrearOrganigrama = () => {
             type="button"
             className="admin-member-add-btn"
             onClick={agregarMiembro}
+            disabled={guardandoOrganigrama}
           >
             <UserPlus size={18} />
             Agregar miembro
@@ -830,7 +1118,7 @@ const CrearOrganigrama = () => {
                 type="button"
                 className="admin-member-delete-btn"
                 onClick={() => eliminarMiembro(miembro.id)}
-                disabled={formulario.miembros.length === 1}
+                disabled={formulario.miembros.length === 1 || guardandoOrganigrama}
                 aria-label="Eliminar miembro"
               >
                 <Trash2 size={18} />
@@ -845,12 +1133,21 @@ const CrearOrganigrama = () => {
           type="button"
           className="admin-form-cancel"
           onClick={cerrarModal}
+          disabled={guardandoOrganigrama}
         >
           Cancelar
         </button>
 
-        <button type="submit" className="admin-form-save">
-          {modoFormulario === "editar" ? "Guardar cambios" : "Crear ministerio"}
+        <button
+          type="submit"
+          className="admin-form-save"
+          disabled={guardandoOrganigrama}
+        >
+          {guardandoOrganigrama
+            ? "Guardando..."
+            : modoFormulario === "editar"
+            ? "Guardar cambios"
+            : "Crear ministerio"}
         </button>
       </div>
     </form>
@@ -960,9 +1257,15 @@ const CrearOrganigrama = () => {
         </button>
       </div>
 
+      {cargandoDatos && (
+        <div className="admin-organigrama-cargando">
+          Cargando organigrama...
+        </div>
+      )}
+
       <ListaAdmin
         columnas={columnasOrganigrama}
-        datos={organigramaProcesado}
+        datos={cargandoDatos ? [] : organigramaProcesado}
         onVer={handleVer}
         onEditar={handleEditar}
         onEliminar={handleEliminar}

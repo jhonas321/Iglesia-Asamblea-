@@ -12,15 +12,12 @@ import PhoneInput from "react-phone-input-2";
 import "react-phone-input-2/lib/style.css";
 
 import ListaAdmin from "../../components/admin/ListaAdmin";
-import {
-  guardarEventos,
-  obtenerEventosGuardados,
-  obtenerMinisteriosGuardados,
-} from "../../data/adminStorage";
-
 import "../../styles/AdminCrudPage.css";
 import "../../styles/eventos-ministerios.css";
 import "../../styles/EventosAdmin.css";
+
+const API_URL = "http://127.0.0.1:8000/api";
+const BACKEND_URL = "http://127.0.0.1:8000";
 
 const obtenerFechaActualInput = () => {
   const hoy = new Date();
@@ -186,15 +183,6 @@ const crearFormularioEventoVacio = () => ({
   imagen: "",
 });
 
-const convertirArchivoABase64 = (archivo) => {
-  return new Promise((resolve, reject) => {
-    const lector = new FileReader();
-
-    lector.onload = () => resolve(lector.result);
-    lector.onerror = () => reject(new Error("No se pudo leer la imagen."));
-    lector.readAsDataURL(archivo);
-  });
-};
 
 const normalizarHoraInput = (hora) => {
   if (!hora) return "";
@@ -202,6 +190,7 @@ const normalizarHoraInput = (hora) => {
   const horaLimpia = String(hora).trim();
 
   if (/^\d{2}:\d{2}$/.test(horaLimpia)) return horaLimpia;
+  if (/^\d{2}:\d{2}:\d{2}$/.test(horaLimpia)) return horaLimpia.slice(0, 5);
 
   const match = horaLimpia.match(/^(\d{1,2}):(\d{2})\s*(am|pm)$/i);
 
@@ -220,6 +209,46 @@ const normalizarHoraInput = (hora) => {
 const limpiarNumeroWhatsApp = (numero) => {
   return String(numero || "").replace(/\D/g, "");
 };
+
+
+const obtenerToken = () => localStorage.getItem("token");
+
+const obtenerUrlImagen = (imagen) => {
+  if (!imagen) return "";
+
+  const valor = String(imagen);
+
+  // Imágenes externas, vistas previas blob/base64 o rutas públicas antiguas de React.
+  if (
+    valor.startsWith("http://") ||
+    valor.startsWith("https://") ||
+    valor.startsWith("blob:") ||
+    valor.startsWith("data:") ||
+    valor.startsWith("/")
+  ) {
+    return valor;
+  }
+
+  // Rutas nuevas almacenadas por Laravel, por ejemplo:
+  // eventos/abc123.jpg
+  return `${BACKEND_URL}/storage/${valor}`;
+};
+
+const convertirEventoBackendAFrontend = (evento) => ({
+  id: evento.id,
+  titulo: evento.titulo || "",
+  ministerioId: evento.ministerio_id,
+  ministerio: evento.ministerio?.nombre || "",
+  fechaInicio: evento.fecha_inicio || "",
+  fechaFinal: evento.fecha_final || evento.fecha_inicio || "",
+  hora: evento.hora || "",
+  lugar: evento.lugar || "",
+  whatsappNumero: evento.whatsapp_numero || "",
+  descripcion: evento.descripcion || "",
+  detalles: evento.detalles || "",
+  imagen: obtenerUrlImagen(evento.imagen),
+  activo: evento.activo,
+});
 
 const obtenerDiasCalendario = (fechaBase) => {
   const anio = fechaBase.getFullYear();
@@ -258,13 +287,11 @@ const CrearEventos = () => {
   const fechaFinalBoxRef = useRef(null);
   const horaBoxRef = useRef(null);
 
-  const [eventosAdmin, setEventosAdmin] = useState(() =>
-    obtenerEventosGuardados()
-  );
-
-  const ministeriosDisponibles = useMemo(() => {
-    return obtenerMinisteriosGuardados();
-  }, []);
+  const [eventosAdmin, setEventosAdmin] = useState([]);
+  const [ministeriosDisponibles, setMinisteriosDisponibles] = useState([]);
+  const [cargandoDatos, setCargandoDatos] = useState(true);
+  const [guardandoEvento, setGuardandoEvento] = useState(false);
+  const [errorCarga, setErrorCarga] = useState("");
 
   const [modalAbierto, setModalAbierto] = useState(false);
   const [modoFormulario, setModoFormulario] = useState("crear");
@@ -272,6 +299,7 @@ const CrearEventos = () => {
   const [eventoEditandoId, setEventoEditandoId] = useState(null);
   const [formulario, setFormulario] = useState(crearFormularioEventoVacio);
   const [errorFormulario, setErrorFormulario] = useState("");
+  const [archivoImagen, setArchivoImagen] = useState(null);
 
   const [ministerioAbierto, setMinisterioAbierto] = useState(false);
   const [calendarioAbierto, setCalendarioAbierto] = useState(null);
@@ -285,6 +313,56 @@ const CrearEventos = () => {
   });
 
   const esModoVista = modoFormulario === "ver";
+
+
+  const cargarDatos = useCallback(async () => {
+    const token = obtenerToken();
+
+    try {
+      setCargandoDatos(true);
+      setErrorCarga("");
+
+      const [respuestaEventos, respuestaMinisterios] = await Promise.all([
+        fetch(`${API_URL}/eventos`, {
+          method: "GET",
+          headers: {
+            Accept: "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+        }),
+        fetch(`${API_URL}/ministerios`, {
+          method: "GET",
+          headers: {
+            Accept: "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+        }),
+      ]);
+
+      if (!respuestaEventos.ok) {
+        throw new Error("No se pudieron cargar los eventos.");
+      }
+
+      if (!respuestaMinisterios.ok) {
+        throw new Error("No se pudieron cargar los ministerios.");
+      }
+
+      const datosEventos = await respuestaEventos.json();
+      const datosMinisterios = await respuestaMinisterios.json();
+
+      setEventosAdmin(datosEventos.map(convertirEventoBackendAFrontend));
+      setMinisteriosDisponibles(datosMinisterios);
+    } catch (error) {
+      console.error("Error cargando eventos:", error);
+      setErrorCarga(error.message || "No se pudieron cargar los datos.");
+    } finally {
+      setCargandoDatos(false);
+    }
+  }, []);
+
+  useEffect(() => {
+    cargarDatos();
+  }, [cargarDatos]);
 
   const cerrarSelectores = useCallback(() => {
     setMinisterioAbierto(false);
@@ -406,6 +484,7 @@ const CrearEventos = () => {
     setModalAbierto(false);
     setEventoEditandoId(null);
     setFormulario(crearFormularioEventoVacio());
+    setArchivoImagen(null);
     setErrorFormulario("");
     setPanelActivo("formulario");
     cerrarSelectores();
@@ -526,31 +605,50 @@ const CrearEventos = () => {
     },
   ];
 
-  const manejarImagenArchivo = async (e) => {
+  const manejarImagenArchivo = (e) => {
     const archivo = e.target.files?.[0];
 
     if (!archivo) return;
 
-    if (!archivo.type.startsWith("image/")) {
-      setErrorFormulario("Debes seleccionar una imagen válida.");
+    const tiposPermitidos = [
+      "image/jpeg",
+      "image/png",
+      "image/webp",
+    ];
+
+    if (!tiposPermitidos.includes(archivo.type)) {
+      setErrorFormulario(
+        "La imagen debe ser JPG, JPEG, PNG o WEBP."
+      );
+      e.target.value = "";
       return;
     }
 
-    try {
-      const imagenBase64 = await convertirArchivoABase64(archivo);
+    const maximoBytes = 5 * 1024 * 1024;
 
-      setFormulario((actual) => ({
-        ...actual,
-        imagen: imagenBase64,
-      }));
-
-      setErrorFormulario("");
-    } catch {
-      setErrorFormulario("No se pudo cargar la imagen.");
+    if (archivo.size > maximoBytes) {
+      setErrorFormulario(
+        "La imagen no puede superar los 5 MB."
+      );
+      e.target.value = "";
+      return;
     }
+
+    setArchivoImagen(archivo);
+
+    const vistaPrevia = URL.createObjectURL(archivo);
+
+    setFormulario((actual) => ({
+      ...actual,
+      imagen: vistaPrevia,
+    }));
+
+    setErrorFormulario("");
   };
 
   const cargarFormularioEvento = (evento) => {
+    setArchivoImagen(null);
+
     setFormulario({
       titulo: evento.titulo || "",
       ministerio: evento.ministerio || "",
@@ -570,6 +668,7 @@ const CrearEventos = () => {
     setPanelActivo("formulario");
     setEventoEditandoId(null);
     setFormulario(crearFormularioEventoVacio());
+    setArchivoImagen(null);
     setErrorFormulario("");
     cerrarSelectores();
     setModalAbierto(true);
@@ -585,7 +684,7 @@ const CrearEventos = () => {
     if (!formulario.lugar.trim()) return "El lugar es obligatorio.";
     if (!formulario.descripcion.trim())
       return "La descripción corta es obligatoria.";
-    if (!formulario.imagen.trim()) return "La imagen o afiche es obligatorio.";
+    if (!formulario.imagen.trim()) return "Debes seleccionar una imagen o afiche.";
 
     if (numeroWhatsApp && numeroWhatsApp.length < 8) {
       return "El número de WhatsApp no es válido.";
@@ -602,7 +701,7 @@ const CrearEventos = () => {
     return "";
   };
 
-  const guardarFormulario = (e) => {
+  const guardarFormulario = async (e) => {
     e.preventDefault();
 
     const error = validarFormulario();
@@ -613,42 +712,114 @@ const CrearEventos = () => {
       return;
     }
 
-    const eventoNormalizado = {
-      titulo: formulario.titulo.trim(),
-      ministerio: formulario.ministerio.trim(),
-      fechaInicio: formulario.fechaInicio,
-      fechaFinal: formulario.fechaFinal || formulario.fechaInicio,
-      hora: formulario.hora.trim(),
-      lugar: formulario.lugar.trim(),
-      whatsappNumero: limpiarNumeroWhatsApp(formulario.whatsappNumero),
-      descripcion: formulario.descripcion.trim(),
-      detalles: formulario.detalles.trim() || formulario.descripcion.trim(),
-      imagen: formulario.imagen.trim(),
-    };
+    const ministerioSeleccionado = ministeriosDisponibles.find(
+      (ministerio) =>
+        ministerio.nombre.trim().toLowerCase() ===
+        formulario.ministerio.trim().toLowerCase()
+    );
 
-    let nuevaLista = [];
-
-    if (modoFormulario === "editar") {
-      nuevaLista = eventosAdmin.map((evento) =>
-        evento.id === eventoEditandoId
-          ? {
-              ...evento,
-              ...eventoNormalizado,
-            }
-          : evento
-      );
-    } else {
-      const nuevoEvento = {
-        id: Date.now(),
-        ...eventoNormalizado,
-      };
-
-      nuevaLista = [nuevoEvento, ...eventosAdmin];
+    if (!ministerioSeleccionado) {
+      setErrorFormulario("El ministerio seleccionado no es válido.");
+      setPanelActivo("formulario");
+      return;
     }
 
-    setEventosAdmin(nuevaLista);
-    guardarEventos(nuevaLista);
-    cerrarModal();
+    const token = obtenerToken();
+    const esEdicion = modoFormulario === "editar";
+
+    const datosEvento = new FormData();
+
+    datosEvento.append("ministerio_id", ministerioSeleccionado.id);
+    datosEvento.append("titulo", formulario.titulo.trim());
+    datosEvento.append("fecha_inicio", formulario.fechaInicio);
+    datosEvento.append(
+      "fecha_final",
+      formulario.fechaFinal || formulario.fechaInicio
+    );
+    datosEvento.append("hora", formulario.hora.trim());
+    datosEvento.append("lugar", formulario.lugar.trim());
+
+    const numeroWhatsapp = limpiarNumeroWhatsApp(
+      formulario.whatsappNumero
+    );
+
+    if (numeroWhatsapp) {
+      datosEvento.append("whatsapp_numero", numeroWhatsapp);
+    }
+
+    datosEvento.append(
+      "descripcion",
+      formulario.descripcion.trim()
+    );
+
+    datosEvento.append(
+      "detalles",
+      formulario.detalles.trim() ||
+        formulario.descripcion.trim()
+    );
+
+    datosEvento.append("activo", "1");
+
+    // Solo se envía "imagen" cuando el usuario escogió un archivo nuevo.
+    // En edición, si no se selecciona otra imagen, Laravel conserva la anterior.
+    if (archivoImagen) {
+      datosEvento.append("imagen", archivoImagen);
+    }
+
+    // Para archivos con Laravel es más confiable enviar POST y simular PUT.
+    if (esEdicion) {
+      datosEvento.append("_method", "PUT");
+    }
+
+    try {
+      setGuardandoEvento(true);
+      setErrorFormulario("");
+
+      const url = esEdicion
+        ? `${API_URL}/eventos/${eventoEditandoId}`
+        : `${API_URL}/eventos`;
+
+      const response = await fetch(url, {
+        method: "POST",
+        headers: {
+          Accept: "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: datosEvento,
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        if (data.errors) {
+          const primerError = Object.values(data.errors)[0];
+
+          setErrorFormulario(
+            Array.isArray(primerError)
+              ? primerError[0]
+              : "Revisa los datos ingresados."
+          );
+        } else {
+          setErrorFormulario(
+            data.message || "No se pudo guardar el evento."
+          );
+        }
+
+        setPanelActivo("formulario");
+        return;
+      }
+
+      await cargarDatos();
+      cerrarModal();
+    } catch (error) {
+      console.error("Error guardando evento:", error);
+
+      setErrorFormulario(
+        "No se pudo conectar con el servidor."
+      );
+    } finally {
+      setGuardandoEvento(false);
+    }
   };
 
   const handleCrear = () => {
@@ -675,17 +846,45 @@ const CrearEventos = () => {
     setModalAbierto(true);
   };
 
-  const handleEliminar = (evento) => {
+  const handleEliminar = async (evento) => {
     const confirmar = window.confirm(
       `¿Seguro que quieres eliminar el evento "${evento.titulo}"?`
     );
 
     if (!confirmar) return;
 
-    const nuevaLista = eventosAdmin.filter((item) => item.id !== evento.id);
+    const token = obtenerToken();
 
-    setEventosAdmin(nuevaLista);
-    guardarEventos(nuevaLista);
+    try {
+      const response = await fetch(`${API_URL}/eventos/${evento.id}`, {
+        method: "DELETE",
+        headers: {
+          Accept: "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      let data = null;
+
+      try {
+        data = await response.json();
+      } catch {
+        data = null;
+      }
+
+      if (!response.ok) {
+        throw new Error(
+          data?.message || "No se pudo eliminar el evento."
+        );
+      }
+
+      setEventosAdmin((actuales) =>
+        actuales.filter((item) => item.id !== evento.id)
+      );
+    } catch (error) {
+      console.error("Error eliminando evento:", error);
+      window.alert(error.message || "No se pudo eliminar el evento.");
+    }
   };
 
   const cambiarMesCalendario = (cantidad) => {
@@ -1050,29 +1249,50 @@ const CrearEventos = () => {
         </div>
       </label>
 
-      <label>
-        <span>Imagen o afiche por URL *</span>
-
-        <input
-          type="text"
-          name="imagen"
-          value={formulario.imagen}
-          onChange={actualizarCampo}
-          placeholder="Ej: /img/eventos/fogata.jpg o una URL"
-          autoComplete="off"
-        />
-      </label>
-
       <label className="admin-file-upload">
         <UploadCloud size={22} />
 
         <div>
-          <strong>Subir imagen desde tu PC</strong>
-          <small>Por ahora se guarda en localStorage. Usa imágenes livianas.</small>
+          <strong>
+            {formulario.imagen
+              ? "Cambiar imagen del evento"
+              : "Subir imagen desde tu PC"}
+          </strong>
+          <small>
+            JPG, JPEG, PNG o WEBP. Tamaño máximo: 5 MB.
+          </small>
         </div>
 
-        <input type="file" accept="image/*" onChange={manejarImagenArchivo} />
+        <input
+          type="file"
+          accept="image/jpeg,image/png,image/webp"
+          onChange={manejarImagenArchivo}
+          disabled={guardandoEvento}
+        />
       </label>
+
+      {formulario.imagen && (
+        <div className="admin-evento-imagen-seleccionada">
+          <div className="admin-evento-imagen-preview">
+            <img
+              src={formulario.imagen}
+              alt="Vista previa del afiche"
+            />
+          </div>
+
+          <div className="admin-evento-imagen-info">
+            <span className="admin-evento-imagen-titulo">
+              Vista previa de la imagen
+            </span>
+
+            <span className="admin-evento-imagen-nombre">
+              {archivoImagen
+                ? archivoImagen.name
+                : "Imagen actual del evento"}
+            </span>
+          </div>
+        </div>
+      )}
 
       <label>
         <span>Descripción corta *</span>
@@ -1101,12 +1321,25 @@ const CrearEventos = () => {
       </label>
 
       <div className="admin-form-actions">
-        <button type="button" className="admin-form-cancel" onClick={cerrarModal}>
+        <button
+          type="button"
+          className="admin-form-cancel"
+          onClick={cerrarModal}
+          disabled={guardandoEvento}
+        >
           Cancelar
         </button>
 
-        <button type="submit" className="admin-form-save">
-          {modoFormulario === "editar" ? "Guardar cambios" : "Crear evento"}
+        <button
+          type="submit"
+          className="admin-form-save"
+          disabled={guardandoEvento}
+        >
+          {guardandoEvento
+            ? "Guardando..."
+            : modoFormulario === "editar"
+            ? "Guardar cambios"
+            : "Crear evento"}
         </button>
       </div>
     </form>
@@ -1213,13 +1446,21 @@ const CrearEventos = () => {
         </button>
       </div>
 
+      {errorCarga && (
+        <div className="admin-form-error">{errorCarga}</div>
+      )}
+
       <ListaAdmin
         columnas={columnasEventos}
-        datos={eventosProcesados}
+        datos={cargandoDatos ? [] : eventosProcesados}
         onVer={handleVer}
         onEditar={handleEditar}
         onEliminar={handleEliminar}
-        mensajeVacio="No hay eventos registrados."
+        mensajeVacio={
+          cargandoDatos
+            ? "Cargando eventos..."
+            : "No hay eventos registrados."
+        }
       />
 
       {modalAbierto &&

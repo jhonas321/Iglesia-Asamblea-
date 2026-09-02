@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\HeroFoto;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 
 class HeroFotoController extends Controller
 {
@@ -18,7 +19,7 @@ class HeroFotoController extends Controller
     {
         $request->validate([
             'titulo' => 'required|string|max:150',
-            'imagen' => 'required|string|max:1000',
+            'imagen' => 'required|image|mimes:jpg,jpeg,png,webp|max:5120',
             'orden' => 'nullable|integer|min:1',
             'activo' => 'nullable|boolean',
         ]);
@@ -31,9 +32,14 @@ class HeroFotoController extends Controller
 
         $ultimoOrden = HeroFoto::max('orden') ?? 0;
 
+        $rutaImagen = $request->file('imagen')->store(
+            'hero',
+            'public'
+        );
+
         $foto = HeroFoto::create([
             'titulo' => $request->titulo,
-            'imagen' => $request->imagen,
+            'imagen' => $rutaImagen,
             'orden' => $request->orden ?? ($ultimoOrden + 1),
             'activo' => $request->activo ?? true,
         ]);
@@ -69,17 +75,29 @@ class HeroFotoController extends Controller
 
         $request->validate([
             'titulo' => 'required|string|max:150',
-            'imagen' => 'required|string|max:1000',
+            'imagen' => 'nullable|image|mimes:jpg,jpeg,png,webp|max:5120',
             'orden' => 'nullable|integer|min:1',
             'activo' => 'nullable|boolean',
         ]);
 
-        $foto->update([
+        $datos = [
             'titulo' => $request->titulo,
-            'imagen' => $request->imagen,
             'orden' => $request->orden ?? $foto->orden,
             'activo' => $request->activo ?? $foto->activo,
-        ]);
+        ];
+
+        if ($request->hasFile('imagen')) {
+            if ($foto->imagen) {
+                Storage::disk('public')->delete($foto->imagen);
+            }
+
+            $datos['imagen'] = $request->file('imagen')->store(
+                'hero',
+                'public'
+            );
+        }
+
+        $foto->update($datos);
 
         return response()->json([
             'message' => 'Foto actualizada correctamente.',
@@ -95,6 +113,16 @@ class HeroFotoController extends Controller
             return response()->json([
                 'message' => 'Foto no encontrada.'
             ], 404);
+        }
+
+        if (HeroFoto::count() <= 1) {
+            return response()->json([
+                'message' => 'Debe quedar al menos una foto en el inicio.'
+            ], 422);
+        }
+
+        if ($foto->imagen) {
+            Storage::disk('public')->delete($foto->imagen);
         }
 
         $foto->delete();
