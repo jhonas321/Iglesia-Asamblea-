@@ -17,7 +17,189 @@ import { useNavigate, useParams, useSearchParams } from "react-router-dom";
 
 import Paginacion from "../../components/ui/Paginacion";
 import CalendarioPersonalizado from "../../components/CalendarioPersonalizado";
-import { obtenerPublicacionesGuardadas } from "../../data/adminStorage";
+
+const API_URL = "http://127.0.0.1:8000/api";
+const STORAGE_URL = "http://127.0.0.1:8000/storage";
+
+const construirUrlStorage = (ruta) => {
+  const valor = String(ruta || "").trim();
+
+  if (!valor) return "";
+
+  if (
+    valor.startsWith("http://") ||
+    valor.startsWith("https://") ||
+    valor.startsWith("data:") ||
+    valor.startsWith("blob:")
+  ) {
+    return valor;
+  }
+
+  if (valor.startsWith("/storage/")) {
+    return `http://127.0.0.1:8000${valor}`;
+  }
+
+  if (valor.startsWith("storage/")) {
+    return `http://127.0.0.1:8000/${valor}`;
+  }
+
+  return `${STORAGE_URL}/${valor.replace(/^\/+/, "")}`;
+};
+
+const normalizarHora = (hora) => {
+  const valor = String(hora || "").trim();
+
+  if (!valor) return "";
+
+  return valor.length >= 5 ? valor.slice(0, 5) : valor;
+};
+
+const formatearFechaBackend = (fecha) => {
+  const valor = String(fecha || "").trim();
+
+  if (!valor) return "";
+
+  // Si ya viene como texto del frontend, se conserva.
+  if (!/^\d{4}-\d{2}-\d{2}$/.test(valor)) {
+    return valor;
+  }
+
+  const [anio, mes, dia] = valor.split("-").map(Number);
+
+  const nombresMeses = [
+    "Enero",
+    "Febrero",
+    "Marzo",
+    "Abril",
+    "Mayo",
+    "Junio",
+    "Julio",
+    "Agosto",
+    "Septiembre",
+    "Octubre",
+    "Noviembre",
+    "Diciembre",
+  ];
+
+  return `${String(dia).padStart(2, "0")} ${nombresMeses[mes - 1]} ${anio}`;
+};
+
+const obtenerNombreMinisterio = (publicacion) => {
+  if (
+    publicacion?.ministerio &&
+    typeof publicacion.ministerio === "object"
+  ) {
+    return publicacion.ministerio.nombre || "";
+  }
+
+  return (
+    publicacion?.ministerio ||
+    publicacion?.ministerio_nombre ||
+    publicacion?.nombre_ministerio ||
+    ""
+  );
+};
+
+const obtenerFotosPublicacion = (publicacion, imagenPrincipal) => {
+  const posiblesFotos =
+    publicacion?.fotos ||
+    publicacion?.publicacion_fotos ||
+    publicacion?.fotos_publicacion ||
+    publicacion?.galeria ||
+    [];
+
+  const fotosGaleria = Array.isArray(posiblesFotos)
+    ? posiblesFotos
+        .map((foto) => {
+          if (typeof foto === "string") {
+            return construirUrlStorage(foto);
+          }
+
+          return construirUrlStorage(
+            foto?.imagen ||
+            foto?.foto ||
+            foto?.ruta ||
+            foto?.path ||
+            foto?.url ||
+            ""
+          );
+        })
+        .filter(Boolean)
+    : [];
+
+  const todas = imagenPrincipal
+    ? [imagenPrincipal, ...fotosGaleria]
+    : fotosGaleria;
+
+  return [...new Set(todas)];
+};
+
+const convertirPublicacionBackendAFrontend = (publicacion) => {
+  const imagenPrincipal = construirUrlStorage(
+    publicacion?.imagen ||
+    publicacion?.imagen_principal ||
+    publicacion?.foto_principal ||
+    publicacion?.portada ||
+    ""
+  );
+
+  const fotos = obtenerFotosPublicacion(publicacion, imagenPrincipal);
+
+  const trailerUrl = construirUrlStorage(
+    publicacion?.trailer ||
+    publicacion?.trailer_url ||
+    publicacion?.video_trailer ||
+    publicacion?.video_trailer_url ||
+    ""
+  );
+
+  const trailerPortada = construirUrlStorage(
+    publicacion?.trailer_portada ||
+    publicacion?.portada_trailer ||
+    publicacion?.trailer_cover ||
+    publicacion?.video_trailer_portada ||
+    ""
+  );
+
+  const videoCompletoUrl =
+    publicacion?.video_completo_url ||
+    publicacion?.video_url ||
+    publicacion?.youtube_url ||
+    publicacion?.enlace_video ||
+    "";
+
+  return {
+    id: Number(publicacion?.id),
+    titulo: publicacion?.titulo || "",
+    ministerio: obtenerNombreMinisterio(publicacion),
+    fecha: formatearFechaBackend(
+      publicacion?.fecha ||
+      publicacion?.fecha_publicacion ||
+      publicacion?.fecha_inicio ||
+      ""
+    ),
+    hora: normalizarHora(publicacion?.hora),
+    lugar: publicacion?.lugar || "",
+    descripcion:
+      publicacion?.descripcion ||
+      publicacion?.detalles ||
+      "",
+    imagen: imagenPrincipal || fotos[0] || "",
+    fotos,
+    videoTrailer: trailerUrl
+      ? {
+          url: trailerUrl,
+          portadaFallback: trailerPortada || imagenPrincipal || fotos[0] || "",
+        }
+      : null,
+    videoCompleto: videoCompletoUrl
+      ? {
+          url: videoCompletoUrl,
+        }
+      : null,
+  };
+};
+
 
 const meses = {
   enero: 0,
@@ -196,12 +378,66 @@ const PUBLICACIONES_POR_PAGINA = 8;
 const FOTOS_POR_PAGINA = 8;
 
 function PublicacionesMinisterios() {
-  const publicaciones = useMemo(() => obtenerPublicacionesGuardadas(), []);
+  const [publicaciones, setPublicaciones] = useState([]);
+  const [cargandoPublicaciones, setCargandoPublicaciones] = useState(true);
 
   const navigate = useNavigate();
   const { id } = useParams();
 
   const [searchParams, setSearchParams] = useSearchParams();
+
+
+  useEffect(() => {
+    let activo = true;
+
+    const cargarPublicaciones = async () => {
+      try {
+        setCargandoPublicaciones(true);
+
+        const response = await fetch(`${API_URL}/publicaciones`, {
+          headers: {
+            Accept: "application/json",
+          },
+        });
+
+        if (!response.ok) {
+          throw new Error(`Publicaciones: ${response.status}`);
+        }
+
+        const data = await response.json();
+
+        if (!activo) return;
+
+        const lista = Array.isArray(data)
+          ? data
+          : Array.isArray(data?.data)
+          ? data.data
+          : [];
+
+        setPublicaciones(
+          lista
+            .map(convertirPublicacionBackendAFrontend)
+            .filter((publicacion) => publicacion.id)
+        );
+      } catch (error) {
+        console.error("Error cargando publicaciones públicas:", error);
+
+        if (activo) {
+          setPublicaciones([]);
+        }
+      } finally {
+        if (activo) {
+          setCargandoPublicaciones(false);
+        }
+      }
+    };
+
+    cargarPublicaciones();
+
+    return () => {
+      activo = false;
+    };
+  }, []);
 
   const publicacionSeleccionada = useMemo(() => {
     if (!id) return null;
@@ -633,6 +869,18 @@ function PublicacionesMinisterios() {
       enlace.click();
     }
   };
+
+  if (id && cargandoPublicaciones) {
+    return (
+      <main className="publicaciones-page">
+        <section className="galeria-detalle">
+          <div className="sin-publicaciones">
+            <h3>Cargando publicación...</h3>
+          </div>
+        </section>
+      </main>
+    );
+  }
 
   if (id && !publicacionSeleccionada) {
     return (
@@ -1098,17 +1346,23 @@ function PublicacionesMinisterios() {
           )}
         </div>
 
-        <Paginacion
-          paginaActual={paginaActual}
-          totalElementos={publicacionesFiltradas.length}
-          elementosPorPagina={PUBLICACIONES_POR_PAGINA}
-          onCambiarPagina={cambiarPaginaPublicaciones}
-          scrollAlCambiar={false}
-        />
+        {cargandoPublicaciones ? (
+          <div className="sin-publicaciones">
+            <h3>Cargando publicaciones...</h3>
+          </div>
+        ) : (
+          <>
+            <Paginacion
+              paginaActual={paginaActual}
+              totalElementos={publicacionesFiltradas.length}
+              elementosPorPagina={PUBLICACIONES_POR_PAGINA}
+              onCambiarPagina={cambiarPaginaPublicaciones}
+              scrollAlCambiar={false}
+            />
 
-        <br />
+            <br />
 
-        <div className="galeria-grid">
+            <div className="galeria-grid">
           {publicacionesPaginadas.map((pub, index) => (
             <article
               className={`galeria-item item-${index + 1}`}
@@ -1144,26 +1398,28 @@ function PublicacionesMinisterios() {
           scrollAlCambiar={true}
         />
 
-        {publicacionesFiltradas.length === 0 && (
-          <div className="sin-publicaciones">
-            <h3>No se encontraron publicaciones</h3>
-            <p>Prueba con otro título, ministerio, lugar o fecha.</p>
-            <button
-              type="button"
-              onClick={() => {
-                setBusqueda("");
-                setFiltroTexto("");
-                setFechaInicioBusqueda("");
-                setFechaFinBusqueda("");
-                setFiltroFechaInicio("");
-                setFiltroFechaFin("");
-                setTipoBusqueda(null);
-                setCalendarioAbierto("");
-              }}
-            >
-              Mostrar todas
-            </button>
-          </div>
+            {publicacionesFiltradas.length === 0 && (
+              <div className="sin-publicaciones">
+                <h3>No se encontraron publicaciones</h3>
+                <p>Prueba con otro título, ministerio, lugar o fecha.</p>
+                <button
+                  type="button"
+                  onClick={() => {
+                    setBusqueda("");
+                    setFiltroTexto("");
+                    setFechaInicioBusqueda("");
+                    setFechaFinBusqueda("");
+                    setFiltroFechaInicio("");
+                    setFiltroFechaFin("");
+                    setTipoBusqueda(null);
+                    setCalendarioAbierto("");
+                  }}
+                >
+                  Mostrar todas
+                </button>
+              </div>
+            )}
+          </>
         )}
       </section>
     </main>

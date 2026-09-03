@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import "../styles/horarios-seccion.css";
 
 import {
@@ -37,7 +37,7 @@ import {
   FaSmile,
 } from "react-icons/fa";
 
-import { obtenerHorariosGuardados } from "../data/adminStorage";
+const API_URL = "http://127.0.0.1:8000/api";
 
 const iconosHorario = {
   oracion: <FaPrayingHands />,
@@ -95,12 +95,81 @@ const ordenarHorarios = (horarios) => {
   });
 };
 
+const normalizarHora = (hora) => {
+  if (!hora) return "";
+
+  const valor = String(hora).trim();
+
+  if (/^\d{2}:\d{2}:\d{2}$/.test(valor)) {
+    return valor.slice(0, 5);
+  }
+
+  return valor;
+};
+
+const convertirHorarioApi = (horario) => ({
+  id: horario.id,
+  dia: horario.dia || "",
+  actividad: horario.actividad || "",
+  descripcion: horario.descripcion || "",
+  hora: normalizarHora(horario.hora),
+  iconoTipo: horario.icono_tipo || horario.iconoTipo || "principal",
+  activo: typeof horario.activo === "boolean" ? horario.activo : true,
+});
+
 function HorariosSeccion() {
   const [horarioActivo, setHorarioActivo] = useState("");
+  const [horariosApi, setHorariosApi] = useState([]);
+
+  useEffect(() => {
+    let activo = true;
+
+    const extraerLista = (data) => {
+      if (Array.isArray(data)) return data;
+      if (Array.isArray(data?.data)) return data.data;
+      return [];
+    };
+
+    const cargarHorarios = async () => {
+      try {
+        const response = await fetch(`${API_URL}/horarios`, {
+          headers: {
+            Accept: "application/json",
+          },
+        });
+
+        if (!response.ok) {
+          throw new Error(`Horarios: ${response.status}`);
+        }
+
+        const data = await response.json();
+
+        if (!activo) return;
+
+        setHorariosApi(
+          extraerLista(data)
+            .map(convertirHorarioApi)
+            .filter((horario) => horario.activo !== false)
+        );
+      } catch (error) {
+        console.error("Error cargando horarios públicos:", error);
+
+        if (activo) {
+          setHorariosApi([]);
+        }
+      }
+    };
+
+    cargarHorarios();
+
+    return () => {
+      activo = false;
+    };
+  }, []);
 
   const horarios = useMemo(() => {
-    return ordenarHorarios(obtenerHorariosGuardados());
-  }, []);
+    return ordenarHorarios(horariosApi);
+  }, [horariosApi]);
 
   const alternarHorario = (id) => {
     setHorarioActivo((actual) => (actual === id ? "" : id));

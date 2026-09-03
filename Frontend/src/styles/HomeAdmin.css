@@ -832,3 +832,29 @@
     font-size: 0.9rem;
   }
 }
+
+/* =========================
+   DASHBOARD STATES
+========================= */
+
+.home-admin-alert {
+  margin-bottom: 18px;
+  padding: 14px 18px;
+  border-radius: 16px;
+  font-size: 0.9rem;
+  font-weight: 800;
+  border: 1px solid #dbe3ef;
+  background: #ffffff;
+}
+
+.home-admin-alert.loading {
+  color: #2f4f7f;
+  background: #edf4ff;
+  border-color: #dbeafe;
+}
+
+.home-admin-alert.error {
+  color: #b42318;
+  background: #fff1f0;
+  border-color: #fecaca;
+}

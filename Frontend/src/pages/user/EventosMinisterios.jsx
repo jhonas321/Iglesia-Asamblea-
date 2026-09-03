@@ -15,11 +15,85 @@ import {
 
 import CalendarioPersonalizado from "../../components/CalendarioPersonalizado";
 import Paginacion from "../../components/ui/Paginacion";
-import {
-  obtenerContactoGuardado,
-  obtenerEventosGuardados,
-} from "../../data/adminStorage";
 import "../../styles/eventos-ministerios.css";
+
+const API_URL = "http://127.0.0.1:8000/api";
+const STORAGE_URL = "http://127.0.0.1:8000/storage";
+
+const construirUrlImagen = (ruta) => {
+  const valor = String(ruta || "").trim();
+
+  if (!valor) return "";
+
+  if (
+    valor.startsWith("http://") ||
+    valor.startsWith("https://") ||
+    valor.startsWith("data:") ||
+    valor.startsWith("blob:")
+  ) {
+    return valor;
+  }
+
+  if (valor.startsWith("/storage/")) {
+    return `http://127.0.0.1:8000${valor}`;
+  }
+
+  if (valor.startsWith("storage/")) {
+    return `http://127.0.0.1:8000/${valor}`;
+  }
+
+  return `${STORAGE_URL}/${valor.replace(/^\/+/, "")}`;
+};
+
+const normalizarHora = (hora) => {
+  const valor = String(hora || "").trim();
+
+  if (!valor) return "";
+
+  return valor.length >= 5 ? valor.slice(0, 5) : valor;
+};
+
+const convertirEventoBackendAFrontend = (evento) => {
+  const ministerioBackend = evento?.ministerio;
+
+  const nombreMinisterio =
+    typeof ministerioBackend === "object" && ministerioBackend !== null
+      ? ministerioBackend.nombre || ""
+      : ministerioBackend || evento?.ministerio_nombre || "";
+
+  return {
+    id: Number(evento?.id),
+    ministerio: nombreMinisterio,
+    titulo: evento?.titulo || "",
+    descripcion: evento?.descripcion || "",
+    detalles: evento?.detalles || evento?.descripcion || "",
+    fechaInicio: evento?.fecha_inicio || evento?.fechaInicio || "",
+    fechaFinal:
+      evento?.fecha_final ||
+      evento?.fecha_fin ||
+      evento?.fechaFinal ||
+      evento?.fecha_inicio ||
+      evento?.fechaInicio ||
+      "",
+    hora: normalizarHora(evento?.hora),
+    lugar: evento?.lugar || "",
+    imagen: construirUrlImagen(
+      evento?.imagen || evento?.imagen_url || evento?.foto || ""
+    ),
+    whatsappNumero:
+      evento?.whatsapp_numero ||
+      evento?.whatsappNumero ||
+      "",
+  };
+};
+
+const convertirContactoBackendAFrontend = (contacto) => ({
+  whatsappNumero:
+    contacto?.whatsapp_numero ||
+    contacto?.whatsappNumero ||
+    "",
+});
+
 
 const obtenerVistaTabletOCelular = () => {
   if (typeof window === "undefined") return false;
@@ -135,8 +209,12 @@ function EventosMinisterios() {
   const { id } = useParams();
   const navigate = useNavigate();
 
-  const eventos = useMemo(() => obtenerEventosGuardados(), []);
-  const contacto = useMemo(() => obtenerContactoGuardado(), []);
+  const [eventos, setEventos] = useState([]);
+  const [contacto, setContacto] = useState({
+    whatsappNumero: "",
+  });
+  const [cargandoEventos, setCargandoEventos] = useState(true);
+
   const fechaActual = obtenerFechaActualInput();
 
   const eventosActualizados = useMemo(() => {
@@ -175,6 +253,75 @@ function EventosMinisterios() {
   const scrollAntesModalPc = useRef(0);
 
   useEffect(() => {
+    let activo = true;
+
+    const cargarDatosPublicos = async () => {
+      try {
+        setCargandoEventos(true);
+
+        const [respuestaEventos, respuestaContacto] = await Promise.all([
+          fetch(`${API_URL}/eventos`, {
+            headers: {
+              Accept: "application/json",
+            },
+          }),
+          fetch(`${API_URL}/contactos`, {
+            headers: {
+              Accept: "application/json",
+            },
+          }),
+        ]);
+
+        if (!respuestaEventos.ok) {
+          throw new Error(`Eventos: ${respuestaEventos.status}`);
+        }
+
+        const datosEventos = await respuestaEventos.json();
+
+        let datosContacto = null;
+
+        if (respuestaContacto.ok) {
+          datosContacto = await respuestaContacto.json();
+        }
+
+        if (!activo) return;
+
+        const listaEventos = Array.isArray(datosEventos)
+          ? datosEventos
+          : Array.isArray(datosEventos?.data)
+          ? datosEventos.data
+          : [];
+
+        setEventos(
+          listaEventos
+            .map(convertirEventoBackendAFrontend)
+            .filter((evento) => evento.id && evento.fechaInicio)
+        );
+
+        const registroContacto = datosContacto?.data || datosContacto || null;
+
+        setContacto(convertirContactoBackendAFrontend(registroContacto));
+      } catch (error) {
+        console.error("Error cargando eventos públicos:", error);
+
+        if (activo) {
+          setEventos([]);
+        }
+      } finally {
+        if (activo) {
+          setCargandoEventos(false);
+        }
+      }
+    };
+
+    cargarDatosPublicos();
+
+    return () => {
+      activo = false;
+    };
+  }, []);
+
+  useEffect(() => {
     const actualizarVista = () => {
       const vistaTabletOCelular = window.innerWidth <= 1280;
       const nuevaCantidad = vistaTabletOCelular ? 4 : 6;
@@ -205,6 +352,8 @@ function EventosMinisterios() {
   }, [pestanaActiva, filtroTexto, filtroFechaInicio, filtroFechaFinal]);
 
   useEffect(() => {
+    if (cargandoEventos) return;
+
     if (!id) {
       setEventoSeleccionado(null);
       return;
@@ -221,7 +370,7 @@ function EventosMinisterios() {
 
     setEventoSeleccionado(null);
     navigate("/ministerios/eventos", { replace: true });
-  }, [id, navigate, eventosActualizados]);
+  }, [id, navigate, eventosActualizados, cargandoEventos]);
 
   useEffect(() => {
     if (!eventoSeleccionado || !esTabletOCelular) return;
@@ -952,7 +1101,13 @@ function EventosMinisterios() {
               </div>
             </div>
 
-            {eventosFiltrados.length === 0 && (
+            {cargandoEventos && (
+              <div className="eventos-empty">
+                <h3>Cargando eventos...</h3>
+              </div>
+            )}
+
+            {!cargandoEventos && eventosFiltrados.length === 0 && (
               <div className="eventos-empty">
                 <h3>No se encontraron eventos</h3>
                 <p>
@@ -962,7 +1117,7 @@ function EventosMinisterios() {
               </div>
             )}
 
-            {eventosFiltrados.length > 0 && (
+            {!cargandoEventos && eventosFiltrados.length > 0 && (
               <>
                 <Paginacion
                   paginaActual={paginaActual}

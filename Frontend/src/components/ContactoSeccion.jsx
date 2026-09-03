@@ -1,9 +1,80 @@
+import { useEffect, useState } from "react";
 import { House, HandHeart, MapPin, Phone, PhoneCall } from "lucide-react";
-import { obtenerContactoGuardado } from "../data/adminStorage";
 import "../styles/contacto-seccion.css";
 
+const API_URL = "http://127.0.0.1:8000/api";
+
+const formatearTelefono = (telefono) => {
+  const valor = String(telefono || "").trim();
+
+  if (!valor) return "";
+
+  const limpio = valor.replace(/[^\d+]/g, "");
+
+  // Bolivia: separa el código de país (+591) del número.
+  if (limpio.startsWith("+591")) {
+    return `+591 ${limpio.slice(4)}`;
+  }
+
+  if (limpio.startsWith("591")) {
+    return `+591 ${limpio.slice(3)}`;
+  }
+
+  return valor;
+};
+
 function ContactoSeccion() {
-  const contacto = obtenerContactoGuardado();
+  const [contacto, setContacto] = useState({
+    nombreIglesia: "",
+    direccion: "",
+    telefono: "",
+  });
+
+  useEffect(() => {
+    let activo = true;
+
+    const cargarContacto = async () => {
+      try {
+        const response = await fetch(`${API_URL}/contactos`, {
+          headers: {
+            Accept: "application/json",
+          },
+        });
+
+        if (!response.ok) {
+          throw new Error(`Contactos: ${response.status}`);
+        }
+
+        const data = await response.json();
+
+        if (!activo) return;
+
+        const registro = data?.data || data || {};
+
+        setContacto({
+          nombreIglesia: registro.nombre_iglesia || "",
+          direccion: registro.direccion || "",
+          telefono: registro.telefono || "",
+        });
+      } catch (error) {
+        console.error("Error cargando contacto público:", error);
+
+        if (activo) {
+          setContacto({
+            nombreIglesia: "",
+            direccion: "",
+            telefono: "",
+          });
+        }
+      }
+    };
+
+    cargarContacto();
+
+    return () => {
+      activo = false;
+    };
+  }, []);
 
   return (
     <section className="contact" id="contacto">
@@ -64,7 +135,7 @@ function ContactoSeccion() {
 
                 <div>
                   <span>Teléfono</span>
-                  <p>{contacto.telefono}</p>
+                  <p>{formatearTelefono(contacto.telefono)}</p>
                 </div>
               </div>
             </div>

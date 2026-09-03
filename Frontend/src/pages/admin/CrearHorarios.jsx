@@ -38,14 +38,12 @@ import {
 } from "react-icons/fa";
 
 import ListaAdmin from "../../components/admin/ListaAdmin";
-import {
-  guardarHorarios,
-  obtenerHorariosGuardados,
-} from "../../data/adminStorage";
 
 import "../../styles/AdminCrudPage.css";
 import "../../styles/horarios-seccion.css";
 import "../../styles/HorariosAdmin.css";
+
+const API_URL = "http://127.0.0.1:8000/api";
 
 const opcionesIcono = {
   oracion: {
@@ -232,6 +230,10 @@ const normalizarHoraInput = (hora) => {
 
   if (/^\d{2}:\d{2}$/.test(horaLimpia)) return horaLimpia;
 
+  if (/^\d{2}:\d{2}:\d{2}$/.test(horaLimpia)) {
+    return horaLimpia.slice(0, 5);
+  }
+
   const match = horaLimpia.match(/^(\d{1,2}):(\d{2})\s*(am|pm)$/i);
 
   if (!match) return "";
@@ -246,13 +248,28 @@ const normalizarHoraInput = (hora) => {
   return `${String(horas).padStart(2, "0")}:${minutos}`;
 };
 
+const obtenerToken = () => localStorage.getItem("token");
+
+const convertirHorarioBackendAFrontend = (horario) => ({
+  id: horario.id,
+  dia: horario.dia || "",
+  actividad: horario.actividad || "",
+  hora: normalizarHoraInput(horario.hora),
+  iconoTipo: horario.icono_tipo || "principal",
+  descripcion: horario.descripcion || "",
+  activo: horario.activo,
+});
+
 const CrearHorarios = () => {
   const diaBoxRef = useRef(null);
   const horaBoxRef = useRef(null);
 
-  const [horariosAdmin, setHorariosAdmin] = useState(() =>
-    obtenerHorariosGuardados()
-  );
+  const [horariosAdmin, setHorariosAdmin] = useState([]);
+  const [cargandoDatos, setCargandoDatos] = useState(true);
+  const [guardandoHorario, setGuardandoHorario] = useState(false);
+  const [eliminandoId, setEliminandoId] = useState(null);
+  const [errorCarga, setErrorCarga] = useState("");
+  const [mensajeExito, setMensajeExito] = useState("");
 
   const [modalAbierto, setModalAbierto] = useState(false);
   const [modoFormulario, setModoFormulario] = useState("crear");
@@ -270,6 +287,64 @@ const CrearHorarios = () => {
   });
 
   const esModoVista = modoFormulario === "ver";
+
+  const cargarDatos = useCallback(async () => {
+    const token = obtenerToken();
+
+    try {
+      setCargandoDatos(true);
+      setErrorCarga("");
+
+      const response = await fetch(`${API_URL}/horarios`, {
+        method: "GET",
+        headers: {
+          Accept: "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(
+          data.message || "No se pudieron cargar los horarios."
+        );
+      }
+
+      const listaHorarios = Array.isArray(data)
+        ? data
+        : Array.isArray(data?.data)
+        ? data.data
+        : [];
+
+      setHorariosAdmin(
+        listaHorarios.map(convertirHorarioBackendAFrontend)
+      );
+    } catch (error) {
+      console.error("Error cargando horarios:", error);
+
+      setErrorCarga(
+        error.message || "No se pudieron cargar los horarios."
+      );
+    } finally {
+      setCargandoDatos(false);
+    }
+  }, []);
+
+  useEffect(() => {
+    cargarDatos();
+  }, [cargarDatos]);
+
+
+  useEffect(() => {
+    if (!mensajeExito) return;
+
+    const timeout = setTimeout(() => {
+      setMensajeExito("");
+    }, 2500);
+
+    return () => clearTimeout(timeout);
+  }, [mensajeExito]);
 
   const cerrarSelectores = useCallback(() => {
     setDiaAbierto(false);
@@ -476,6 +551,8 @@ const CrearHorarios = () => {
     setHorarioEditandoId(null);
     setFormulario(crearFormularioHorarioVacio());
     setErrorFormulario("");
+    setErrorCarga("");
+    setMensajeExito("");
     setHorarioActivoPreview("");
     cerrarSelectores();
     setModalAbierto(true);
@@ -491,7 +568,7 @@ const CrearHorarios = () => {
     return "";
   };
 
-  const guardarFormulario = (e) => {
+  const guardarFormulario = async (e) => {
     e.preventDefault();
 
     const error = validarFormulario();
@@ -502,37 +579,75 @@ const CrearHorarios = () => {
       return;
     }
 
-    const horarioNormalizado = {
+    const token = obtenerToken();
+    const esEdicion = modoFormulario === "editar";
+
+    const datosHorario = {
       dia: formulario.dia.trim(),
       actividad: formulario.actividad.trim(),
       hora: formulario.hora.trim(),
-      iconoTipo: formulario.iconoTipo.trim(),
+      icono_tipo: formulario.iconoTipo.trim(),
       descripcion: formulario.descripcion.trim(),
+      activo: true,
     };
 
-    let nuevaLista = [];
+    try {
+      setGuardandoHorario(true);
+      setErrorFormulario("");
 
-    if (modoFormulario === "editar") {
-      nuevaLista = horariosAdmin.map((horario) =>
-        horario.id === horarioEditandoId
-          ? {
-              ...horario,
-              ...horarioNormalizado,
-            }
-          : horario
+      const url = esEdicion
+        ? `${API_URL}/horarios/${horarioEditandoId}`
+        : `${API_URL}/horarios`;
+
+      const response = await fetch(url, {
+        method: esEdicion ? "PUT" : "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Accept: "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify(datosHorario),
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        if (data.errors) {
+          const primerError = Object.values(data.errors)[0];
+
+          setErrorFormulario(
+            Array.isArray(primerError)
+              ? primerError[0]
+              : "Revisa los datos ingresados."
+          );
+        } else {
+          setErrorFormulario(
+            data.message || "No se pudo guardar el horario."
+          );
+        }
+
+        setPanelActivo("formulario");
+        return;
+      }
+
+      await cargarDatos();
+
+      setMensajeExito(
+        esEdicion
+          ? "El horario se actualizó correctamente."
+          : "El horario se creó correctamente."
       );
-    } else {
-      const nuevoHorario = {
-        id: Date.now(),
-        ...horarioNormalizado,
-      };
 
-      nuevaLista = [...horariosAdmin, nuevoHorario];
+      cerrarModal();
+    } catch (error) {
+      console.error("Error guardando horario:", error);
+
+      setErrorFormulario(
+        "No se pudo conectar con el servidor."
+      );
+    } finally {
+      setGuardandoHorario(false);
     }
-
-    setHorariosAdmin(nuevaLista);
-    guardarHorarios(nuevaLista);
-    cerrarModal();
   };
 
   const handleCrear = () => {
@@ -561,17 +676,59 @@ const CrearHorarios = () => {
     setModalAbierto(true);
   };
 
-  const handleEliminar = (horario) => {
+  const handleEliminar = async (horario) => {
     const confirmar = window.confirm(
       `¿Seguro que quieres eliminar el horario "${horario.actividad}"?`
     );
 
     if (!confirmar) return;
 
-    const nuevaLista = horariosAdmin.filter((item) => item.id !== horario.id);
+    const token = obtenerToken();
 
-    setHorariosAdmin(nuevaLista);
-    guardarHorarios(nuevaLista);
+    try {
+      setEliminandoId(horario.id);
+
+      const response = await fetch(
+        `${API_URL}/horarios/${horario.id}`,
+        {
+          method: "DELETE",
+          headers: {
+            Accept: "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+
+      let data = null;
+
+      try {
+        data = await response.json();
+      } catch {
+        data = null;
+      }
+
+      if (!response.ok) {
+        throw new Error(
+          data?.message || "No se pudo eliminar el horario."
+        );
+      }
+
+      setHorariosAdmin((actuales) =>
+        actuales.filter((item) => item.id !== horario.id)
+      );
+
+      setErrorCarga("");
+      setMensajeExito("El horario se eliminó correctamente.");
+    } catch (error) {
+      console.error("Error eliminando horario:", error);
+
+      setMensajeExito("");
+      setErrorCarga(
+        error.message || "No se pudo eliminar el horario."
+      );
+    } finally {
+      setEliminandoId(null);
+    }
   };
 
   const alternarHorarioPreview = (id) => {
@@ -811,12 +968,21 @@ const CrearHorarios = () => {
           type="button"
           className="admin-form-cancel"
           onClick={cerrarModal}
+          disabled={guardandoHorario}
         >
           Cancelar
         </button>
 
-        <button type="submit" className="admin-form-save">
-          {modoFormulario === "editar" ? "Guardar cambios" : "Crear horario"}
+        <button
+          type="submit"
+          className="admin-form-save"
+          disabled={guardandoHorario}
+        >
+          {guardandoHorario
+            ? "Guardando..."
+            : modoFormulario === "editar"
+            ? "Guardar cambios"
+            : "Crear horario"}
         </button>
       </div>
     </form>
@@ -932,9 +1098,27 @@ const CrearHorarios = () => {
         </button>
       </div>
 
+      {mensajeExito && (
+        <div className="admin-horarios-success">
+          {mensajeExito}
+        </div>
+      )}
+
+      {errorCarga && (
+        <div className="admin-form-error">
+          {errorCarga}
+        </div>
+      )}
+
+      {cargandoDatos && (
+        <div className="admin-horarios-cargando">
+          Cargando horarios...
+        </div>
+      )}
+
       <ListaAdmin
         columnas={columnasHorarios}
-        datos={horariosProcesados}
+        datos={cargandoDatos ? [] : horariosProcesados}
         onVer={handleVer}
         onEditar={handleEditar}
         onEliminar={handleEliminar}
