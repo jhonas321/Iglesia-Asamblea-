@@ -1,7 +1,65 @@
+import { useEffect, useState } from "react";
 import { MapPin } from "lucide-react";
 import "../styles/ubicacion-seccion.css";
 
+const API_URL = "http://127.0.0.1:8000/api";
+
 function UbicacionSeccion() {
+  const [contacto, setContacto] = useState({
+    nombreIglesia: "",
+    direccion: "",
+  });
+
+  useEffect(() => {
+    let activo = true;
+
+    const cargarContacto = async () => {
+      try {
+        const response = await fetch(`${API_URL}/contactos`, {
+          headers: {
+            Accept: "application/json",
+          },
+        });
+
+        if (!response.ok) {
+          throw new Error(`Contactos: ${response.status}`);
+        }
+
+        const data = await response.json();
+
+        if (!activo) return;
+
+        const registro = data?.data || data || {};
+
+        setContacto({
+          nombreIglesia: registro.nombre_iglesia || "",
+          direccion:
+            registro.direccion ||
+            registro.footer_ubicacion ||
+            "",
+        });
+      } catch (error) {
+        console.error(
+          "Error cargando ubicación pública:",
+          error
+        );
+
+        if (activo) {
+          setContacto({
+            nombreIglesia: "",
+            direccion: "",
+          });
+        }
+      }
+    };
+
+    cargarContacto();
+
+    return () => {
+      activo = false;
+    };
+  }, []);
+
   return (
     <section id="ubicacion" className="location">
       <div className="location-bg location-bg-one"></div>
@@ -26,8 +84,8 @@ function UbicacionSeccion() {
 
             <div>
               <span>Estamos en</span>
-              <h3>Iglesia Asamblea Apostólica</h3>
-              <p>Sacaba, Cochabamba - Bolivia</p>
+              <h3>{contacto.nombreIglesia}</h3>
+              <p>{contacto.direccion}</p>
             </div>
           </div>
 

@@ -32,10 +32,10 @@ const convertirContactoBackendAFrontend = (contacto) => {
     id: contacto.id ?? null,
     nombreIglesia: contacto.nombre_iglesia || "",
     direccion: contacto.direccion || "",
-    telefono: normalizarTelefonoInternacional(contacto.telefono),
-    whatsappNumero: normalizarTelefonoInternacional(contacto.whatsapp_numero),
+    telefono: contacto.telefono || "",
+    whatsappNumero: contacto.whatsapp_numero || "",
     footerUbicacion: contacto.footer_ubicacion || "",
-    footerTelefono: normalizarTelefonoInternacional(contacto.footer_telefono),
+    footerTelefono: contacto.footer_telefono || "",
     footerCorreo: contacto.footer_correo || "",
     facebookUrl: contacto.facebook_url || "",
     youtubeUrl: contacto.youtube_url || "",
@@ -49,11 +49,11 @@ const convertirContactoBackendAFrontend = (contacto) => {
 const convertirContactoFrontendABackend = (formulario) => ({
   nombre_iglesia: formulario.nombreIglesia.trim(),
   direccion: formulario.direccion.trim(),
-  telefono: formulario.telefono.trim() || null,
-  whatsapp_numero: formulario.whatsappNumero.trim() || null,
-  footer_ubicacion: formulario.footerUbicacion.trim() || null,
-  footer_telefono: formulario.footerTelefono.trim() || null,
-  footer_correo: formulario.footerCorreo.trim() || null,
+  telefono: formulario.telefono.trim(),
+  whatsapp_numero: formulario.whatsappNumero.trim(),
+  footer_ubicacion: formulario.footerUbicacion.trim(),
+  footer_telefono: formulario.footerTelefono.trim(),
+  footer_correo: formulario.footerCorreo.trim(),
   facebook_url: formulario.facebookUrl.trim() || null,
   youtube_url: formulario.youtubeUrl.trim() || null,
   instagram_url: formulario.instagramUrl.trim() || null,
@@ -66,24 +66,6 @@ const obtenerToken = () => localStorage.getItem("token");
 
 const limpiarNumeroTelefono = (numero) => {
   return String(numero || "").replace(/\D/g, "");
-};
-
-const normalizarTelefonoInternacional = (valor) => {
-  const texto = String(valor || "").trim();
-
-  if (!texto) return "";
-
-  const numeroLimpio = limpiarNumeroTelefono(texto);
-
-  if (!numeroLimpio) return "";
-
-  // Los datos antiguos del proyecto estaban guardados como números locales
-  // de Bolivia (por ejemplo 4250000). Los convertimos a formato internacional.
-  if (!texto.startsWith("+") && !numeroLimpio.startsWith("591")) {
-    return `+591${numeroLimpio}`;
-  }
-
-  return `+${numeroLimpio}`;
 };
 
 const formatearTelefono = (valor) => {
@@ -109,11 +91,6 @@ const CrearContactos = () => {
   const [cargando, setCargando] = useState(true);
   const [guardando, setGuardando] = useState(false);
   const [error, setError] = useState("");
-  const [paisTelefono, setPaisTelefono] = useState({
-    telefono: "bo",
-    whatsappNumero: "bo",
-    footerTelefono: "bo",
-  });
   const [modoEdicion, setModoEdicion] = useState(false);
   const [guardado, setGuardado] = useState(false);
 
@@ -177,6 +154,7 @@ const CrearContactos = () => {
     }));
 
     setGuardado(false);
+    setError("");
   };
 
   const actualizarTelefono = ({ name, value }) => {
@@ -218,6 +196,40 @@ const CrearContactos = () => {
 
     if (!formulario.direccion.trim()) {
       setError("La dirección es obligatoria.");
+      return;
+    }
+
+    if (!limpiarNumeroTelefono(formulario.telefono)) {
+      setError("El teléfono es obligatorio.");
+      return;
+    }
+
+    if (!limpiarNumeroTelefono(formulario.whatsappNumero)) {
+      setError("El número de WhatsApp es obligatorio.");
+      return;
+    }
+
+    if (!formulario.footerUbicacion.trim()) {
+      setError("La ubicación del footer es obligatoria.");
+      return;
+    }
+
+    if (!limpiarNumeroTelefono(formulario.footerTelefono)) {
+      setError("El teléfono del footer es obligatorio.");
+      return;
+    }
+
+    if (!formulario.footerCorreo.trim()) {
+      setError("El correo del footer es obligatorio.");
+      return;
+    }
+
+    const correoValido = /^[^\\s@]+@[^\\s@]+\\.[^\\s@]+$/.test(
+      formulario.footerCorreo.trim()
+    );
+
+    if (!correoValido) {
+      setError("El correo del footer no tiene un formato válido.");
       return;
     }
 
@@ -353,21 +365,14 @@ const CrearContactos = () => {
 
         <div className="admin-contact-phone-wrapper">
           <PhoneInput
-            country={paisTelefono[name] || "bo"}
+            country="bo"
             value={numeroLimpio}
-            onChange={(valor, pais) => {
-              if (pais?.countryCode) {
-                setPaisTelefono((actual) => ({
-                  ...actual,
-                  [name]: pais.countryCode,
-                }));
-              }
-
+            onChange={(valor) =>
               actualizarTelefono({
                 name,
                 value: valor,
-              });
-            }}
+              })
+            }
             enableSearch={true}
             countryCodeEditable={false}
             specialLabel=""
@@ -466,21 +471,21 @@ const CrearContactos = () => {
               }
             >
               {renderCampoTexto({
-                label: "Nombre",
+                label: "Nombre *",
                 name: "nombreIglesia",
                 value: formulario.nombreIglesia,
                 placeholder: "Ej: Asamblea Apostólica de la Fe en Cristo Jesús",
               })}
 
               {renderCampoTexto({
-                label: "Dirección",
+                label: "Dirección *",
                 name: "direccion",
                 value: formulario.direccion,
                 placeholder: "Ej: Calle Santa Cruz entre Calama",
               })}
 
               {renderCampoTelefono({
-                label: "Teléfono",
+                label: "Teléfono *",
                 name: "telefono",
                 value: formulario.telefono,
               })}
@@ -497,7 +502,7 @@ const CrearContactos = () => {
               }
             >
               {renderCampoTelefono({
-                label: "Número de WhatsApp",
+                label: "Número de WhatsApp *",
                 name: "whatsappNumero",
                 value: formulario.whatsappNumero,
               })}
@@ -516,20 +521,20 @@ const CrearContactos = () => {
               }
             >
               {renderCampoTexto({
-                label: "Ubicación",
+                label: "Ubicación *",
                 name: "footerUbicacion",
                 value: formulario.footerUbicacion,
                 placeholder: "Ej: Cochabamba, Bolivia",
               })}
 
               {renderCampoTelefono({
-                label: "Teléfono",
+                label: "Teléfono *",
                 name: "footerTelefono",
                 value: formulario.footerTelefono,
               })}
 
               {renderCampoTexto({
-                label: "Correo",
+                label: "Correo *",
                 name: "footerCorreo",
                 value: formulario.footerCorreo,
                 placeholder: "Ej: contacto@asamblea.com",

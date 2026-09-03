@@ -1,3 +1,4 @@
+import { useEffect, useMemo, useState } from "react";
 import "../styles/footer.css";
 
 import {
@@ -11,10 +12,7 @@ import {
   FaTelegramPlane,
 } from "react-icons/fa";
 
-import {
-  obtenerContactoGuardado,
-  obtenerHorariosGuardados,
-} from "../data/adminStorage";
+const API_URL = "http://127.0.0.1:8000/api";
 
 const ordenarHorariosFooter = (horarios) => {
   const ordenDias = {
@@ -55,9 +53,140 @@ const normalizarUrl = (url) => {
   return `https://${valor}`;
 };
 
+const normalizarHora = (hora) => {
+  const valor = String(hora || "").trim();
+
+  if (!valor) return "";
+
+  return valor.length >= 5 ? valor.slice(0, 5) : valor;
+};
+
+const formatearTelefono = (telefono) => {
+  const valor = String(telefono || "").trim();
+
+  if (!valor) return "";
+
+  const limpio = valor.replace(/[^\d+]/g, "");
+
+  if (limpio.startsWith("+591")) {
+    return `+591 ${limpio.slice(4)}`;
+  }
+
+  if (limpio.startsWith("591")) {
+    return `+591 ${limpio.slice(3)}`;
+  }
+
+  return valor;
+};
+
 function Footer() {
-  const horariosFooter = ordenarHorariosFooter(obtenerHorariosGuardados());
-  const contacto = obtenerContactoGuardado();
+  const [horarios, setHorarios] = useState([]);
+
+  const [contacto, setContacto] = useState({
+    footerUbicacion: "",
+    footerTelefono: "",
+    footerCorreo: "",
+    facebookUrl: "",
+    youtubeUrl: "",
+    instagramUrl: "",
+    tiktokUrl: "",
+    twitterUrl: "",
+    telegramUrl: "",
+  });
+
+  useEffect(() => {
+    let activo = true;
+
+    const cargarDatosFooter = async () => {
+      try {
+        const [respuestaHorarios, respuestaContacto] = await Promise.all([
+          fetch(`${API_URL}/horarios`, {
+            headers: {
+              Accept: "application/json",
+            },
+          }),
+          fetch(`${API_URL}/contactos`, {
+            headers: {
+              Accept: "application/json",
+            },
+          }),
+        ]);
+
+        if (!respuestaHorarios.ok) {
+          throw new Error(`Horarios: ${respuestaHorarios.status}`);
+        }
+
+        if (!respuestaContacto.ok) {
+          throw new Error(`Contactos: ${respuestaContacto.status}`);
+        }
+
+        const datosHorarios = await respuestaHorarios.json();
+        const datosContacto = await respuestaContacto.json();
+
+        if (!activo) return;
+
+        const listaHorarios = Array.isArray(datosHorarios)
+          ? datosHorarios
+          : Array.isArray(datosHorarios?.data)
+          ? datosHorarios.data
+          : [];
+
+        const contactoBackend =
+          datosContacto?.data || datosContacto || {};
+
+        setHorarios(
+          listaHorarios
+            .filter((horario) => horario?.activo !== false)
+            .map((horario) => ({
+              id: horario.id,
+              dia: horario.dia || "",
+              actividad: horario.actividad || "",
+              hora: normalizarHora(horario.hora),
+            }))
+        );
+
+        setContacto({
+          footerUbicacion: contactoBackend.footer_ubicacion || "",
+          footerTelefono: contactoBackend.footer_telefono || "",
+          footerCorreo: contactoBackend.footer_correo || "",
+          facebookUrl: contactoBackend.facebook_url || "",
+          youtubeUrl: contactoBackend.youtube_url || "",
+          instagramUrl: contactoBackend.instagram_url || "",
+          tiktokUrl: contactoBackend.tiktok_url || "",
+          twitterUrl: contactoBackend.twitter_url || "",
+          telegramUrl: contactoBackend.telegram_url || "",
+        });
+      } catch (error) {
+        console.error("Error cargando datos del footer:", error);
+
+        if (activo) {
+          setHorarios([]);
+
+          setContacto({
+            footerUbicacion: "",
+            footerTelefono: "",
+            footerCorreo: "",
+            facebookUrl: "",
+            youtubeUrl: "",
+            instagramUrl: "",
+            tiktokUrl: "",
+            twitterUrl: "",
+            telegramUrl: "",
+          });
+        }
+      }
+    };
+
+    cargarDatosFooter();
+
+    return () => {
+      activo = false;
+    };
+  }, []);
+
+  const horariosFooter = useMemo(() => {
+    return ordenarHorariosFooter(horarios);
+  }, [horarios]);
 
   const redesSociales = [
     {
@@ -123,6 +252,7 @@ function Footer() {
                 <div className="footer-schedule-item" key={horario.id}>
                   <div className="footer-schedule-info">
                     <span className="footer-schedule-day">{horario.dia}</span>
+
                     <span className="footer-schedule-name">
                       {horario.actividad}
                     </span>
@@ -145,29 +275,35 @@ function Footer() {
           <h4>Contacto</h4>
 
           <div className="footer-contact-list">
-            <div className="footer-contact-item">
-              <span className="footer-contact-circle">
-                <FaMapMarkerAlt />
-              </span>
+            {contacto.footerUbicacion && (
+              <div className="footer-contact-item">
+                <span className="footer-contact-circle">
+                  <FaMapMarkerAlt />
+                </span>
 
-              <span>{contacto.footerUbicacion}</span>
-            </div>
+                <span>{contacto.footerUbicacion}</span>
+              </div>
+            )}
 
-            <div className="footer-contact-item">
-              <span className="footer-contact-circle">
-                <FaPhone />
-              </span>
+            {contacto.footerTelefono && (
+              <div className="footer-contact-item">
+                <span className="footer-contact-circle">
+                  <FaPhone />
+                </span>
 
-              <span>{contacto.footerTelefono}</span>
-            </div>
+                <span>{formatearTelefono(contacto.footerTelefono)}</span>
+              </div>
+            )}
 
-            <div className="footer-contact-item">
-              <span className="footer-contact-circle">
-                <FaEnvelope />
-              </span>
+            {contacto.footerCorreo && (
+              <div className="footer-contact-item">
+                <span className="footer-contact-circle">
+                  <FaEnvelope />
+                </span>
 
-              <span>{contacto.footerCorreo}</span>
-            </div>
+                <span>{contacto.footerCorreo}</span>
+              </div>
+            )}
           </div>
         </div>
 

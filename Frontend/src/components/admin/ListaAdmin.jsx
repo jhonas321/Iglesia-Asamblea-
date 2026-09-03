@@ -35,7 +35,7 @@ const ListaAdmin = ({
                     <td key={columna.key} data-label={columna.label}>
                       {columna.render
                         ? columna.render(item)
-                        : item[columna.key] || "-"}
+                        : item[columna.key] ?? "-"}
                     </td>
                   ))}
 

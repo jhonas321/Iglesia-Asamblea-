@@ -109,6 +109,8 @@ const CrearOrganigrama = () => {
   const [cargandoDatos, setCargandoDatos] = useState(true);
   const [guardandoOrganigrama, setGuardandoOrganigrama] = useState(false);
   const [eliminandoId, setEliminandoId] = useState(null);
+  const [errorCarga, setErrorCarga] = useState("");
+  const [mensajeExito, setMensajeExito] = useState("");
 
   const [modalAbierto, setModalAbierto] = useState(false);
   const [modoFormulario, setModoFormulario] = useState("crear");
@@ -130,6 +132,7 @@ const CrearOrganigrama = () => {
 
     try {
       setCargandoDatos(true);
+      setErrorCarga("");
 
       const [respuestaSecciones, respuestaMinisterios] =
         await Promise.all([
@@ -166,14 +169,26 @@ const CrearOrganigrama = () => {
         );
       }
 
+      const listaSecciones = Array.isArray(datosSecciones)
+        ? datosSecciones
+        : Array.isArray(datosSecciones?.data)
+        ? datosSecciones.data
+        : [];
+
+      const listaMinisterios = Array.isArray(datosMinisterios)
+        ? datosMinisterios
+        : Array.isArray(datosMinisterios?.data)
+        ? datosMinisterios.data
+        : [];
+
       setOrganigramaAdmin(
-        datosSecciones.map(convertirSeccionBackendAFrontend)
+        listaSecciones.map(convertirSeccionBackendAFrontend)
       );
 
-      setMinisteriosDisponibles(datosMinisterios);
+      setMinisteriosDisponibles(listaMinisterios);
     } catch (error) {
       console.error("Error cargando organigrama:", error);
-      setErrorFormulario(
+      setErrorCarga(
         error.message || "No se pudieron cargar los datos."
       );
     } finally {
@@ -184,6 +199,17 @@ const CrearOrganigrama = () => {
   useEffect(() => {
     cargarDatos();
   }, [cargarDatos]);
+
+
+  useEffect(() => {
+    if (!mensajeExito) return;
+
+    const timeout = setTimeout(() => {
+      setMensajeExito("");
+    }, 2500);
+
+    return () => clearTimeout(timeout);
+  }, [mensajeExito]);
 
   const ministeriosOpciones = useMemo(() => {
     const nombresRegistrados = ministeriosDisponibles
@@ -484,6 +510,8 @@ const CrearOrganigrama = () => {
     setSeccionEditandoId(null);
     setFormulario(crearFormularioOrganigramaVacio());
     setErrorFormulario("");
+    setErrorCarga("");
+    setMensajeExito("");
     cerrarSelectores();
     setModalAbierto(true);
   };
@@ -674,6 +702,13 @@ const CrearOrganigrama = () => {
       }
 
       await cargarDatos();
+
+      setMensajeExito(
+        esEdicion
+          ? "El organigrama se actualizó correctamente."
+          : "El ministerio se agregó al organigrama correctamente."
+      );
+
       cerrarModal();
     } catch (error) {
       console.error("Error guardando organigrama:", error);
@@ -778,10 +813,16 @@ const CrearOrganigrama = () => {
       setOrganigramaAdmin((actuales) =>
         actuales.filter((item) => item.id !== seccion.id)
       );
+
+      setErrorCarga("");
+      setMensajeExito(
+        "El ministerio se eliminó del organigrama correctamente."
+      );
     } catch (error) {
       console.error("Error eliminando organigrama:", error);
 
-      window.alert(
+      setMensajeExito("");
+      setErrorCarga(
         error.message ||
           "No se pudo eliminar la sección del organigrama."
       );
@@ -1256,6 +1297,18 @@ const CrearOrganigrama = () => {
           <span>Crear ministerio</span>
         </button>
       </div>
+
+      {mensajeExito && (
+        <div className="admin-organigrama-success">
+          {mensajeExito}
+        </div>
+      )}
+
+      {errorCarga && (
+        <div className="admin-form-error">
+          {errorCarga}
+        </div>
+      )}
 
       {cargandoDatos && (
         <div className="admin-organigrama-cargando">

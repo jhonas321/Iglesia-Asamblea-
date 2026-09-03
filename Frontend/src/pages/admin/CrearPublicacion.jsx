@@ -372,6 +372,8 @@ const CrearPublicacion = () => {
   const [cargandoDatos, setCargandoDatos] = useState(true);
   const [guardandoPublicacion, setGuardandoPublicacion] = useState(false);
   const [eliminandoId, setEliminandoId] = useState(null);
+  const [errorCarga, setErrorCarga] = useState("");
+  const [mensajeExito, setMensajeExito] = useState("");
 
   const [archivoImagenPrincipal, setArchivoImagenPrincipal] = useState(null);
   const [archivosGaleria, setArchivosGaleria] = useState([]);
@@ -409,6 +411,7 @@ const CrearPublicacion = () => {
 
     try {
       setCargandoDatos(true);
+      setErrorCarga("");
 
       const [respuestaPublicaciones, respuestaMinisterios] =
         await Promise.all([
@@ -439,14 +442,26 @@ const CrearPublicacion = () => {
       const datosPublicaciones = await respuestaPublicaciones.json();
       const datosMinisterios = await respuestaMinisterios.json();
 
+      const listaPublicaciones = Array.isArray(datosPublicaciones)
+        ? datosPublicaciones
+        : Array.isArray(datosPublicaciones?.data)
+        ? datosPublicaciones.data
+        : [];
+
+      const listaMinisterios = Array.isArray(datosMinisterios)
+        ? datosMinisterios
+        : Array.isArray(datosMinisterios?.data)
+        ? datosMinisterios.data
+        : [];
+
       setPublicacionesAdmin(
-        datosPublicaciones.map(convertirPublicacionBackendAFrontend)
+        listaPublicaciones.map(convertirPublicacionBackendAFrontend)
       );
 
-      setMinisteriosDisponibles(datosMinisterios);
+      setMinisteriosDisponibles(listaMinisterios);
     } catch (error) {
       console.error("Error cargando publicaciones:", error);
-      setErrorFormulario(
+      setErrorCarga(
         error.message || "No se pudieron cargar los datos."
       );
     } finally {
@@ -457,6 +472,17 @@ const CrearPublicacion = () => {
   useEffect(() => {
     cargarDatos();
   }, [cargarDatos]);
+
+
+  useEffect(() => {
+    if (!mensajeExito) return;
+
+    const timeout = setTimeout(() => {
+      setMensajeExito("");
+    }, 2500);
+
+    return () => clearTimeout(timeout);
+  }, [mensajeExito]);
 
   const cerrarSelectores = useCallback(() => {
     setMinisterioAbierto(false);
@@ -913,6 +939,8 @@ const CrearPublicacion = () => {
     setArchivoVideoTrailer(null);
     setArchivoPortadaTrailer(null);
     setErrorFormulario("");
+    setErrorCarga("");
+    setMensajeExito("");
     setFotoActualPreview(0);
     setVideoModalPreview(null);
     cerrarSelectores();
@@ -1051,6 +1079,13 @@ const CrearPublicacion = () => {
       }
 
       await cargarDatos();
+
+      setMensajeExito(
+        esEdicion
+          ? "La publicación se actualizó correctamente."
+          : "La publicación se creó correctamente."
+      );
+
       cerrarModal();
     } catch (error) {
       console.error(
@@ -1147,13 +1182,17 @@ const CrearPublicacion = () => {
           (item) => item.id !== publicacion.id
         )
       );
+
+      setErrorCarga("");
+      setMensajeExito("La publicación se eliminó correctamente.");
     } catch (error) {
       console.error(
         "Error eliminando publicación:",
         error
       );
 
-      window.alert(
+      setMensajeExito("");
+      setErrorCarga(
         error.message ||
           "No se pudo eliminar la publicación."
       );
@@ -1928,6 +1967,18 @@ const CrearPublicacion = () => {
           <span>Crear publicación</span>
         </button>
       </div>
+
+      {mensajeExito && (
+        <div className="admin-publicaciones-success">
+          {mensajeExito}
+        </div>
+      )}
+
+      {errorCarga && (
+        <div className="admin-form-error">
+          {errorCarga}
+        </div>
+      )}
 
       {cargandoDatos && (
         <div className="admin-publicaciones-cargando">

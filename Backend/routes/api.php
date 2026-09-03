@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\MinisterioController;
 use App\Http\Controllers\EventoController;
@@ -11,32 +12,263 @@ use App\Http\Controllers\MiembroOrganigramaController;
 use App\Http\Controllers\HeroFotoController;
 use App\Http\Controllers\ContactoController;
 
+
+/*
+|--------------------------------------------------------------------------
+| LOGIN
+|--------------------------------------------------------------------------
+*/
+
 Route::post('/login', [AuthController::class, 'login']);
+
+
+/*
+|--------------------------------------------------------------------------
+| RUTAS PÚBLICAS
+|--------------------------------------------------------------------------
+*/
+
+/*
+| Ministerios
+*/
+Route::get('/ministerios', [
+    MinisterioController::class,
+    'index'
+]);
+
+Route::get('/ministerios/{ministerio}', [
+    MinisterioController::class,
+    'show'
+]);
+
+
+/*
+| Eventos
+*/
+Route::get('/eventos', [
+    EventoController::class,
+    'index'
+]);
+
+Route::get('/eventos/{evento}', [
+    EventoController::class,
+    'show'
+]);
+
+
+/*
+| Publicaciones
+*/
+Route::get('/publicaciones', [
+    PublicacionController::class,
+    'index'
+]);
+
+Route::get('/publicaciones/{publicacion}', [
+    PublicacionController::class,
+    'show'
+]);
+
+
+/*
+| Horarios
+*/
+Route::get('/horarios', [
+    HorarioController::class,
+    'index'
+]);
+
+Route::get('/horarios/{horario}', [
+    HorarioController::class,
+    'show'
+]);
+
+
+/*
+| Organigrama
+*/
+Route::get('/secciones-organigrama', [
+    SeccionOrganigramaController::class,
+    'index'
+]);
+
+Route::get('/secciones-organigrama/{seccion_organigrama}', [
+    SeccionOrganigramaController::class,
+    'show'
+]);
+
+Route::get('/miembros-organigrama', [
+    MiembroOrganigramaController::class,
+    'index'
+]);
+
+Route::get('/miembros-organigrama/{miembro_organigrama}', [
+    MiembroOrganigramaController::class,
+    'show'
+]);
+
+
+/*
+| Fotos del Hero
+*/
+Route::get('/hero-fotos', [
+    HeroFotoController::class,
+    'index'
+]);
+
+Route::get('/hero-fotos/{hero_foto}', [
+    HeroFotoController::class,
+    'show'
+]);
+
+
+/*
+| Contactos
+*/
+Route::get('/contactos', [
+    ContactoController::class,
+    'index'
+]);
+
+Route::get('/contactos/{contacto}', [
+    ContactoController::class,
+    'show'
+]);
+
+
+/*
+|--------------------------------------------------------------------------
+| RUTAS PROTEGIDAS DEL ADMINISTRADOR
+|--------------------------------------------------------------------------
+*/
 
 Route::middleware('auth:sanctum')->group(function () {
 
-    Route::get('/user', [AuthController::class, 'user']);
+    /*
+    | Usuario / autenticación
+    */
 
-    Route::post('/logout', [AuthController::class, 'logout']);
+    Route::get('/user', [
+        AuthController::class,
+        'user'
+    ]);
 
-    Route::apiResource('ministerios', MinisterioController::class);
+    Route::post('/logout', [
+        AuthController::class,
+        'logout'
+    ]);
 
-    Route::apiResource('eventos', EventoController::class);
+    Route::put('/perfil', [
+        AuthController::class,
+        'actualizarPerfil'
+    ]);
 
-    Route::apiResource('publicaciones', PublicacionController::class);
+    Route::put('/cambiar-password', [
+        AuthController::class,
+        'cambiarPassword'
+    ]);
 
-    Route::apiResource('horarios', HorarioController::class);
 
-    Route::apiResource('secciones-organigrama', SeccionOrganigramaController::class);
+    /*
+    | Ministerios
+    */
 
-    Route::apiResource('miembros-organigrama', MiembroOrganigramaController::class);
+    Route::apiResource(
+        'ministerios',
+        MinisterioController::class
+    )->except([
+        'index',
+        'show'
+    ]);
 
-    Route::apiResource('hero-fotos', HeroFotoController::class);
 
-    Route::apiResource('contactos', ContactoController::class);
+    /*
+    | Eventos
+    */
 
-    Route::put('/perfil', [AuthController::class, 'actualizarPerfil']);
+    Route::apiResource(
+        'eventos',
+        EventoController::class
+    )->except([
+        'index',
+        'show'
+    ]);
 
-    Route::put('/cambiar-password', [AuthController::class, 'cambiarPassword']);
 
+    /*
+    | Publicaciones
+    */
+
+    Route::apiResource(
+        'publicaciones',
+        PublicacionController::class
+    )->except([
+        'index',
+        'show'
+    ]);
+
+
+    /*
+    | Horarios
+    */
+
+    Route::apiResource(
+        'horarios',
+        HorarioController::class
+    )->except([
+        'index',
+        'show'
+    ]);
+
+
+    /*
+    | Organigrama - Secciones
+    */
+
+    Route::apiResource(
+        'secciones-organigrama',
+        SeccionOrganigramaController::class
+    )->except([
+        'index',
+        'show'
+    ]);
+
+
+    /*
+    | Organigrama - Miembros
+    */
+
+    Route::apiResource(
+        'miembros-organigrama',
+        MiembroOrganigramaController::class
+    )->except([
+        'index',
+        'show'
+    ]);
+
+
+    /*
+    | Fotos del Hero
+    */
+
+    Route::apiResource(
+        'hero-fotos',
+        HeroFotoController::class
+    )->except([
+        'index',
+        'show'
+    ]);
+
+
+    /*
+    | Contactos
+    */
+
+    Route::apiResource(
+        'contactos',
+        ContactoController::class
+    )->except([
+        'index',
+        'show'
+    ]);
 });

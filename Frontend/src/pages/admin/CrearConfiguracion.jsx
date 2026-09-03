@@ -392,7 +392,7 @@ const CrearConfiguracion = () => {
             <>
               <div className="admin-form-grid single">
                 <label>
-                  <span>Nombre del administrador</span>
+                  <span>Nombre del administrador *</span>
 
                   <input
                     type="text"
@@ -492,7 +492,7 @@ const CrearConfiguracion = () => {
 
           <div className="admin-form-grid single">
             <label>
-              <span>Contraseña actual</span>
+              <span>Contraseña actual *</span>
 
               <div className="admin-password-field">
                 <Lock size={18} />
@@ -509,7 +509,7 @@ const CrearConfiguracion = () => {
             </label>
 
             <label>
-              <span>Nueva contraseña</span>
+              <span>Nueva contraseña *</span>
 
               <div className="admin-password-field">
                 <Lock size={18} />
@@ -526,7 +526,7 @@ const CrearConfiguracion = () => {
             </label>
 
             <label>
-              <span>Confirmar nueva contraseña</span>
+              <span>Confirmar nueva contraseña *</span>
 
               <div className="admin-password-field">
                 <Lock size={18} />

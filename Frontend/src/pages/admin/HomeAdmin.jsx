@@ -75,7 +75,11 @@ const convertirPublicacion = (publicacion) => ({
   fechaInicio: publicacion.fecha_inicio || "",
   fechaFinal: publicacion.fecha_final || publicacion.fecha_inicio || "",
   fecha: "",
-  imagen: obtenerUrlArchivo(publicacion.imagen),
+  imagen: obtenerUrlArchivo(
+    publicacion.imagen_principal ||
+      publicacion.imagen ||
+      ""
+  ),
 });
 
 const convertirHorario = (horario) => ({

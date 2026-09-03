@@ -256,7 +256,10 @@ const Sidebar = () => {
       localStorage.removeItem("token");
       localStorage.removeItem("usuario");
       localStorage.removeItem("userRole");
-      localStorage.removeItem("recordarme");
+
+      // No borramos correoRecordado.
+      // Así se mantiene el correo si el usuario
+      // marcó "Recordarme" en el login.
 
       setUsuario(null);
 

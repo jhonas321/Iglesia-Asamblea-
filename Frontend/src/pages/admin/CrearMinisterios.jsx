@@ -62,7 +62,13 @@ const CrearMinisterios = () => {
         );
       }
 
-      setMinisterios(data);
+      const listaMinisterios = Array.isArray(data)
+        ? data
+        : Array.isArray(data?.data)
+        ? data.data
+        : [];
+
+      setMinisterios(listaMinisterios);
     } catch (error) {
       console.error("Error al cargar ministerios:", error);
 
@@ -144,8 +150,8 @@ const CrearMinisterios = () => {
 
     return ministerios.filter((ministerio) => {
       return (
-        ministerio.nombre.toLowerCase().includes(texto) ||
-        ministerio.descripcion.toLowerCase().includes(texto)
+        String(ministerio.nombre || "").toLowerCase().includes(texto) ||
+        String(ministerio.descripcion || "").toLowerCase().includes(texto)
       );
     });
   }, [busqueda, ministerios]);
@@ -163,8 +169,8 @@ const CrearMinisterios = () => {
     setMinisterioEditando(ministerio);
 
     setFormulario({
-      nombre: ministerio.nombre,
-      descripcion: ministerio.descripcion,
+      nombre: ministerio.nombre || "",
+      descripcion: ministerio.descripcion || "",
     });
 
     setError("");
@@ -271,7 +277,11 @@ const CrearMinisterios = () => {
       await cargarMinisterios();
 
       setGuardado(true);
-      cerrarModal();
+      setModalAbierto(false);
+      setModoEdicion(false);
+      setMinisterioEditando(null);
+      setFormulario(formularioInicial);
+      setError("");
     } catch (error) {
       console.error("Error al guardar ministerio:", error);
 

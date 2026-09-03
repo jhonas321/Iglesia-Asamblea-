@@ -292,6 +292,7 @@ const CrearEventos = () => {
   const [cargandoDatos, setCargandoDatos] = useState(true);
   const [guardandoEvento, setGuardandoEvento] = useState(false);
   const [errorCarga, setErrorCarga] = useState("");
+  const [mensajeExito, setMensajeExito] = useState("");
 
   const [modalAbierto, setModalAbierto] = useState(false);
   const [modoFormulario, setModoFormulario] = useState("crear");
@@ -350,8 +351,20 @@ const CrearEventos = () => {
       const datosEventos = await respuestaEventos.json();
       const datosMinisterios = await respuestaMinisterios.json();
 
-      setEventosAdmin(datosEventos.map(convertirEventoBackendAFrontend));
-      setMinisteriosDisponibles(datosMinisterios);
+      const listaEventos = Array.isArray(datosEventos)
+        ? datosEventos
+        : Array.isArray(datosEventos?.data)
+        ? datosEventos.data
+        : [];
+
+      const listaMinisterios = Array.isArray(datosMinisterios)
+        ? datosMinisterios
+        : Array.isArray(datosMinisterios?.data)
+        ? datosMinisterios.data
+        : [];
+
+      setEventosAdmin(listaEventos.map(convertirEventoBackendAFrontend));
+      setMinisteriosDisponibles(listaMinisterios);
     } catch (error) {
       console.error("Error cargando eventos:", error);
       setErrorCarga(error.message || "No se pudieron cargar los datos.");
@@ -363,6 +376,17 @@ const CrearEventos = () => {
   useEffect(() => {
     cargarDatos();
   }, [cargarDatos]);
+
+
+  useEffect(() => {
+    if (!mensajeExito) return;
+
+    const timeout = setTimeout(() => {
+      setMensajeExito("");
+    }, 2500);
+
+    return () => clearTimeout(timeout);
+  }, [mensajeExito]);
 
   const cerrarSelectores = useCallback(() => {
     setMinisterioAbierto(false);
@@ -670,6 +694,7 @@ const CrearEventos = () => {
     setFormulario(crearFormularioEventoVacio());
     setArchivoImagen(null);
     setErrorFormulario("");
+    setMensajeExito("");
     cerrarSelectores();
     setModalAbierto(true);
   };
@@ -810,6 +835,13 @@ const CrearEventos = () => {
       }
 
       await cargarDatos();
+
+      setMensajeExito(
+        esEdicion
+          ? "El evento se actualizó correctamente."
+          : "El evento se creó correctamente."
+      );
+
       cerrarModal();
     } catch (error) {
       console.error("Error guardando evento:", error);
@@ -881,6 +913,8 @@ const CrearEventos = () => {
       setEventosAdmin((actuales) =>
         actuales.filter((item) => item.id !== evento.id)
       );
+
+      setMensajeExito("El evento se eliminó correctamente.");
     } catch (error) {
       console.error("Error eliminando evento:", error);
       window.alert(error.message || "No se pudo eliminar el evento.");
@@ -1445,6 +1479,10 @@ const CrearEventos = () => {
           <span>Crear evento</span>
         </button>
       </div>
+
+      {mensajeExito && (
+        <div className="admin-eventos-success">{mensajeExito}</div>
+      )}
 
       {errorCarga && (
         <div className="admin-form-error">{errorCarga}</div>

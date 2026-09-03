@@ -14,7 +14,9 @@ const ProtectedRoute = ({ children }) => {
       localStorage.removeItem("token");
       localStorage.removeItem("usuario");
       localStorage.removeItem("userRole");
-      localStorage.removeItem("recordarme");
+
+      // No borramos correoRecordado,
+      // porque pertenece a la opción "Recordarme" del login.
     };
 
     const verificarSesion = async () => {
@@ -76,6 +78,8 @@ const ProtectedRoute = ({ children }) => {
             "userRole",
             data.user.rol.nombre
           );
+        } else {
+          localStorage.removeItem("userRole");
         }
 
         if (componenteActivo) {
@@ -88,9 +92,9 @@ const ProtectedRoute = ({ children }) => {
         );
 
         /*
-          Si Laravel está momentáneamente caído o hay un problema de red,
-          no eliminamos el token automáticamente. Solo impedimos el acceso
-          mientras no se pueda confirmar la sesión.
+          Si Laravel está caído o hay un problema de red,
+          conservamos el token, pero no permitimos entrar
+          al panel hasta poder validar la sesión.
         */
         if (componenteActivo) {
           setAutenticado(false);

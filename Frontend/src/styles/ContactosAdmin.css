@@ -408,6 +408,17 @@
   font-weight: 800;
 }
 
+.admin-contact-error {
+  padding: 13px 15px;
+  border-radius: 15px;
+  background: #fef2f2;
+  color: #b91c1c;
+  border: 1px solid #fecaca;
+  font-size: 0.92rem;
+  font-weight: 800;
+}
+
+
 /* =========================
    BOTONES
 ========================= */
@@ -634,4 +645,25 @@
 .admin-contact-footer-grid .admin-contact-phone-field {
   width: 100% !important;
   max-width: none !important;
+}
+
+
+.admin-contact-success {
+  padding: 13px 15px;
+  border-radius: 15px;
+  background: #f0fdf4;
+  color: #166534;
+  border: 1px solid #bbf7d0;
+  font-size: 0.92rem;
+  font-weight: 800;
+}
+
+.admin-contact-error {
+  padding: 13px 15px;
+  border-radius: 15px;
+  background: #fef2f2;
+  color: #b91c1c;
+  border: 1px solid #fecaca;
+  font-size: 0.92rem;
+  font-weight: 800;
 }

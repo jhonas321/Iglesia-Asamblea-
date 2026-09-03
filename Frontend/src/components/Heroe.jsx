@@ -3,8 +3,47 @@ import { Link, useNavigate } from "react-router-dom";
 import { CalendarDays } from "lucide-react";
 import "../styles/heroe.css";
 
-import { eventos } from "../data/eventosData";
-import { obtenerHeroFotosGuardadas } from "../data/adminStorage";
+const API_URL = "http://127.0.0.1:8000/api";
+const BACKEND_URL = "http://127.0.0.1:8000";
+
+
+const obtenerUrlArchivo = (ruta) => {
+  if (!ruta) return "";
+
+  const valor = String(ruta).trim();
+
+  if (
+    valor.startsWith("http://") ||
+    valor.startsWith("https://") ||
+    valor.startsWith("data:") ||
+    valor.startsWith("blob:") ||
+    valor.startsWith("/")
+  ) {
+    return valor;
+  }
+
+  return `${BACKEND_URL}/storage/${valor}`;
+};
+
+const convertirEventoApi = (evento) => ({
+  id: evento.id,
+  titulo: evento.titulo || "",
+  ministerio:
+    evento.ministerio?.nombre ||
+    evento.ministerio_nombre ||
+    "Sin ministerio",
+  fechaInicio: evento.fecha_inicio || "",
+  fechaFinal: evento.fecha_final || evento.fecha_inicio || "",
+  imagen: obtenerUrlArchivo(evento.imagen),
+});
+
+const convertirHeroFotoApi = (foto) => ({
+  id: foto.id,
+  titulo: foto.titulo || "",
+  imagen: obtenerUrlArchivo(foto.imagen),
+  orden: Number(foto.orden || 0),
+  activo: foto.activo !== false,
+});
 
 const TIEMPO_CAMBIO_HERO = 6000;
 
@@ -19,7 +58,12 @@ const obtenerFechaActualInput = () => {
 };
 
 const crearFechaLocalDesdeInput = (fechaInput) => {
-  const [anio, mes, dia] = fechaInput.split("-").map(Number);
+  if (!fechaInput) return null;
+
+  const [anio, mes, dia] = String(fechaInput).split("-").map(Number);
+
+  if (!anio || !mes || !dia) return null;
+
   return new Date(anio, mes - 1, dia);
 };
 
@@ -44,6 +88,8 @@ const obtenerNombreMes = (numeroMes) => {
 
 const formatearFechaEvento = (fechaInput) => {
   const fecha = crearFechaLocalDesdeInput(fechaInput);
+
+  if (!fecha) return "Sin fecha";
 
   const dia = String(fecha.getDate()).padStart(2, "0");
   const mes = obtenerNombreMes(fecha.getMonth());
@@ -112,6 +158,85 @@ const obtenerFechaOrdenEvento = (evento) => {
 function Heroe() {
   const navigate = useNavigate();
 
+  const [eventos, setEventos] = useState([]);
+  const [heroFotos, setHeroFotos] = useState([]);
+
+  useEffect(() => {
+    let activo = true;
+
+    const extraerLista = (data) => {
+      if (Array.isArray(data)) return data;
+      if (Array.isArray(data?.data)) return data.data;
+      return [];
+    };
+
+    const cargarEventos = async () => {
+      try {
+        const response = await fetch(`${API_URL}/eventos`, {
+          headers: {
+            Accept: "application/json",
+          },
+        });
+
+        if (!response.ok) {
+          throw new Error(`Eventos: ${response.status}`);
+        }
+
+        const data = await response.json();
+
+        if (!activo) return;
+
+        setEventos(
+          extraerLista(data).map(convertirEventoApi)
+        );
+      } catch (error) {
+        console.error("Error cargando eventos del Hero:", error);
+
+        if (activo) {
+          setEventos([]);
+        }
+      }
+    };
+
+    const cargarHeroFotos = async () => {
+      try {
+        const response = await fetch(`${API_URL}/hero-fotos`, {
+          headers: {
+            Accept: "application/json",
+          },
+        });
+
+        if (!response.ok) {
+          throw new Error(`Hero fotos: ${response.status}`);
+        }
+
+        const data = await response.json();
+
+        if (!activo) return;
+
+        setHeroFotos(
+          extraerLista(data)
+            .map(convertirHeroFotoApi)
+            .filter((foto) => foto.activo && foto.imagen)
+            .sort((a, b) => a.orden - b.orden)
+        );
+      } catch (error) {
+        console.error("Error cargando fotos del Hero:", error);
+
+        if (activo) {
+          setHeroFotos([]);
+        }
+      }
+    };
+
+    cargarEventos();
+    cargarHeroFotos();
+
+    return () => {
+      activo = false;
+    };
+  }, []);
+
   const fechaActual = obtenerFechaActualInput();
 
   const eventosDestacados = useMemo(() => {
@@ -138,19 +263,23 @@ function Heroe() {
       );
 
     return [...eventosEnCurso, ...eventosProximos];
-  }, [fechaActual]);
+  }, [eventos, fechaActual]);
 
   const hayEventosDestacados = eventosDestacados.length > 0;
 
   const fondosHero = useMemo(() => {
-    if (hayEventosDestacados) {
-      return eventosDestacados.map((evento) => evento.imagen).filter(Boolean);
-    }
-
-    return obtenerHeroFotosGuardadas()
+    const fotosDelPanel = heroFotos
       .map((foto) => foto.imagen)
       .filter(Boolean);
-  }, [hayEventosDestacados, eventosDestacados]);
+
+    if (fotosDelPanel.length > 0) {
+      return fotosDelPanel;
+    }
+
+    return eventosDestacados
+      .map((evento) => evento.imagen)
+      .filter(Boolean);
+  }, [heroFotos, eventosDestacados]);
 
   const [heroIndex, setHeroIndex] = useState(0);
 
@@ -373,45 +502,75 @@ function Heroe() {
             </>
           ) : (
             <div className="event-cards-area">
-              {fondosHero.map((image, index) => {
-                const claseTarjeta = obtenerClaseTarjetaSinEventos(index);
-                const esActiva = index === heroIndex % fondosHero.length;
+              {fondosHero.length > 0 ? (
+                fondosHero.map((image, index) => {
+                  const claseTarjeta = obtenerClaseTarjetaSinEventos(index);
+                  const esActiva = index === heroIndex % fondosHero.length;
 
-                return (
-                  <article
-                    key={index}
-                    className={`event-stack-card ${claseTarjeta} ${
-                      esActiva ? "event-empty-card" : "event-empty-ghost"
-                    }`}
-                  >
-                    <img src={image} alt="" aria-hidden={!esActiva} />
+                  return (
+                    <article
+                      key={index}
+                      className={`event-stack-card ${claseTarjeta} ${
+                        esActiva ? "event-empty-card" : "event-empty-ghost"
+                      }`}
+                    >
+                      <img src={image} alt="" aria-hidden={!esActiva} />
 
-                    <div className="event-stack-overlay"></div>
+                      <div className="event-stack-overlay"></div>
 
-                    {esActiva && (
-                      <div className="event-stack-content">
-                        <span className="event-status status-empty">
-                          Sin eventos
-                        </span>
+                      {esActiva && (
+                        <div className="event-stack-content">
+                          <span className="event-status status-empty">
+                            Sin eventos
+                          </span>
 
-                        <small>Eventos destacados</small>
+                          <small>Eventos destacados</small>
 
-                        <h3>No hay eventos en curso ni próximos</h3>
+                          <h3>No hay eventos en curso ni próximos</h3>
 
-                        <p>Por el momento no tenemos actividades publicadas.</p>
+                          <p>
+                            Por el momento no tenemos actividades publicadas.
+                          </p>
 
-                        <button
-                          type="button"
-                          className="event-stack-btn event-empty-btn"
-                          onClick={irEventosPasados}
-                        >
-                          Ver eventos pasados
-                        </button>
-                      </div>
-                    )}
-                  </article>
-                );
-              })}
+                          <button
+                            type="button"
+                            className="event-stack-btn event-empty-btn"
+                            onClick={irEventosPasados}
+                          >
+                            Ver eventos pasados
+                          </button>
+                        </div>
+                      )}
+                    </article>
+                  );
+                })
+              ) : (
+                <article className="event-stack-card card-active event-empty-card">
+                  <div className="event-stack-overlay"></div>
+
+                  <div className="event-stack-content">
+                    <span className="event-status status-empty">
+                      Sin eventos
+                    </span>
+
+                    <small>Eventos destacados</small>
+
+                    <h3>No hay eventos en curso ni próximos</h3>
+
+                    <p>
+                      Por el momento no tenemos actividades publicadas.
+                    </p>
+
+                    <button
+                      type="button"
+                      className="event-stack-btn event-empty-btn"
+                      onClick={irEventosPasados}
+                    >
+                      Ver eventos pasados
+                    </button>
+                  </div>
+                </article>
+              )}
             </div>
           )}
         </aside>
