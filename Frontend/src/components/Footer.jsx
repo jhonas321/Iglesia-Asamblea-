@@ -83,6 +83,7 @@ function Footer() {
   const [horarios, setHorarios] = useState([]);
 
   const [contacto, setContacto] = useState({
+    nombreIglesia: "",
     footerUbicacion: "",
     footerTelefono: "",
     footerCorreo: "",
@@ -105,6 +106,7 @@ function Footer() {
               Accept: "application/json",
             },
           }),
+
           fetch(`${API_URL}/contactos`, {
             headers: {
               Accept: "application/json",
@@ -131,8 +133,7 @@ function Footer() {
           ? datosHorarios.data
           : [];
 
-        const contactoBackend =
-          datosContacto?.data || datosContacto || {};
+        const contactoBackend = datosContacto?.data || datosContacto || {};
 
         setHorarios(
           listaHorarios
@@ -146,6 +147,7 @@ function Footer() {
         );
 
         setContacto({
+          nombreIglesia: contactoBackend.nombre_iglesia || "",
           footerUbicacion: contactoBackend.footer_ubicacion || "",
           footerTelefono: contactoBackend.footer_telefono || "",
           footerCorreo: contactoBackend.footer_correo || "",
@@ -163,6 +165,7 @@ function Footer() {
           setHorarios([]);
 
           setContacto({
+            nombreIglesia: "",
             footerUbicacion: "",
             footerTelefono: "",
             footerCorreo: "",
@@ -235,7 +238,9 @@ function Footer() {
     <footer className="footer">
       <div className="footer-container">
         <div className="footer-col">
-          <h3>Asamblea Apostólica</h3>
+          {contacto.nombreIglesia && (
+            <h3>{contacto.nombreIglesia}</h3>
+          )}
 
           <p className="footer-description">
             Iglesia cristiana dedicada a predicar la palabra de Dios, fortalecer
@@ -251,7 +256,9 @@ function Footer() {
               horariosFooter.map((horario) => (
                 <div className="footer-schedule-item" key={horario.id}>
                   <div className="footer-schedule-info">
-                    <span className="footer-schedule-day">{horario.dia}</span>
+                    <span className="footer-schedule-day">
+                      {horario.dia}
+                    </span>
 
                     <span className="footer-schedule-name">
                       {horario.actividad}
@@ -291,7 +298,9 @@ function Footer() {
                   <FaPhone />
                 </span>
 
-                <span>{formatearTelefono(contacto.footerTelefono)}</span>
+                <span>
+                  {formatearTelefono(contacto.footerTelefono)}
+                </span>
               </div>
             )}
 
@@ -323,7 +332,9 @@ function Footer() {
                 >
                   <span className="circle">{red.icono}</span>
 
-                  <span className="social-text">{red.nombre}</span>
+                  <span className="social-text">
+                    {red.nombre}
+                  </span>
                 </a>
               ))}
             </div>
@@ -331,10 +342,11 @@ function Footer() {
         )}
       </div>
 
-      <div className="footer-bottom">
-        © {new Date().getFullYear()} Asamblea Apostólica de la Fe en Cristo
-        Jesús
-      </div>
+      {contacto.nombreIglesia && (
+        <div className="footer-bottom">
+          © {new Date().getFullYear()} {contacto.nombreIglesia}
+        </div>
+      )}
     </footer>
   );
 }

@@ -224,7 +224,7 @@ const CrearContactos = () => {
       return;
     }
 
-    const correoValido = /^[^\\s@]+@[^\\s@]+\\.[^\\s@]+$/.test(
+    const correoValido = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(
       formulario.footerCorreo.trim()
     );
 

@@ -10,30 +10,14 @@ import MinisteriosPreview from "../../components/MinisteriosPreview";
 function Inicio() {
   return (
     <>
-      <div id="inicio">
-        <Heroe />
-      </div>
-
-      <div id="horarios">
-        <HorariosSeccion />
-      </div>
-
-      <div id="ministerios">
-        <MinisteriosPreview />
-      </div>
-
-      <div id="ubicacion">
-        <UbicacionSeccion />
-      </div>
-
-      <div id="mision-vision">
-        <MisionVision />
-      </div>
-
-      <div id="contacto">
-        <ContactoSeccion />
-      </div>
+      <Heroe />
+      <HorariosSeccion />
+      <MinisteriosPreview />
+      <UbicacionSeccion />
+      <MisionVision />
+      <ContactoSeccion />
     </>
   );
 }
+
 export default Inicio;

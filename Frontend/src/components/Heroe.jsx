@@ -160,6 +160,7 @@ function Heroe() {
 
   const [eventos, setEventos] = useState([]);
   const [heroFotos, setHeroFotos] = useState([]);
+  const [nombreIglesia, setNombreIglesia] = useState("");
 
   useEffect(() => {
     let activo = true;
@@ -229,8 +230,39 @@ function Heroe() {
       }
     };
 
+    const cargarContacto = async () => {
+      try {
+        const response = await fetch(`${API_URL}/contactos`, {
+          headers: {
+            Accept: "application/json",
+          },
+        });
+
+        if (!response.ok) {
+          throw new Error(`Contactos: ${response.status}`);
+        }
+
+        const data = await response.json();
+
+        if (!activo) return;
+
+        const contacto = data?.data || data || {};
+
+        setNombreIglesia(
+          String(contacto.nombre_iglesia || "").trim()
+        );
+      } catch (error) {
+        console.error("Error cargando nombre de la iglesia:", error);
+
+        if (activo) {
+          setNombreIglesia("");
+        }
+      }
+    };
+
     cargarEventos();
     cargarHeroFotos();
+    cargarContacto();
 
     return () => {
       activo = false;
@@ -268,18 +300,26 @@ function Heroe() {
   const hayEventosDestacados = eventosDestacados.length > 0;
 
   const fondosHero = useMemo(() => {
-    const fotosDelPanel = heroFotos
-      .map((foto) => foto.imagen)
-      .filter(Boolean);
+    /*
+      PRIORIDAD DEL HERO:
 
-    if (fotosDelPanel.length > 0) {
-      return fotosDelPanel;
+      1. Si existen eventos EN CURSO o PRÓXIMOS,
+         usamos las imágenes de esos eventos como fondo.
+
+      2. Solamente cuando NO existen eventos destacados,
+         usamos las fotos configuradas en "Hero Fotos".
+    */
+
+    if (eventosDestacados.length > 0) {
+      return eventosDestacados
+        .map((evento) => evento.imagen)
+        .filter(Boolean);
     }
 
-    return eventosDestacados
-      .map((evento) => evento.imagen)
+    return heroFotos
+      .map((foto) => foto.imagen)
       .filter(Boolean);
-  }, [heroFotos, eventosDestacados]);
+  }, [eventosDestacados, heroFotos]);
 
   const [heroIndex, setHeroIndex] = useState(0);
 
@@ -387,9 +427,11 @@ function Heroe() {
 
           <h1>Bienvenidos a nuestra iglesia</h1>
 
-          <h2 className="hero-church-name">
-            Asamblea Apostólica de la Fe en Cristo Jesús
-          </h2>
+          {nombreIglesia && (
+            <h2 className="hero-church-name">
+              {nombreIglesia}
+            </h2>
+          )}
 
           <p>
             Un lugar para adorar, crecer en la fe y compartir el amor de Cristo.

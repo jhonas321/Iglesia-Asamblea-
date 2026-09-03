@@ -15,13 +15,45 @@ import {
   FaSignInAlt,
 } from "react-icons/fa";
 
+const API_URL = "http://127.0.0.1:8000/api";
+
 function Navbar() {
   const [menuOpen, setMenuOpen] = useState(false);
+
+  const [nombreIglesia, setNombreIglesia] = useState("");
+
   const { pathname } = useLocation();
 
   const cerrarMenu = () => {
     setMenuOpen(false);
   };
+
+  useEffect(() => {
+    const cargarNombreIglesia = async () => {
+      try {
+        const response = await fetch(`${API_URL}/contactos`, {
+          method: "GET",
+          headers: {
+            Accept: "application/json",
+          },
+        });
+
+        if (!response.ok) {
+          throw new Error("No se pudo cargar el nombre de la iglesia.");
+        }
+
+        const data = await response.json();
+
+        if (data?.nombre_iglesia?.trim()) {
+          setNombreIglesia(data.nombre_iglesia.trim());
+        }
+      } catch (error) {
+        console.error("Error cargando nombre de la iglesia:", error);
+      }
+    };
+
+    cargarNombreIglesia();
+  }, []);
 
   useEffect(() => {
     if (!menuOpen) return;
@@ -61,13 +93,40 @@ function Navbar() {
   const scrollNavbarConOffset = (el, offset = 90) => {
     const estaEnInicio = pathname === "/";
 
-    const y = el.getBoundingClientRect().top + window.pageYOffset - offset;
+    const y =
+      el.getBoundingClientRect().top +
+      window.pageYOffset -
+      offset;
 
     window.scrollTo({
       top: y,
       behavior: estaEnInicio ? "smooth" : "auto",
     });
   };
+
+  const separarNombreIglesia = (nombre) => {
+    const texto = String(nombre || "").trim();
+
+    const coincidencia = texto.match(
+      /^(.*?)\s+de\s+la\s+fe\s+en\s+(.*)$/i
+    );
+
+    if (coincidencia) {
+      return {
+        primeraLinea: coincidencia[1],
+        segundaLinea: "de la fe en",
+        destacado: coincidencia[2],
+      };
+    }
+
+    return {
+      primeraLinea: texto,
+      segundaLinea: "",
+      destacado: "",
+    };
+  };
+
+  const nombreFormateado = separarNombreIglesia(nombreIglesia);
 
   return (
     <>
@@ -87,10 +146,14 @@ function Navbar() {
           </HashLink>
 
           <div className="brand-text">
-            <h1>Asamblea Apostólica</h1>
-            <p>
-              de la fe en <span>Cristo Jesús</span>
-            </p>
+            <h1>{nombreFormateado.primeraLinea}</h1>
+
+            {nombreFormateado.segundaLinea && (
+              <p>
+                {nombreFormateado.segundaLinea}{" "}
+                <span>{nombreFormateado.destacado}</span>
+              </p>
+            )}
           </div>
         </div>
 
@@ -178,7 +241,11 @@ function Navbar() {
           </li>
 
           <li>
-            <Link to="/login" className="login-nav-btn" onClick={cerrarMenu}>
+            <Link
+              to="/login"
+              className="login-nav-btn"
+              onClick={cerrarMenu}
+            >
               <FaSignInAlt className="nav-icon" />
               Iniciar Sesión
             </Link>

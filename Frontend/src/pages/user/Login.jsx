@@ -193,7 +193,7 @@ function Login() {
               Accede al sistema de administración de la iglesia.
             </p>
 
-            <span>Asamblea Apostólica</span>
+            <span>Asamblea Apostólica de la fe en Cristo Jesus</span>
           </div>
         </div>
 
@@ -203,7 +203,7 @@ function Login() {
           noValidate
         >
           <div className="login-title">
-            <h1>Login</h1>
+            <h1>Inicio de Sesión</h1>
             <span></span>
           </div>
 

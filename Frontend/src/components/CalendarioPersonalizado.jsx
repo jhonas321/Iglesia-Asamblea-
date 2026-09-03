@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import {
   FaCalendarAlt,
   FaChevronLeft,
@@ -14,6 +14,9 @@ const convertirFechaInput = (valor) => {
   if (!valor) return null;
 
   const [anio, mes, dia] = valor.split("-").map(Number);
+
+  if (!anio || !mes || !dia) return null;
+
   return crearFechaLocal(anio, mes - 1, dia);
 };
 
@@ -117,18 +120,36 @@ function CalendarioPersonalizado({
     ? abierto
     : calendarioInternoAbierto;
 
+  useEffect(() => {
+    const fechaSeleccionada = convertirFechaInput(valor);
+
+    if (!fechaSeleccionada) return;
+
+    setMesCalendario(
+      new Date(
+        fechaSeleccionada.getFullYear(),
+        fechaSeleccionada.getMonth(),
+        1
+      )
+    );
+  }, [valor]);
+
   const cambiarMesCalendario = (cantidad) => {
     setMesCalendario((actual) => {
-      return new Date(actual.getFullYear(), actual.getMonth() + cantidad, 1);
+      return new Date(
+        actual.getFullYear(),
+        actual.getMonth() + cantidad,
+        1
+      );
     });
   };
 
   const abrirOCerrarCalendario = () => {
     if (estaControlado) {
       if (calendarioAbierto) {
-        onCerrar();
+        if (onCerrar) onCerrar();
       } else {
-        onAbrir();
+        if (onAbrir) onAbrir();
       }
 
       return;
@@ -139,22 +160,31 @@ function CalendarioPersonalizado({
 
   const cerrarCalendario = () => {
     if (estaControlado) {
-      onCerrar();
+      if (onCerrar) onCerrar();
     } else {
       setCalendarioInternoAbierto(false);
     }
   };
 
   const seleccionarFecha = (fecha) => {
-    onChange(convertirDateAInput(fecha));
+    if (onChange) {
+      onChange(convertirDateAInput(fecha));
+    }
+
     cerrarCalendario();
   };
 
   const seleccionarHoy = () => {
     const hoy = new Date();
 
-    setMesCalendario(new Date(hoy.getFullYear(), hoy.getMonth(), 1));
-    onChange(obtenerFechaHoyInput());
+    setMesCalendario(
+      new Date(hoy.getFullYear(), hoy.getMonth(), 1)
+    );
+
+    if (onChange) {
+      onChange(obtenerFechaHoyInput());
+    }
+
     cerrarCalendario();
   };
 
@@ -166,22 +196,38 @@ function CalendarioPersonalizado({
           valor ? "has-value" : ""
         }`}
         onClick={abrirOCerrarCalendario}
-        aria-label={label}
+        aria-label={label || "Seleccionar fecha"}
       >
-        <span>{valor ? formatearFechaInput(valor) : ejemplo}</span>
-        <FaCalendarAlt className="date-input-icon" aria-hidden="true" />
+        <span>
+          {valor
+            ? formatearFechaInput(valor)
+            : ejemplo || "Seleccionar fecha"}
+        </span>
+
+        <FaCalendarAlt
+          className="date-input-icon"
+          aria-hidden="true"
+        />
       </button>
 
       {calendarioAbierto && (
         <div className="calendario-popup">
           <div className="calendario-popup-header">
-            <button type="button" onClick={() => cambiarMesCalendario(-1)}>
+            <button
+              type="button"
+              onClick={() => cambiarMesCalendario(-1)}
+              aria-label="Mes anterior"
+            >
               <FaChevronLeft />
             </button>
 
             <strong>{obtenerNombreMes(mesCalendario)}</strong>
 
-            <button type="button" onClick={() => cambiarMesCalendario(1)}>
+            <button
+              type="button"
+              onClick={() => cambiarMesCalendario(1)}
+              aria-label="Mes siguiente"
+            >
               <FaChevronRight />
             </button>
           </div>
@@ -197,7 +243,7 @@ function CalendarioPersonalizado({
           </div>
 
           <div className="calendario-popup-grid">
-            {obtenerDiasCalendario(mesCalendario).map((diaInfo, index) => {
+            {obtenerDiasCalendario(mesCalendario).map((diaInfo) => {
               const valorDia = convertirDateAInput(diaInfo.fecha);
               const esSeleccionado = valor === valorDia;
               const esHoy = obtenerFechaHoyInput() === valorDia;
@@ -205,7 +251,7 @@ function CalendarioPersonalizado({
               return (
                 <button
                   type="button"
-                  key={index}
+                  key={valorDia}
                   className={`
                     ${!diaInfo.esMesActual ? "otro-mes" : ""}
                     ${esSeleccionado ? "seleccionado" : ""}
