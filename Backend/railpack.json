@@ -9,9 +9,11 @@
     "libcurl4-openssl-dev",
     "libsodium-dev",
     "libgd-dev",
-    "libpq-dev"
+    "libpq-dev",
+    "libicu-dev"
   ],
   "deployAptPackages": [
-    "libpq5"
+    "libpq5",
+    "libicu76"
   ]
 }
