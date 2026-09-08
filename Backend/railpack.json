@@ -1,0 +1,12 @@
+{
+  "provider": "php",
+  "buildAptPackages": [
+    "bison",
+    "re2c",
+    "pkg-config",
+    "libonig-dev",
+    "libzip-dev",
+    "libcurl4-openssl-dev",
+    "libsodium-dev"
+  ]
+}
