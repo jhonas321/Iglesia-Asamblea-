@@ -8,6 +8,10 @@
     "libzip-dev",
     "libcurl4-openssl-dev",
     "libsodium-dev",
-    "libgd-dev"
+    "libgd-dev",
+    "libpq-dev"
+  ],
+  "deployAptPackages": [
+    "libpq5"
   ]
 }
