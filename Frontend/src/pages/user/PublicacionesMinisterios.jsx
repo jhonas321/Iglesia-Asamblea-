@@ -18,7 +18,7 @@ import { useNavigate, useParams, useSearchParams } from "react-router-dom";
 import Paginacion from "../../components/ui/Paginacion";
 import CalendarioPersonalizado from "../../components/CalendarioPersonalizado";
 
-const API_URL = "http://127.0.0.1:8000/api";
+const API_URL = import.meta.env.VITE_API_URL;
 const STORAGE_URL = "http://127.0.0.1:8000/storage";
 
 const construirUrlStorage = (ruta) => {

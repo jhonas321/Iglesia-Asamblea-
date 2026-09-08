@@ -6,7 +6,7 @@ import "react-phone-input-2/lib/style.css";
 import "../../styles/AdminCrudPage.css";
 import "../../styles/ContactosAdmin.css";
 
-const API_URL = "http://127.0.0.1:8000/api";
+const API_URL = import.meta.env.VITE_API_URL;
 
 const crearContactoVacio = () => ({
   id: null,

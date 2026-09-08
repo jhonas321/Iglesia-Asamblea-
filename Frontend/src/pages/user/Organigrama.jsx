@@ -2,7 +2,7 @@ import { useEffect, useMemo, useState } from "react";
 import { FaRegUser, FaRegUserCircle } from "react-icons/fa";
 import "../../styles/organigrama.css";
 
-const API_URL = "http://127.0.0.1:8000/api";
+const API_URL = import.meta.env.VITE_API_URL;
 
 function Avatar({ genero = "hombre", nombre = "", principal = false }) {
   const esMujer = genero === "mujer";

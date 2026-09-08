@@ -43,7 +43,7 @@ import "../../styles/AdminCrudPage.css";
 import "../../styles/horarios-seccion.css";
 import "../../styles/HorariosAdmin.css";
 
-const API_URL = "http://127.0.0.1:8000/api";
+const API_URL = import.meta.env.VITE_API_URL;
 
 const opcionesIcono = {
   oracion: {
@@ -187,11 +187,11 @@ const diasSemana = [
 ];
 
 const HORAS = Array.from({ length: 24 }, (_, index) =>
-  String(index).padStart(2, "0")
+  String(index).padStart(2, "0"),
 );
 
 const MINUTOS = Array.from({ length: 12 }, (_, index) =>
-  String(index * 5).padStart(2, "0")
+  String(index * 5).padStart(2, "0"),
 );
 
 const crearFormularioHorarioVacio = () => ({
@@ -306,26 +306,20 @@ const CrearHorarios = () => {
       const data = await response.json();
 
       if (!response.ok) {
-        throw new Error(
-          data.message || "No se pudieron cargar los horarios."
-        );
+        throw new Error(data.message || "No se pudieron cargar los horarios.");
       }
 
       const listaHorarios = Array.isArray(data)
         ? data
         : Array.isArray(data?.data)
-        ? data.data
-        : [];
+          ? data.data
+          : [];
 
-      setHorariosAdmin(
-        listaHorarios.map(convertirHorarioBackendAFrontend)
-      );
+      setHorariosAdmin(listaHorarios.map(convertirHorarioBackendAFrontend));
     } catch (error) {
       console.error("Error cargando horarios:", error);
 
-      setErrorCarga(
-        error.message || "No se pudieron cargar los horarios."
-      );
+      setErrorCarga(error.message || "No se pudieron cargar los horarios.");
     } finally {
       setCargandoDatos(false);
     }
@@ -334,7 +328,6 @@ const CrearHorarios = () => {
   useEffect(() => {
     cargarDatos();
   }, [cargarDatos]);
-
 
   useEffect(() => {
     if (!mensajeExito) return;
@@ -618,12 +611,10 @@ const CrearHorarios = () => {
           setErrorFormulario(
             Array.isArray(primerError)
               ? primerError[0]
-              : "Revisa los datos ingresados."
+              : "Revisa los datos ingresados.",
           );
         } else {
-          setErrorFormulario(
-            data.message || "No se pudo guardar el horario."
-          );
+          setErrorFormulario(data.message || "No se pudo guardar el horario.");
         }
 
         setPanelActivo("formulario");
@@ -635,16 +626,14 @@ const CrearHorarios = () => {
       setMensajeExito(
         esEdicion
           ? "El horario se actualizó correctamente."
-          : "El horario se creó correctamente."
+          : "El horario se creó correctamente.",
       );
 
       cerrarModal();
     } catch (error) {
       console.error("Error guardando horario:", error);
 
-      setErrorFormulario(
-        "No se pudo conectar con el servidor."
-      );
+      setErrorFormulario("No se pudo conectar con el servidor.");
     } finally {
       setGuardandoHorario(false);
     }
@@ -678,7 +667,7 @@ const CrearHorarios = () => {
 
   const handleEliminar = async (horario) => {
     const confirmar = window.confirm(
-      `¿Seguro que quieres eliminar el horario "${horario.actividad}"?`
+      `¿Seguro que quieres eliminar el horario "${horario.actividad}"?`,
     );
 
     if (!confirmar) return;
@@ -688,16 +677,13 @@ const CrearHorarios = () => {
     try {
       setEliminandoId(horario.id);
 
-      const response = await fetch(
-        `${API_URL}/horarios/${horario.id}`,
-        {
-          method: "DELETE",
-          headers: {
-            Accept: "application/json",
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
+      const response = await fetch(`${API_URL}/horarios/${horario.id}`, {
+        method: "DELETE",
+        headers: {
+          Accept: "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+      });
 
       let data = null;
 
@@ -708,13 +694,11 @@ const CrearHorarios = () => {
       }
 
       if (!response.ok) {
-        throw new Error(
-          data?.message || "No se pudo eliminar el horario."
-        );
+        throw new Error(data?.message || "No se pudo eliminar el horario.");
       }
 
       setHorariosAdmin((actuales) =>
-        actuales.filter((item) => item.id !== horario.id)
+        actuales.filter((item) => item.id !== horario.id),
       );
 
       setErrorCarga("");
@@ -723,9 +707,7 @@ const CrearHorarios = () => {
       console.error("Error eliminando horario:", error);
 
       setMensajeExito("");
-      setErrorCarga(
-        error.message || "No se pudo eliminar el horario."
-      );
+      setErrorCarga(error.message || "No se pudo eliminar el horario.");
     } finally {
       setEliminandoId(null);
     }
@@ -981,8 +963,8 @@ const CrearHorarios = () => {
           {guardandoHorario
             ? "Guardando..."
             : modoFormulario === "editar"
-            ? "Guardar cambios"
-            : "Crear horario"}
+              ? "Guardar cambios"
+              : "Crear horario"}
         </button>
       </div>
     </form>
@@ -1099,21 +1081,13 @@ const CrearHorarios = () => {
       </div>
 
       {mensajeExito && (
-        <div className="admin-horarios-success">
-          {mensajeExito}
-        </div>
+        <div className="admin-horarios-success">{mensajeExito}</div>
       )}
 
-      {errorCarga && (
-        <div className="admin-form-error">
-          {errorCarga}
-        </div>
-      )}
+      {errorCarga && <div className="admin-form-error">{errorCarga}</div>}
 
       {cargandoDatos && (
-        <div className="admin-horarios-cargando">
-          Cargando horarios...
-        </div>
+        <div className="admin-horarios-cargando">Cargando horarios...</div>
       )}
 
       <ListaAdmin
@@ -1128,7 +1102,7 @@ const CrearHorarios = () => {
       {modalAbierto &&
         createPortal(
           esModoVista ? modalVistaUsuario : modalFormulario,
-          document.body
+          document.body,
         )}
     </section>
   );
