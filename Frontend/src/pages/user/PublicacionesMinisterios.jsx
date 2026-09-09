@@ -18,8 +18,9 @@ import { useNavigate, useParams, useSearchParams } from "react-router-dom";
 import Paginacion from "../../components/ui/Paginacion";
 import CalendarioPersonalizado from "../../components/CalendarioPersonalizado";
 
+const BACKEND_URL = import.meta.env.VITE_BACKEND_URL;
 const API_URL = import.meta.env.VITE_API_URL;
-const STORAGE_URL = "http://127.0.0.1:8000/storage";
+const STORAGE_URL = `${BACKEND_URL}/storage`;
 
 const construirUrlStorage = (ruta) => {
   const valor = String(ruta || "").trim();
@@ -36,12 +37,12 @@ const construirUrlStorage = (ruta) => {
   }
 
   if (valor.startsWith("/storage/")) {
-    return `http://127.0.0.1:8000${valor}`;
-  }
+  return `${BACKEND_URL}${valor}`;
+}
 
   if (valor.startsWith("storage/")) {
-    return `http://127.0.0.1:8000/${valor}`;
-  }
+  return `${BACKEND_URL}/${valor}`;
+}
 
   return `${STORAGE_URL}/${valor.replace(/^\/+/, "")}`;
 };

@@ -22,8 +22,8 @@ import {
 
 import "../../styles/HomeAdmin.css";
 
-const API_URL = "http://127.0.0.1:8000/api";
-const BACKEND_URL = "http://127.0.0.1:8000";
+const API_URL = import.meta.env.VITE_API_URL;
+const BACKEND_URL = import.meta.env.VITE_BACKEND_URL;
 
 
 const obtenerToken = () => localStorage.getItem("token");

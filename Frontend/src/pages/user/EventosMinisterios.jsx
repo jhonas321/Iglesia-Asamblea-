@@ -17,8 +17,9 @@ import CalendarioPersonalizado from "../../components/CalendarioPersonalizado";
 import Paginacion from "../../components/ui/Paginacion";
 import "../../styles/eventos-ministerios.css";
 
+const BACKEND_URL = import.meta.env.VITE_BACKEND_URL;
 const API_URL = import.meta.env.VITE_API_URL;
-const STORAGE_URL = "http://127.0.0.1:8000/storage";
+const STORAGE_URL = `${BACKEND_URL}/storage`;
 
 const construirUrlImagen = (ruta) => {
   const valor = String(ruta || "").trim();
@@ -35,11 +36,11 @@ const construirUrlImagen = (ruta) => {
   }
 
   if (valor.startsWith("/storage/")) {
-    return `http://127.0.0.1:8000${valor}`;
+    return `${BACKEND_URL}${valor}`;
   }
 
   if (valor.startsWith("storage/")) {
-    return `http://127.0.0.1:8000/${valor}`;
+    return `${BACKEND_URL}/${valor}`;
   }
 
   return `${STORAGE_URL}/${valor.replace(/^\/+/, "")}`;
@@ -78,22 +79,15 @@ const convertirEventoBackendAFrontend = (evento) => {
     hora: normalizarHora(evento?.hora),
     lugar: evento?.lugar || "",
     imagen: construirUrlImagen(
-      evento?.imagen || evento?.imagen_url || evento?.foto || ""
+      evento?.imagen || evento?.imagen_url || evento?.foto || "",
     ),
-    whatsappNumero:
-      evento?.whatsapp_numero ||
-      evento?.whatsappNumero ||
-      "",
+    whatsappNumero: evento?.whatsapp_numero || evento?.whatsappNumero || "",
   };
 };
 
 const convertirContactoBackendAFrontend = (contacto) => ({
-  whatsappNumero:
-    contacto?.whatsapp_numero ||
-    contacto?.whatsappNumero ||
-    "",
+  whatsappNumero: contacto?.whatsapp_numero || contacto?.whatsappNumero || "",
 });
-
 
 const obtenerVistaTabletOCelular = () => {
   if (typeof window === "undefined") return false;
@@ -183,7 +177,7 @@ const formatearRangoFechaEvento = (fechaInicio, fechaFinal) => {
   }
 
   return `${formatearFechaEvento(fechaInicio)} al ${formatearFechaEvento(
-    fechaFinal
+    fechaFinal,
   )}`;
 };
 
@@ -244,10 +238,10 @@ function EventosMinisterios() {
 
   const [paginaActual, setPaginaActual] = useState(1);
   const [eventosPorPagina, setEventosPorPagina] = useState(() =>
-    obtenerVistaTabletOCelular() ? 4 : 6
+    obtenerVistaTabletOCelular() ? 4 : 6,
   );
   const [esTabletOCelular, setEsTabletOCelular] = useState(
-    obtenerVistaTabletOCelular
+    obtenerVistaTabletOCelular,
   );
 
   const scrollAntesModalPc = useRef(0);
@@ -289,13 +283,13 @@ function EventosMinisterios() {
         const listaEventos = Array.isArray(datosEventos)
           ? datosEventos
           : Array.isArray(datosEventos?.data)
-          ? datosEventos.data
-          : [];
+            ? datosEventos.data
+            : [];
 
         setEventos(
           listaEventos
             .map(convertirEventoBackendAFrontend)
-            .filter((evento) => evento.id && evento.fechaInicio)
+            .filter((evento) => evento.id && evento.fechaInicio),
         );
 
         const registroContacto = datosContacto?.data || datosContacto || null;
@@ -360,7 +354,7 @@ function EventosMinisterios() {
     }
 
     const eventoEncontrado = eventosActualizados.find(
-      (evento) => evento.id === Number(id)
+      (evento) => evento.id === Number(id),
     );
 
     if (eventoEncontrado) {
@@ -529,14 +523,14 @@ function EventosMinisterios() {
       return [...lista].sort(
         (a, b) =>
           new Date(obtenerFechaOrdenEvento(b)) -
-          new Date(obtenerFechaOrdenEvento(a))
+          new Date(obtenerFechaOrdenEvento(a)),
       );
     }
 
     return [...lista].sort(
       (a, b) =>
         new Date(obtenerFechaOrdenEvento(a)) -
-        new Date(obtenerFechaOrdenEvento(b))
+        new Date(obtenerFechaOrdenEvento(b)),
     );
   };
 
@@ -545,7 +539,7 @@ function EventosMinisterios() {
 
     const textoBuscado = normalizarTexto(filtroTexto);
     const textoEvento = normalizarTexto(
-      `${evento.ministerio} ${evento.titulo}`
+      `${evento.ministerio} ${evento.titulo}`,
     );
 
     return textoEvento.includes(textoBuscado);
@@ -556,7 +550,9 @@ function EventosMinisterios() {
     const finalEvento = evento.fechaFinal || evento.fechaInicio;
 
     if (filtroFechaInicio && filtroFechaFinal) {
-      return inicioEvento <= filtroFechaFinal && finalEvento >= filtroFechaInicio;
+      return (
+        inicioEvento <= filtroFechaFinal && finalEvento >= filtroFechaInicio
+      );
     }
 
     if (filtroFechaInicio) return finalEvento >= filtroFechaInicio;
@@ -572,8 +568,8 @@ function EventosMinisterios() {
 
   const eventosFiltrados = ordenarEventos(
     eventosPorPestana.filter(
-      (evento) => filtrarPorTexto(evento) && filtrarPorRangoFechas(evento)
-    )
+      (evento) => filtrarPorTexto(evento) && filtrarPorRangoFechas(evento),
+    ),
   );
 
   const indiceInicio = (paginaActual - 1) * eventosPorPagina;
@@ -702,7 +698,7 @@ function EventosMinisterios() {
 
     const rutaSinParametros = rutaImagen.split("?")[0].toLowerCase();
     const extensionEncontrada = rutaSinParametros.match(
-      /\.(jpg|jpeg|png|webp|gif)$/
+      /\.(jpg|jpeg|png|webp|gif)$/,
     );
 
     if (extensionEncontrada) {
@@ -900,7 +896,10 @@ function EventosMinisterios() {
             >
               <span>Búsqueda</span>
               {filtrosAbiertos ? (
-                <FaChevronUp className="filter-toggle-icon" aria-hidden="true" />
+                <FaChevronUp
+                  className="filter-toggle-icon"
+                  aria-hidden="true"
+                />
               ) : (
                 <FaChevronDown
                   className="filter-toggle-icon"
@@ -1021,7 +1020,7 @@ function EventosMinisterios() {
                         abierto={calendarioAbierto === "inicio"}
                         onAbrir={() =>
                           setCalendarioAbierto(
-                            calendarioAbierto === "inicio" ? "" : "inicio"
+                            calendarioAbierto === "inicio" ? "" : "inicio",
                           )
                         }
                         onCerrar={() => setCalendarioAbierto("")}
@@ -1064,7 +1063,7 @@ function EventosMinisterios() {
                         abierto={calendarioAbierto === "final"}
                         onAbrir={() =>
                           setCalendarioAbierto(
-                            calendarioAbierto === "final" ? "" : "final"
+                            calendarioAbierto === "final" ? "" : "final",
                           )
                         }
                         onCerrar={() => setCalendarioAbierto("")}
@@ -1111,8 +1110,8 @@ function EventosMinisterios() {
               <div className="eventos-empty">
                 <h3>No se encontraron eventos</h3>
                 <p>
-                  Intenta buscar otro ministerio, título o seleccionar otro rango
-                  de fechas.
+                  Intenta buscar otro ministerio, título o seleccionar otro
+                  rango de fechas.
                 </p>
               </div>
             )}

@@ -12,7 +12,7 @@ import "../../styles/AdminCrudPage.css";
 import "../../styles/HeroFotosAdmin.css";
 
 const API_URL = import.meta.env.VITE_API_URL;
-const BACKEND_URL = "http://127.0.0.1:8000";
+const BACKEND_URL = import.meta.env.VITE_BACKEND_URL;
 
 const MAX_FOTOS_HERO = 8;
 const MIN_FOTOS_HERO = 1;
